@@ -1,0 +1,15 @@
+stages:
+  - build
+
+frontend:build:
+  stage: build
+  script:
+    - cd services/frontend
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/frontend:latest .
+    - docker push $CI_REGISTRY_IMAGE/frontend:latest
+  only:
+    refs:
+      - master
+    changes:
+      - services/frontend/**/*

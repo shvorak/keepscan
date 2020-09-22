@@ -1,0 +1,15 @@
+stages:
+  - build
+
+backend:build:
+  stage: build
+  script:
+    - cd services/backend
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/backend:latest .
+    - docker push $CI_REGISTRY_IMAGE/backend:latest
+  only:
+    refs:
+      - master
+    changes:
+      - services/backend/**/*

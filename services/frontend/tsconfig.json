@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "baseUrl": ".",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "paths": {
+      "~/*": ["sources/*"],
+      "components/*": ["sources/components/*"],
+      "features/*": ["sources/features/*"],
+      "entities/*": ["sources/entities/*"],
+      "shared/*": ["sources/shared/*"],
+      "uikit/*": ["sources/uikit/*"]
+    },
+    "typeRoots": [ "./typings", "./node_modules/@types"]
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
