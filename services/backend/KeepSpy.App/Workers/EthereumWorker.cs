@@ -6,9 +6,27 @@ namespace KeepSpy.App.Workers
 {
     public class EthereumWorker: BackgroundService
     {
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        private readonly EthereumWorkerOptions _options;
+
+        public EthereumWorker(EthereumWorkerOptions options)
         {
-            throw new System.NotImplementedException();
+            _options = options;
         }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (false == stoppingToken.IsCancellationRequested)
+            {
+                // TODO: Do work here
+
+                // Simple interval
+                await Task.Delay(1000, stoppingToken);
+            }
+        }
+    }
+
+    public class EthereumWorkerOptions
+    {
+        public string ApiUrl { get; set; }
     }
 }

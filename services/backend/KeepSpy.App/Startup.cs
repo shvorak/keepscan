@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using KeepSpy.App.Workers;
 using KeepSpy.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,10 +27,14 @@ namespace KeepSpy.App
                 .UseNpgsql(Configuration.GetConnectionString("Default"))
             );
             
-            services.AddMvcCore();
+            services.AddMvcCore()
+                .AddCors();
 
-            // services.AddHostedService<BitcoinWorker>();
-            // services.AddHostedService<EthereumWorker>();
+            services.AddSingleton(Configuration.GetSection("Workers:Bitcoin").Get<BitcoinWorkerOptions>());
+            services.AddSingleton(Configuration.GetSection("Workers:Ethereum").Get<EthereumWorkerOptions>());
+
+            services.AddHostedService<BitcoinWorker>();
+            services.AddHostedService<EthereumWorker>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

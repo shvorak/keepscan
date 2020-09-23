@@ -6,9 +6,27 @@ namespace KeepSpy.App.Workers
 {
     public class BitcoinWorker: BackgroundService
     {
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        private readonly BitcoinWorkerOptions _options;
+
+        public BitcoinWorker(BitcoinWorkerOptions options)
         {
-            throw new System.NotImplementedException();
+            _options = options;
         }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (false == stoppingToken.IsCancellationRequested)
+            {
+                // TODO: Do work here
+
+                // Simple interval
+                await Task.Delay(1000, stoppingToken);
+            }
+        }
+    }
+
+    public class BitcoinWorkerOptions
+    {
+        public string ApiUrl { get; set; }
     }
 }
