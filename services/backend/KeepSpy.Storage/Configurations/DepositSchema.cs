@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace KeepSpy.Storage.Configurations
 {
-    public class OperationSchema: IEntityTypeConfiguration<Operation>
+    public class DepositSchema: IEntityTypeConfiguration<Deposit>
     {
-        public void Configure(EntityTypeBuilder<Operation> builder)
+        public void Configure(EntityTypeBuilder<Deposit> builder)
         {
             
         }

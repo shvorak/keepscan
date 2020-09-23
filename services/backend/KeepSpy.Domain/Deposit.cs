@@ -3,11 +3,8 @@ using KeepSpy.Shared.Domain;
 
 namespace KeepSpy.Domain
 {
-    public class Operation: HasId<string>
+    public class Deposit: HasId<string>
     {
-        
-        public OperationType Type { get; set; }
-
         public string SenderAddress { get; set; }
         
         public string? BitcoinAddress { get; set; }
