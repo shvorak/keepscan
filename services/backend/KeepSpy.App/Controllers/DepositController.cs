@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using KeepSpy.App.Abstraction;
 using KeepSpy.Domain;
@@ -19,5 +20,10 @@ namespace KeepSpy.App.Controllers
 
         [HttpGet]
         public Task<Deposit[]> Get() => _db.Set<Deposit>().ToArrayAsync();
+
+        [HttpGet("latest")]
+        public Task<Deposit[]> Latest() 
+            => _db.Set<Deposit>().OrderByDescending(x => x.CreatedAt).Take(10).ToArrayAsync();
+
     }
 }
