@@ -1,5 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
+using KeepSpy.Storage;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace KeepSpy.App.Workers
@@ -7,20 +9,27 @@ namespace KeepSpy.App.Workers
     public class BitcoinWorker: BackgroundService
     {
         private readonly BitcoinWorkerOptions _options;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        public BitcoinWorker(BitcoinWorkerOptions options)
+        public BitcoinWorker(BitcoinWorkerOptions options, IServiceScopeFactory scopeFactory)
         {
             _options = options;
+            _scopeFactory = scopeFactory;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (false == stoppingToken.IsCancellationRequested)
+            await Task.Delay(5000, stoppingToken);
+            while (!stoppingToken.IsCancellationRequested)
             {
-                // TODO: Do work here
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<KeepSpyContext>();
 
-                // Simple interval
-                await Task.Delay(1000, stoppingToken);
+
+                }
+
+                await Task.Delay(_options.Interval * 1000, stoppingToken);
             }
         }
     }
@@ -28,5 +37,7 @@ namespace KeepSpy.App.Workers
     public class BitcoinWorkerOptions
     {
         public string ApiUrl { get; set; }
+        public int Interval { get; set; }
+        public bool IsTestnet { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace KeepSpy.Storage.Configurations
                 Name = "Ropsten",
                 Kind = NetworkKind.Ethereum,
                 IsTestnet = true,
-                LastBlock = 0,
+                LastBlock = 8594983,
                 LastBlockAt = DateTime.MinValue
             });
             

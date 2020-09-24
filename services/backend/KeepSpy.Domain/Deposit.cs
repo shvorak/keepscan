@@ -20,6 +20,9 @@ namespace KeepSpy.Domain
         public DateTime? UpdatedAt { get; set; }
 
         public DateTime? CompletedAt { get; set; }
-        
+        public DepositStatus Status { get; set; }
+
+        public Contract Contract { get; set; }
+        public string ContractId { get; set; }
     }
 }

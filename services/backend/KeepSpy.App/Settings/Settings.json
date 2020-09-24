@@ -9,10 +9,14 @@
   "AllowedHosts": "*",
   "Workers": {
     "Bitcoin": {
-      "ApiUrl": "http://bitcoin.com"
+      "ApiUrl": "http://bitcoin.com",
+      "Interval": 60,
+      "IsTestnet": true
     },
     "Ethereum": {
-      "ApiUrl": "http://ethereum.com"
+      "ApiUrl": "https://api-ropsten.etherscan.io/api?apikey=4JQVAK5HNV1P6Z72E14ARGDPDUVDNJ5R5K",
+      "Interval": 10,
+      "IsTestnet": true
     }
   }
 }
