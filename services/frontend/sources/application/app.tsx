@@ -3,17 +3,8 @@ import styles from './app.css'
 import { NavLink } from 'react-router-dom'
 import { Card, CardBody, CardHead } from 'uikit/layout/card'
 import { Heading } from 'uikit/typography'
-import { useMount } from 'shared/hooks/lifecycle'
-import { useAction } from 'shared/hooks/redux'
-import { startup } from 'features/startup/actions'
 
 export const App = () => {
-    const startupAction = useAction(startup)
-
-    useMount(() => {
-        startupAction()
-    })
-
     return (
         <div className={styles.layout}>
             <div className={styles.header}>
