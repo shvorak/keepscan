@@ -3,3 +3,23 @@
     height: 100%;
     background-color: #f5f7fa;
 }
+
+.header {
+    background-color: #7a7ade;
+    width: 100%;
+    height: 500px;
+}
+
+.headline {
+    display: flex;
+}
+
+.headline .logo {
+    font-size: 1.6em;
+    color: white;
+}
+
+.section {
+    width: 1024px;
+    margin: 0 auto;
+}
