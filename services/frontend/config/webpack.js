@@ -52,6 +52,7 @@ module.exports = {
         alias: {
             '~': paths.source,
             uikit: path.resolve(paths.source, 'uikit'),
+            shared: path.resolve(paths.source, 'shared'),
             features: path.resolve(paths.source, 'features'),
             components: path.resolve(paths.source, 'components'),
         },

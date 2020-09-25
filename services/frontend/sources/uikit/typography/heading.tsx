@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, { createElement, FC } from 'react'
 
 type HeadingProps = {
     size?: 1 | 2 | 3 | 4 | 5
@@ -15,5 +15,5 @@ type HeadingProps = {
  * @constructor
  */
 export const Heading: FC<HeadingProps> = ({size = 1, children}) => {
-    return <h1>{children}</h1>
+    return createElement(`h${size}`, {}, children)
 }
