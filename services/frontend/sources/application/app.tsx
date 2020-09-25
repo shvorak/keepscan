@@ -1,8 +1,7 @@
 import React from 'react'
 import styles from './app.css'
 import { NavLink } from 'react-router-dom'
-import { Card, CardBody, CardHead } from 'uikit/layout/card'
-import { Heading } from 'uikit/typography'
+import { DepositCard } from 'features/deposits/latest-card'
 
 export const App = () => {
     return (
@@ -16,12 +15,7 @@ export const App = () => {
                         </Menu>
                     </div>
 
-                    <Card>
-                        <CardHead>
-                            <Heading size={3}>Deposits</Heading>
-                        </CardHead>
-                        <CardBody>Some Data</CardBody>
-                    </Card>
+                    <DepositCard />
                 </Section>
             </div>
         </div>

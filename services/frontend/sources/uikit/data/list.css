@@ -1,0 +1,22 @@
+.list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+.item {
+    display: block;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.item.interactive:hover {
+    cursor: pointer;
+    transition: background-color ease-in .2s;
+    background-color: #f9f9f9;
+}
+
+.item:last-child {
+    border-bottom: none;
+}
