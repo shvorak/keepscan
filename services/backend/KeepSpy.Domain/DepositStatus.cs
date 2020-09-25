@@ -7,7 +7,7 @@ namespace KeepSpy.Domain
 	public enum DepositStatus
 	{
 		GettingBtcAddress,
-		BtcAddresGenerated,
+		BtcAddressGenerated,
 		BtcReceived,
 		SubmittingProof,
 		ApprovingTdtSpendLimit,

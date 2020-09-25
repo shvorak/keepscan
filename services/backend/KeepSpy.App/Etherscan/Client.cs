@@ -18,7 +18,7 @@ namespace KeepSpy.App.Etherscan
 
 		Response<T> GetResult<T>(Dictionary<string, object> parameters)
 		{
-			string requestUrl = _baseUrl + "&" + string.Join("&", parameters.Select(kvp => $"{kvp.Key}={kvp.Value}"));
+			string requestUrl = _baseUrl + "&" + string.Join("&", parameters.Where(p => p.Value != null).Select(kvp => $"{kvp.Key}={kvp.Value}"));
 			string httpApiResult = wc.DownloadString(requestUrl);
 			return JsonSerializer.Deserialize<Response<T>>(httpApiResult);
 		}
@@ -38,7 +38,7 @@ namespace KeepSpy.App.Etherscan
 			};
 			return GetResult<Tx>(parameters);
 		}
-		public Response<Log> GetLogs(string address, ulong fromBlock, ulong? toBlock = null, int? page = 1, int? limit = 1000)
+		public Response<Log> GetLogs(string address, ulong fromBlock, ulong? toBlock = null, int? page = 1, int? limit = 1000, string topic0 = null)
 		{
 			var parameters = new Dictionary<string, object>()
 			{
@@ -48,7 +48,8 @@ namespace KeepSpy.App.Etherscan
 				{"fromBlock", fromBlock },
 				{"toBlock", toBlock ?? 99999999 },
 				{"page", page },
-				{"offset",limit }
+				{"offset", limit },
+				{"topic0", topic0 }
 			};
 			return GetResult<Log>(parameters);
 		}

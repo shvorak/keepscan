@@ -12,6 +12,7 @@ namespace KeepSpy.App.Workers
 {
     public class EthereumWorker: BackgroundService
     {
+        const string RegisteredPubKeyEvent = "0x8ee737ab16909c4e9d1b750814a4393c9f84ab5d3a29c08c313b783fc846ae33";
         private readonly EthereumWorkerOptions _options;
         private readonly IServiceScopeFactory _scopeFactory;
 		private readonly ILogger<EthereumWorker> _logger;
@@ -69,6 +70,12 @@ namespace KeepSpy.App.Workers
                 _logger.LogWarning("Etherscan api error: {0}", resultLogs.message);
                 return;
             }
+            var regpubKeyLogs = _apiClient.GetLogs(null, network.LastBlock + 1, topic0: RegisteredPubKeyEvent);
+            if (regpubKeyLogs.status != "1")
+            {
+                _logger.LogWarning("Etherscan api error: {0}", regpubKeyLogs.message);
+                return;
+            }
             foreach (var item in resultTx.result)
 			{
                 if (item.input.StartsWith("0xb7947b40"))
@@ -94,6 +101,20 @@ namespace KeepSpy.App.Workers
 						}
                     }
 				}
+			}
+            foreach(var pubKey in regpubKeyLogs.result)
+			{
+                var deposit = db.Set<Deposit>().SingleOrDefault(o => o.Id == "0x" + pubKey.topics[1].Substring(26));
+                if (deposit != null && deposit.Status == DepositStatus.GettingBtcAddress)
+				{
+                    var _signingGroupPubkeyX = pubKey.data.Substring(2, 64);
+                    var _signingGroupPubkeyY = pubKey.data.Substring(66, 64);
+                    var key = NBitcoin.DataEncoders.Encoders.Hex.DecodeData("03" + _signingGroupPubkeyX);
+
+                    var address = new NBitcoin.PubKey(key).GetAddress(NBitcoin.ScriptPubKeyType.Segwit, network.IsTestnet ? NBitcoin.Network.TestNet : NBitcoin.Network.Main).ToString();
+                    deposit.BitcoinAddress = address;
+                    deposit.Status = DepositStatus.BtcAddressGenerated;
+                }
 			}
             var lastTx = resultTx.result.Last();
             if (lastTx != null)
