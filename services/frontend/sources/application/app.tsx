@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './app.css'
-import { Route, Switch } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 export const App = () => {
     return (
@@ -8,7 +8,10 @@ export const App = () => {
             <div className={styles.header}>
                 <Section>
                     <div className={styles.headline}>
-                        <div className={styles.logo}>KeepScan</div>
+                        <Logo />
+                        <Menu>
+                            <MenuItem to="/">Home</MenuItem>
+                        </Menu>
                     </div>
                 </Section>
             </div>
@@ -16,5 +19,20 @@ export const App = () => {
     )
 }
 
+const Logo = () => <div className={styles.logo}>KeepScan</div>
+
+const Menu = ({children}) => {
+    return (
+        <div className={styles.menu}>
+            {children}
+        </div>
+    )
+}
+
+const MenuItem = ({to, exact = false, children}) => {
+    return (
+        <NavLink to={to}>{children}</NavLink>
+    )
+}
 
 export const Section = ({ children }) => <div className={styles.section}>{children}</div>

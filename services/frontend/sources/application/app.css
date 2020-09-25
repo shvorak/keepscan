@@ -12,11 +12,26 @@
 
 .headline {
     display: flex;
+    height: 80px;
+    align-items: center;
+    justify-items: center;
 }
 
 .headline .logo {
     font-size: 1.6em;
     color: white;
+}
+
+.headline .menu {
+    margin-left: auto;
+}
+.headline .menu a {
+    color: white;
+    text-decoration: none;
+}
+
+.headline .menu a:global(.active) {
+    font-weight: bold;
 }
 
 .section {
