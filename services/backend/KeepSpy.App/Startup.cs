@@ -1,4 +1,5 @@
 using System;
+using KeepSpy.App.Converters.Json;
 using KeepSpy.App.Workers;
 using KeepSpy.Storage;
 using Microsoft.AspNetCore.Builder;
@@ -28,7 +29,11 @@ namespace KeepSpy.App
             );
             
             services.AddMvcCore()
-                .AddCors();
+                .AddCors()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+                });
 
             services.AddSingleton(Configuration.GetSection("Workers:Bitcoin").Get<BitcoinWorkerOptions>());
             services.AddSingleton(Configuration.GetSection("Workers:Ethereum").Get<EthereumWorkerOptions>());
