@@ -11,7 +11,7 @@ const plugins = {
 }
 
 module.exports = (config, options) => {
-
+    const isDevelopment = options.mode === 'development'
     return {
         entry: {
             index: './sources/index.tsx',
@@ -49,7 +49,7 @@ module.exports = (config, options) => {
             ],
         },
         context: paths.root,
-        devtool: 'inline-source-map',
+        // devtool: isDevelopment && 'inline-source-map',
         resolve: {
             alias: {
                 '~': paths.source,
@@ -66,7 +66,7 @@ module.exports = (config, options) => {
                 template: path.join(paths.source, 'index.ejs'),
             }),
         ],
-        devServer: options.mode === 'development' && {
+        devServer: isDevelopment && {
             proxy: {
                 '/api': { target: 'https://keepscan.com', secure: false }
             }
