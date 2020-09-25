@@ -24,5 +24,6 @@ namespace KeepSpy.Domain
 
         public Contract Contract { get; set; }
         public string ContractId { get; set; }
+        public uint? BitcoinFundedBlock { get; set; }
     }
 }

@@ -9,8 +9,8 @@
   "AllowedHosts": "*",
   "Workers": {
     "Bitcoin": {
-      "ApiUrl": "http://bitcoin.com",
-      "Interval": 60,
+      "ApiUrl": "https://blockstream.info/testnet/api",
+      "Interval": 10,
       "IsTestnet": true
     },
     "Ethereum": {
