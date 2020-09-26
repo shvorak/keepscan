@@ -4,5 +4,5 @@ const environs = {
 }
 
 module.exports = (config, options) => {
-    return merge(require('./webpack.base'), environs[options.mode] || {})
+    return merge(require('./webpack.base')(options), environs[options.mode] || {})
 }
