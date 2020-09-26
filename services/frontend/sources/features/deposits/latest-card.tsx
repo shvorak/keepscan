@@ -6,7 +6,7 @@ import { Deposit } from 'entities/Deposit/types'
 import { Address } from 'uikit/crypto/address'
 import { ListItem } from 'uikit/data/list'
 import { Flex } from 'uikit/layout/flex'
-import { DateTime } from 'uikit/display/datetime'
+import { DateTimeDistance } from 'uikit/display/datetime'
 import { View } from 'uikit/layout/view'
 import { Display } from 'uikit/typography/display'
 
@@ -41,7 +41,7 @@ const DepositRow: FC<DepositRowProps> = ({ deposit }) => {
                 <div>
                     <Address value={deposit.id} />
                     <View paddingTop={10}>
-                        <DateTime value={deposit.createdAt} secondary />
+                        <DateTimeDistance value={deposit.createdAt} secondary />
                     </View>
                 </div>
                 <View>

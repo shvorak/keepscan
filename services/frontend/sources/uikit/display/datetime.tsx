@@ -1,5 +1,5 @@
 import React, { ComponentProps, FC, useMemo } from 'react'
-import { format as formatDate } from 'date-fns'
+import { format as formatDate, formatDistance } from 'date-fns'
 import { Display } from 'uikit/typography/display'
 
 const DEFAULT_FORMAT = 'yyyy.MM.dd HH:mm:ss'
@@ -13,6 +13,26 @@ export const DateTime: FC<DateTimeProps> = ({ value, format = DEFAULT_FORMAT, ..
     const formatted = useMemo(() => {
         return value && formatDate(new Date(value), format)
     }, [value, format])
+
+    return <Display {...props}>{formatted}</Display>
+}
+
+type DateTimeDistance = ComponentProps<typeof Display> & {
+    value: string | Date | number
+    to?: 'now' | Date | number
+    withSeconds?: boolean
+}
+
+export const DateTimeDistance = ({ value, to = 'now', withSeconds = true, withSuffix = true, ...props }) => {
+    const formatted = useMemo(() => {
+        const date = new Date(value)
+        const target = to === 'now' ? Date.now() : new Date(value)
+
+        return formatDistance(date, target, {
+            addSuffix: withSuffix,
+            includeSeconds: withSeconds,
+        })
+    }, [value, to, withSeconds])
 
     return <Display {...props}>{formatted}</Display>
 }
