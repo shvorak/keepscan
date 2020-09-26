@@ -1,0 +1,27 @@
+.row.row {
+    display: flex;
+    align-items: center;
+}
+.cell__id {
+    width: 30%;
+}
+.cell__status {
+    width: 30%;
+}
+.cell__address {
+    text-align: right;
+    width: 25%;
+}
+.cell__value {
+    width: 70px;
+    padding: 0 15px;
+    text-align: right;
+}
+
+.card.card {
+    width: 50%;
+}
+
+.list {
+    height: 990px;
+}

@@ -15,6 +15,6 @@ function* startupNetworks() {
 }
 
 function* startupDeposits() {
-    const networks = yield call(fetchLatestDeposits)
-    yield put(depositFetched(networks.data))
+    const deposits = yield call(fetchLatestDeposits)
+    yield put(depositFetched(deposits.data))
 }

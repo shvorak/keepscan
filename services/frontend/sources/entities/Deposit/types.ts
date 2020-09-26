@@ -2,6 +2,7 @@
 export interface Deposit
 {
     id: string
+    status: number
     senderAddress: string
     bitcoinAddress: string
     lotSize: number

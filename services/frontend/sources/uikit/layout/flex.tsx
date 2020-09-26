@@ -1,8 +1,8 @@
-import React, { CSSProperties, FC } from 'react'
+import React, { ComponentProps, CSSProperties, FC } from 'react'
 import { useClasses, useStyles } from 'shared/hooks/styles'
 import styles from './flex.css'
 
-type FlexProps = {
+type FlexProps = ComponentProps<'div'> & {
     grow?: CSSProperties['flexGrow']
     wrap?: CSSProperties['flexWrap']
     flow?: CSSProperties['flexFlow']
@@ -33,7 +33,7 @@ export const Flex: FC<FlexProps> = ({children, ...props}) => {
     const className = useClasses(styles, 'flex', props)
     const styleMap = useStyles(props, FlexPropsAliases)
     return (
-        <div className={className} style={styleMap}>
+        <div className={className} style={styleMap} {...props}>
             {children}
         </div>
     )

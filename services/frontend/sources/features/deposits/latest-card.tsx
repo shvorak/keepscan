@@ -1,4 +1,5 @@
 import React, { FC, useMemo } from 'react'
+import styles from './latest-card.css'
 import { useSelector } from 'react-redux'
 import { getDeposits } from 'entities/Deposit/queries'
 import { Card, CardHead, CardList } from 'uikit/layout/card'
@@ -10,6 +11,8 @@ import { DateTimeDistance } from 'uikit/display/datetime'
 import { View } from 'uikit/layout/view'
 import { Display } from 'uikit/typography/display'
 import { Workflow, WorkflowStep } from 'uikit/display/workflow'
+import { Amount } from 'uikit/crypto/amount'
+import { formatStatus } from 'entities/Deposit/format'
 
 export const DepositCard = () => {
     const deposits = useSelector(getDeposits)
@@ -19,9 +22,9 @@ export const DepositCard = () => {
     }, [deposits])
 
     return (
-        <Card>
+        <Card className={styles.card}>
             <CardHead>Deposits</CardHead>
-            <CardList>{depositsList}</CardList>
+            <CardList className={styles.list}>{depositsList}</CardList>
         </Card>
     )
 }
@@ -32,30 +35,36 @@ type DepositRowProps = {
 
 const DepositRow: FC<DepositRowProps> = ({ deposit }) => {
     return (
-        <ListItem interactive>
-            <Flex justifyContent="space-between" alignItems="center">
-                <div>
-                    <Address value={deposit.id} />
-                    <View paddingTop={8}>
-                        <DateTimeDistance size={14} value={deposit.createdAt} secondary />
-                    </View>
-                </div>
-                <View>
-                    <Display size={15} secondary>Status name</Display>
-                    <Workflow state="success">
-                        <WorkflowStep completed />
-                        <WorkflowStep completed />
-                        <WorkflowStep />
-                        <WorkflowStep />
-                        <WorkflowStep />
-                    </Workflow>
+        <ListItem className={styles.row} interactive>
+            <div className={styles.cell__id}>
+                <Address value={deposit.id} />
+                <View paddingTop={8}>
+                    <DateTimeDistance size={14} value={deposit.createdAt} secondary />
                 </View>
-                <View>
-                    <Display>Sender:</Display>
-                    <Address color="brass" value={deposit.senderAddress} />
-                </View>
-                <Address color="green" value={deposit.bitcoinAddress} />
-            </Flex>
+            </div>
+            <View className={styles.cell__status}>
+                <Display size={15} secondary>
+                    {formatStatus(deposit)}
+                </Display>
+                <Workflow state="success">
+                    <WorkflowStep completed={deposit.status >= 1} />
+                    <WorkflowStep completed={deposit.status >= 2} />
+                    <WorkflowStep completed={deposit.status >= 3} />
+                    <WorkflowStep completed={deposit.status >= 4} />
+                    <WorkflowStep completed={deposit.status >= 5} />
+                </Workflow>
+            </View>
+            <View className={styles.cell__value}>
+                <Amount value={deposit.lotSize}/>
+            </View>
+            <View className={styles.cell__address}>
+                <Display>
+                    Sender #: <Address color="brass" value={deposit.senderAddress} />
+                </Display>
+                <Display>
+                    Bitcoin #: <Address color="green" value={deposit.bitcoinAddress} />
+                </Display>
+            </View>
         </ListItem>
     )
 }

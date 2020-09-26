@@ -1,22 +1,24 @@
-import React, { FC } from 'react'
+import React, { ComponentProps, FC } from 'react'
 import styles from './list.css'
 import { useClasses } from 'shared/hooks/styles'
 
+type ListProps = ComponentProps<'ul'>
 
-export const List = ({children}) => {
+export const List: FC<ListProps> = ({children, ...props}) => {
+    const className = useClasses(styles, 'list', props)
     return (
-        <ul className={styles.list}>
+        <ul className={className} {...props}>
             {children}
         </ul>
     )
 }
 
-type ListItemProps = {
+type ListItemProps = ComponentProps<'li'> & {
     interactive?: boolean
 }
 
 export const ListItem: FC<ListItemProps> = ({children, ...props}) => {
     const className = useClasses(styles, 'item', props)
 
-    return <li className={className}>{children}</li>
+    return <li className={className} {...props}>{children}</li>
 }

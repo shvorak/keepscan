@@ -16,13 +16,13 @@ export const useClasses = (classMap: Record<string, string>, basicClass: string,
                 classMap[prop]
                     ? props[prop]
                     : classMap[`${prop}__${props[prop]}`])
-
-        fixProps(props)
-
-        return classes
             .map((prop) => classMap[prop] || classMap[`${prop}__${props[prop]}`])
             .concat([classMap[basicClass], props.className].filter(Boolean))
-            .join(' ')
+        fixProps(props)
+
+        delete props.className
+
+        return classes.join(' ')
     }, [classMap, basicClass, props])
 }
 
