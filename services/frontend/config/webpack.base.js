@@ -27,6 +27,14 @@ module.exports = {
                 exclude: /node_modules/,
             },
             {
+                test: /\.(png|jpe?g|gif|svg)$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                    },
+                ],
+            },
+            {
                 test: /\.(css|less)$/,
                 use: [
                     'style-loader',
@@ -54,6 +62,7 @@ module.exports = {
             '~': paths.source,
             uikit: path.resolve(paths.source, 'uikit'),
             shared: path.resolve(paths.source, 'shared'),
+            static: path.resolve(paths.source, 'static'),
             features: path.resolve(paths.source, 'features'),
             entities: path.resolve(paths.source, 'entities'),
             components: path.resolve(paths.source, 'components'),

@@ -1,7 +1,8 @@
 import React from 'react'
 import styles from './app.css'
-import { NavLink } from 'react-router-dom'
-import { DepositCard } from 'features/deposits/latest-card'
+import { NavLink, Route, Switch } from 'react-router-dom'
+import { Home } from '~/application/routes/home'
+import { Deposits } from '~/application/routes/deposits'
 
 export const App = () => {
     return (
@@ -11,21 +12,25 @@ export const App = () => {
                     <div className={styles.headline}>
                         <Logo />
                         <Menu>
-                            <MenuItem to="/">Home</MenuItem>
+                            <MenuItem to="/" exact>Dashboard</MenuItem>
+                            <MenuItem to="/deposits">Deposits</MenuItem>
                         </Menu>
                     </div>
 
-                    <DepositCard />
+                    <Switch>
+                        <Route path="/" exact component={Home} />
+                        <Route path="/deposits" exact component={Deposits} />
+                    </Switch>
                 </Section>
             </div>
         </div>
     )
 }
 
-const Logo = () => <div className={styles.logo}>KeepScan</div>
+const Logo = () => <div className={styles.logo}>Scan</div>
 
 const Menu = ({ children }) => <div className={styles.menu}>{children}</div>
 
-const MenuItem = ({ to, children }) => <NavLink to={to}>{children}</NavLink>
+const MenuItem = ({ to, exact = false, children }) => <NavLink to={to} exact={exact}>{children}</NavLink>
 
 export const Section = ({ children }) => <div className={styles.section}>{children}</div>

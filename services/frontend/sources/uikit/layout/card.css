@@ -1,4 +1,5 @@
 .card {
+    width: 100%;
     box-sizing: border-box;
     background: #fff;
     border: 1px solid #e6eaf2;

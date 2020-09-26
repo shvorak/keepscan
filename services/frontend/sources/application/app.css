@@ -1,7 +1,7 @@
 .layout {
     width: 100%;
     height: 100%;
-    background-color: #f5f7fa;
+    background-color: #E6E6E6;
 }
 
 .header {
@@ -20,6 +20,9 @@
 .headline .logo {
     font-size: 1.6em;
     color: white;
+    background: url("../static/keep-symbol.png") no-repeat;
+    background-size: 50px;
+    padding: 10px 0 10px 55px;
 }
 
 .headline .menu {
@@ -27,6 +30,7 @@
 }
 .headline .menu a {
     color: white;
+    margin-left: 15px;
     text-decoration: none;
 }
 

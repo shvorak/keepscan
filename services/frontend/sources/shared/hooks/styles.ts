@@ -12,22 +12,24 @@ export const useClasses = (classMap: Record<string, string>, basicClass: string,
     return useMemo(() => {
         // prettier-ignore
         const classes = Object.keys(props)
-                .filter(prop =>
-                    classMap[prop]
-                        ? props[prop]
-                        : classMap[`${prop}__${props[prop]}`])
-                .map(prop => classMap[prop] || classMap[`${prop}__${props[prop]}`])
-                .concat([classMap[basicClass], props.className].filter(Boolean))
+            .filter(prop =>
+                classMap[prop]
+                    ? props[prop]
+                    : classMap[`${prop}__${props[prop]}`])
 
         fixProps(props)
 
-        return classes.join(' ')
+        return classes
+            .map((prop) => classMap[prop] || classMap[`${prop}__${props[prop]}`])
+            .concat([classMap[basicClass], props.className].filter(Boolean))
+            .join(' ')
     }, [classMap, basicClass, props])
 }
 
 export const useStyles = (props: any, aliases: any = {}) => {
     return useMemo(() => {
         return Object.entries(props).reduce((all, [name, value]) => {
+            delete props[name]
             return { ...all, [aliases[name] || name]: value }
         }, {})
     }, [props, aliases])

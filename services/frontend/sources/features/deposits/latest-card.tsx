@@ -7,6 +7,8 @@ import { Address } from 'uikit/crypto/address'
 import { ListItem } from 'uikit/data/list'
 import { Flex } from 'uikit/layout/flex'
 import { DateTime } from 'uikit/display/datetime'
+import { View } from 'uikit/layout/view'
+import { Display } from 'uikit/typography/display'
 
 export const DepositCard = () => {
     const deposits = useSelector(getDeposits)
@@ -18,6 +20,11 @@ export const DepositCard = () => {
     return (
         <Card>
             <CardHead>Deposits</CardHead>
+            {/*<Flex grow={1}>*/}
+            {/*    <View width='30%'>Tx</View>*/}
+            {/*    <View width='30%'>Sender</View>*/}
+            {/*    <View width='40%'>BTC</View>*/}
+            {/*</Flex>*/}
             <CardList>{depositsList}</CardList>
         </Card>
     )
@@ -30,12 +37,17 @@ type DepositRowProps = {
 const DepositRow: FC<DepositRowProps> = ({ deposit }) => {
     return (
         <ListItem interactive>
-            <Flex justifyContent="space-between">
+            <Flex justifyContent="space-between" alignItems="center">
                 <div>
                     <Address value={deposit.id} />
-                    <DateTime value={deposit.createdAt} secondary />
+                    <View paddingTop={10}>
+                        <DateTime value={deposit.createdAt} secondary />
+                    </View>
                 </div>
-                <Address value={deposit.senderAddress} />
+                <View>
+                    <Display>Sender:</Display>
+                    <Address value={deposit.senderAddress} />
+                </View>
                 <Address value={deposit.bitcoinAddress} />
             </Flex>
         </ListItem>

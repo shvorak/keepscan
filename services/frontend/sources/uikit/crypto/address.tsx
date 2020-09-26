@@ -13,7 +13,7 @@ export const Address: FC<AddressProps> = ({value, ...props}) => {
         return value && [
             value.toString().substr(0, 6),
             value.toString().substr(-4)
-        ].join('....')
+        ].join('...')
     }, [value])
 
     const className = useClasses(styles, 'address', props)
