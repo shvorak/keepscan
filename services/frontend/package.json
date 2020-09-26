@@ -6,7 +6,7 @@
   "scripts": {
     "gen": "plop --plopfile=./config/plop.js",
     "bundle": "webpack-cli --config config/webpack.js --mode production",
-    "develop": "webpack-dev-server --config config/webpack.js --mode development"
+    "develop": "webpack-dev-server --config config/webpack.js --mode development --progress"
   },
   "author": "Alexey Shvorak",
   "license": "ISC",

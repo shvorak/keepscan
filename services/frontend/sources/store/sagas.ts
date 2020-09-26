@@ -1,18 +1,20 @@
-import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
-import { startup } from 'features/startup/actions'
+import { call, fork, put } from 'redux-saga/effects'
 import { fetchLatestDeposits } from 'entities/Deposit/api'
 import { depositFetched } from 'entities/Deposit/actions'
-//
-// export function* rootSaga() {
-//     yield takeLatest(startup, startupSaga)
-// }
-
+import { fetchNetworks } from 'entities/Network/api'
+import { networksFetched } from 'entities/Network/actions'
 
 export default function* startupSaga() {
-    yield put(startup('123123'))
-    console.log('Startup saga handler')
+    yield fork(startupNetworks)
+    yield fork(startupDeposits)
+}
 
-    const deposits = yield call(fetchLatestDeposits)
+function* startupNetworks() {
+    const networks = yield call(fetchNetworks)
+    yield put(networksFetched(networks.data))
+}
 
-    yield put(depositFetched(deposits.data))
+function* startupDeposits() {
+    const networks = yield call(fetchLatestDeposits)
+    yield put(depositFetched(networks.data))
 }
