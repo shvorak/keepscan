@@ -1,0 +1,12 @@
+:root {
+    --signal-violet: #7850cd;
+    --rustic-brass: #ac6e16;
+    --castle-black: #0a0806;
+    --electric-green: #48dbb4;
+    --wet-stone: #e6e6e6;
+    --dry-stone: #f2f2f2;
+}
+
+body {
+    color: var(--castle-black);
+}

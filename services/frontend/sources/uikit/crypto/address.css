@@ -1,3 +1,13 @@
 .address {
     font-family: monospace;
 }
+
+.address.color__brass {
+    color: var(--rustic-brass);
+}
+.address.color__green {
+    color: var(--electric-green);
+}
+.address.color__violet {
+    color: var(--signal-violet);
+}

@@ -17,13 +17,14 @@ export const DateTime: FC<DateTimeProps> = ({ value, format = DEFAULT_FORMAT, ..
     return <Display {...props}>{formatted}</Display>
 }
 
-type DateTimeDistance = ComponentProps<typeof Display> & {
+type DateTimeDistanceProps = ComponentProps<typeof Display> & {
     value: string | Date | number
     to?: 'now' | Date | number
+    withSuffix?: boolean
     withSeconds?: boolean
 }
 
-export const DateTimeDistance = ({ value, to = 'now', withSeconds = true, withSuffix = true, ...props }) => {
+export const DateTimeDistance: FC<DateTimeDistanceProps> = ({ value, to = 'now', withSeconds = true, withSuffix = true, ...props }) => {
     const formatted = useMemo(() => {
         const date = new Date(value)
         const target = to === 'now' ? Date.now() : new Date(value)

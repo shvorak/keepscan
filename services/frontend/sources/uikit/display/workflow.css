@@ -1,0 +1,46 @@
+.workflow {
+    position: relative;
+    z-index: 0;
+}
+.workflow.state__success {
+    --state-color: var(--electric-green);
+}
+.workflow.state__warning {
+    --state-color: var(--rustic-brass);
+}
+
+
+.workflow-step {
+    --color: var(--wet-stone);
+    z-index: 1;
+
+    width: 9px;
+    height: 9px;
+    display: inline-block;
+    border-radius: 50%;
+    position: relative;
+    background-color: var(--color);
+    margin-left: 20px;
+}
+.workflow-step.completed {
+    --color: var(--state-color);
+    z-index: 2;
+}
+
+.workflow-step::before {
+    top: 3px;
+    right: 1px;
+    width: 30px;
+    height: 3px;
+    content: '';
+    position: absolute;
+    background-color: var(--color);
+}
+
+.workflow-step:first-child {
+    margin-left: 0;
+}
+
+.workflow-step:first-child:before {
+    content: none;
+}

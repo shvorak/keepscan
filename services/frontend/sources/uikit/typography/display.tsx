@@ -1,14 +1,20 @@
 import React, { createElement, FC } from 'react'
-import { useClasses } from 'shared/hooks/styles'
+import { useClasses, useStyles } from 'shared/hooks/styles'
 import styles from './display.css'
 
 type DisplayProps = {
     // TODO: Allow react component
     as?: string
+    size?: string | number
     secondary?: boolean
+}
+
+const DisplayPropsStyles = {
+    size: 'fontSize'
 }
 
 export const Display: FC<DisplayProps> = ({as = 'div', children, ...props}) => {
     const className = useClasses(styles, 'display', props)
-    return createElement(as, {className, ...props}, children)
+    const styleMap = useStyles(props, DisplayPropsStyles)
+    return createElement(as, {className, style: styleMap, ...props}, children)
 }

@@ -4,7 +4,7 @@ import { useClasses } from 'shared/hooks/styles'
 
 type AddressProps = {
     value: string
-    color?: string
+    color?: 'green' | 'brass' | 'violet'
 }
 
 
@@ -19,4 +19,8 @@ export const Address: FC<AddressProps> = ({value, ...props}) => {
     const className = useClasses(styles, 'address', props)
 
     return short && <a href="#" className={className}>{short}</a>
+}
+
+Address.defaultProps = {
+    color: 'violet'
 }

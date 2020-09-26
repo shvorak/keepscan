@@ -9,6 +9,7 @@ import { Flex } from 'uikit/layout/flex'
 import { DateTimeDistance } from 'uikit/display/datetime'
 import { View } from 'uikit/layout/view'
 import { Display } from 'uikit/typography/display'
+import { Workflow, WorkflowStep } from 'uikit/display/workflow'
 
 export const DepositCard = () => {
     const deposits = useSelector(getDeposits)
@@ -20,11 +21,6 @@ export const DepositCard = () => {
     return (
         <Card>
             <CardHead>Deposits</CardHead>
-            {/*<Flex grow={1}>*/}
-            {/*    <View width='30%'>Tx</View>*/}
-            {/*    <View width='30%'>Sender</View>*/}
-            {/*    <View width='40%'>BTC</View>*/}
-            {/*</Flex>*/}
             <CardList>{depositsList}</CardList>
         </Card>
     )
@@ -40,15 +36,25 @@ const DepositRow: FC<DepositRowProps> = ({ deposit }) => {
             <Flex justifyContent="space-between" alignItems="center">
                 <div>
                     <Address value={deposit.id} />
-                    <View paddingTop={10}>
-                        <DateTimeDistance value={deposit.createdAt} secondary />
+                    <View paddingTop={8}>
+                        <DateTimeDistance size={14} value={deposit.createdAt} secondary />
                     </View>
                 </div>
                 <View>
-                    <Display>Sender:</Display>
-                    <Address value={deposit.senderAddress} />
+                    <Display size={15} secondary>Status name</Display>
+                    <Workflow state="success">
+                        <WorkflowStep completed />
+                        <WorkflowStep completed />
+                        <WorkflowStep />
+                        <WorkflowStep />
+                        <WorkflowStep />
+                    </Workflow>
                 </View>
-                <Address value={deposit.bitcoinAddress} />
+                <View>
+                    <Display>Sender:</Display>
+                    <Address color="brass" value={deposit.senderAddress} />
+                </View>
+                <Address color="green" value={deposit.bitcoinAddress} />
             </Flex>
         </ListItem>
     )
