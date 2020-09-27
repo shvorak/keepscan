@@ -2,36 +2,16 @@ import React from 'react'
 import styles from './index.css'
 import { DepositsCard } from 'features/dashboard/cards/deposits'
 import { RedeemsCard } from 'features/dashboard/cards/redeems'
-import { Card, CardBody, CardHead } from 'uikit/layout/card'
-import { Placeholder } from 'uikit/display/placeholder'
+import { GraphCard } from 'features/dashboard/cards/graph-card'
 
 export const Dashboard = () => {
     return (
         <>
             <div className={styles.graphs_grid}>
-                <Card>
-                    <CardHead stroked={false}>tBTC Deposits</CardHead>
-                    <CardBody>
-                        <Placeholder wide>soon</Placeholder>
-                    </CardBody>                </Card>
-                <Card>
-                    <CardHead stroked={false}>tBTC Redeems</CardHead>
-                    <CardBody>
-                        <Placeholder wide>soon</Placeholder>
-                    </CardBody>
-                </Card>
-                <Card>
-                    <CardHead stroked={false}>KEEP Token</CardHead>
-                    <CardBody>
-                        <Placeholder wide>soon</Placeholder>
-                    </CardBody>
-                </Card>
-                <Card>
-                    <CardHead stroked={false}>Exchange rates</CardHead>
-                    <CardBody>
-                        <Placeholder wide>soon</Placeholder>
-                    </CardBody>
-                </Card>
+                <GraphCard title="tBTC Deposits" />
+                <GraphCard title="tBTC Redeems" />
+                <GraphCard title="KEEP Token" />
+                <GraphCard title="Exchange rates" />
             </div>
 
             <div className={styles.lists_grid}>

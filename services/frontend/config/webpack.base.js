@@ -3,16 +3,16 @@ const path = require('path')
 const paths = {
     root: path.resolve(__dirname, '../'),
     source: path.resolve(__dirname, '../sources'),
-    bundle: path.resolve(__dirname, '../bundle')
+    bundle: path.resolve(__dirname, '../bundle'),
 }
 
 const plugins = {
     Html: require('html-webpack-plugin'),
-    Define: require('webpack').DefinePlugin
+    Define: require('webpack').DefinePlugin,
 }
 
-
 module.exports = (options) => {
+    const isDevelopment = options.mode === 'development'
     return {
         entry: {
             index: './sources/index.tsx',
@@ -36,7 +36,9 @@ module.exports = (options) => {
                             loader: 'css-loader',
                             options: {
                                 modules: {
-                                    localIdentName: '[name]__[local]',
+                                    localIdentName: isDevelopment
+                                        ? '[name]__[local]_[hash:base64:5]'
+                                        : '[hash:base64:12]',
                                 },
                             },
                         },
@@ -45,7 +47,7 @@ module.exports = (options) => {
                 },
                 {
                     test: /\.(svg)/,
-                    loader: 'url-loader'
+                    loader: 'url-loader',
                 },
                 {
                     test: /\.(png|jpe?g|gif|ttf|eot|woff(2)?)(\?[a-z0-9=&.]+)?$/,
@@ -72,9 +74,8 @@ module.exports = (options) => {
                 template: path.join(paths.source, 'index.ejs'),
             }),
             new plugins.Define({
-                'process.env.NODE_ENV': JSON.stringify(options.mode)
+                'process.env.NODE_ENV': JSON.stringify(options.mode),
             }),
         ],
-
     }
 }

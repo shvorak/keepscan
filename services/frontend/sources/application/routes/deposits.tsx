@@ -1,9 +1,7 @@
 import React from 'react'
 import { Heading } from 'uikit/typography'
 
-export const Deposits = () => {
-
-
+export const DepositsPage = () => {
     return (
         <Heading>Deposits</Heading>
     )

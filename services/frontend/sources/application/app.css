@@ -29,22 +29,51 @@
     margin-left: auto;
 }
 .headline .menu a {
-    color: white;
+    color: var(--wet-stone);
     margin-left: 15px;
+    padding-bottom: 2px;
     text-decoration: none;
+    position: relative;
 }
 
 .headline .menu a:global(.active) {
-    font-weight: bold;
+    color: #fff;
+    border-bottom: 3px solid #ffffff;
+}
+.headline .menu a:global(.active):before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    transform: rotate(45deg);
+    background: #ffffff;
+    position: absolute;
+    left: 50%;
+    margin-left: -2px;
+    bottom: -2px;
 }
 
 .section {
     width: 1280px;
     margin: 0 auto;
 }
+.section.content {
+    padding: 40px 0;
+}
 
 @media screen and (max-width: 1280px) {
     .section {
         width: 980px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .section {
+        width: 600px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .section {
+        width: 360px;
     }
 }
