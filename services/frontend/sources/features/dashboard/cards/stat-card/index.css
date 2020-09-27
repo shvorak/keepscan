@@ -1,3 +1,11 @@
 .card {
     height: 80px;
 }
+
+.body {
+    text-align: center;
+}
+
+.name {
+    padding-bottom: 10px;
+}

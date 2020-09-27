@@ -1,19 +1,9 @@
-import React, { createElement, FC } from 'react'
+import React, { ComponentProps, createElement, FC } from 'react'
 
-type HeadingProps = {
+type HeadingProps = ComponentProps<'h1'> & {
     size?: 1 | 2 | 3 | 4 | 5
 }
 
-/**
- * Component for <H{SIZE}> elements
- *
- * ```js
- * <Heading size={1}>Hello world!</Heading>
- * ```
- *
- * @param children
- * @constructor
- */
-export const Heading: FC<HeadingProps> = ({size = 1, children}) => {
-    return createElement(`h${size}`, {}, children)
+export const Heading: FC<HeadingProps> = ({size = 1, children, ...props}) => {
+    return createElement(`h${size}`, props, children)
 }

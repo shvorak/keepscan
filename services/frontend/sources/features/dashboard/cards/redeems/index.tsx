@@ -6,10 +6,10 @@ import { Card, CardHead, CardList } from 'uikit/layout/card'
 export const RedeemsCard = () => {
     return (
         <Card>
-            <CardHead>Redeems</CardHead>
+            <CardHead>Last Redeems</CardHead>
             <CardList className={styles.list}>
                 <Placeholder wide>
-                    soon
+                    very very soon
                 </Placeholder>
             </CardList>
         </Card>

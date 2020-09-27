@@ -13,10 +13,9 @@ export const DepositsCard = () => {
         return deposits.map((deposit) => <DepositRow key={deposit.id} deposit={deposit} />)
     }, [deposits])
 
-
     return (
         <Card>
-            <CardHead>Deposits</CardHead>
+            <CardHead>Last Deposits</CardHead>
             <CardList className={styles.list}>
                 <Placeholder wide visible={deposits.length === 0}>
                     loading

@@ -17,9 +17,9 @@ export const Dashboard = () => {
             </div>
 
             <div className={styles.stats__grid}>
-                <StatCard />
-                <StatCard />
-                <StatCard />
+                <StatCard name="Total Supply" value="0 tBTC" />
+                <StatCard name="Total Minted" value="0 tBTC" />
+                <StatCard name="Supply Cap" value="250 tBTC" />
             </div>
 
             <div className={styles.lists_grid}>
