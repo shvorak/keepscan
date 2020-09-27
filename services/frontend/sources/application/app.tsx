@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './app.css'
-import { NavLink, Route, Switch } from 'react-router-dom'
+import { Link, NavLink, Route, Switch } from 'react-router-dom'
 import { useClasses } from 'shared/hooks/styles'
 
 import { ApiPage } from './routes/api'
@@ -34,7 +34,7 @@ export const App = () => {
     )
 }
 
-const Logo = () => <div className={styles.logo}>KeepScan</div>
+const Logo = () => <Link to="/" className={styles.logo}>KeepScan</Link>
 
 const Menu = ({ children }) => <div className={styles.menu}>{children}</div>
 

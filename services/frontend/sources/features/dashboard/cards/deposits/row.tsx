@@ -44,10 +44,10 @@ export const DepositRow: FC<DepositRowProps> = ({ deposit }) => {
             </View>
             <View className={styles.cell__address}>
                 <Display>
-                    <Address color="brass" value={deposit.senderAddress} />
+                    <Address color="green" value={deposit.senderAddress} />
                 </Display>
                 <Display>
-                    <Address color="green" value={deposit.bitcoinAddress} />
+                    <Address color="brass" value={deposit.bitcoinAddress} />
                 </Display>
             </View>
         </ListItem>

@@ -1,11 +1,17 @@
 .graphs_grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 40px;
-
     margin-bottom: 40px;
+
 }
 
+.stats__grid {
+    gap: 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 40px;
+}
 
 
 .lists_grid {
@@ -16,7 +22,7 @@
 
 @media screen and (max-width: 1280px) {
     .graphs_grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .lists_grid {

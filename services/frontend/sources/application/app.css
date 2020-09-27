@@ -22,6 +22,7 @@
     color: white;
     background: url("../static/keep-symbol.png") no-repeat;
     background-size: 50px;
+    text-decoration: none;
     padding: 10px 0 10px 55px;
 }
 
