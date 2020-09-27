@@ -1,5 +1,7 @@
 import React, { ComponentProps, FC } from 'react'
+import styles from './amount.css'
 import { Display } from 'uikit/typography/display'
+import { Symbol } from 'uikit/crypto/symbol'
 
 type AmountProps = ComponentProps<typeof Display> & {
     value: string | number
@@ -8,8 +10,9 @@ type AmountProps = ComponentProps<typeof Display> & {
 }
 
 export const Amount: FC<AmountProps> = ({value, currency, ...props}) => {
+    const number = Number(value).toFixed(2)
     return (
-        <Display {...props}>{value} {currency}</Display>
+        <Display className={styles.amount} {...props}>{number} <Symbol size={20} currency={currency} /></Display>
     )
 }
 

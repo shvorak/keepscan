@@ -11,6 +11,8 @@
 
 .head {
     padding: 15px 15px;
+}
+.head.stroked {
     border-bottom: 1px solid #e6eaf2;
 }
 

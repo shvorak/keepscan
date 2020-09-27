@@ -1,15 +1,11 @@
 import React from 'react'
-import { Flex, View } from 'uikit/layout'
-import { DepositCard } from 'features/deposits/latest-card'
-import { RedeemCard } from 'features/redeem/latest-card'
+import { Flex } from 'uikit/layout'
+import { Dashboard } from 'features/dashboard'
 
 export const Home = () => {
     return (
-        <Flex>
-            <Flex grow={1}>
-                <DepositCard />
-            </Flex>
-
+        <Flex direction="column">
+            <Dashboard />
         </Flex>
     )
 }

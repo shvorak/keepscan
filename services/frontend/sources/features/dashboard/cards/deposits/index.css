@@ -1,4 +1,5 @@
 .row.row {
+    height: 70px;
     display: flex;
     align-items: center;
 }
@@ -13,15 +14,11 @@
     width: 25%;
 }
 .cell__value {
-    width: 70px;
+    width: 130px;
     padding: 0 15px;
     text-align: right;
 }
 
-.card.card {
-    width: 50%;
-}
-
 .list {
-    height: 990px;
+    height: 700px;
 }

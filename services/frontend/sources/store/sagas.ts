@@ -1,4 +1,4 @@
-import { call, fork, put } from 'redux-saga/effects'
+import { call, fork, put, delay } from 'redux-saga/effects'
 import { fetchLatestDeposits } from 'entities/Deposit/api'
 import { depositFetched } from 'entities/Deposit/actions'
 import { fetchNetworks } from 'entities/Network/api'
@@ -16,5 +16,6 @@ function* startupNetworks() {
 
 function* startupDeposits() {
     const deposits = yield call(fetchLatestDeposits)
+    // yield delay(5000)
     yield put(depositFetched(deposits.data))
 }

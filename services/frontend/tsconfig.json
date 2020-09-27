@@ -12,6 +12,7 @@
       "components/*": ["sources/components/*"],
       "features/*": ["sources/features/*"],
       "entities/*": ["sources/entities/*"],
+      "static/*": ["sources/static/*"],
       "shared/*": ["sources/shared/*"],
       "uikit/*": ["sources/uikit/*"]
     },

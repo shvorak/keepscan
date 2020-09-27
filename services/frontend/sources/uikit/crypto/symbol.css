@@ -1,0 +1,22 @@
+.symbol {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+
+    fill: red;
+    color: red;
+}
+.symbol img {
+    fill: red;
+    color: red;
+    width: 1em;
+    height: 1em;
+    position: absolute;
+    left: 0;
+    top: -2px;
+}

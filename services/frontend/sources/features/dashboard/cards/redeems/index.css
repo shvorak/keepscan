@@ -1,0 +1,9 @@
+.row.row {
+    height: 70px;
+    display: flex;
+    align-items: center;
+}
+
+.list {
+    height: 700px;
+}

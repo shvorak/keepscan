@@ -1,0 +1,16 @@
+.placeholder {
+    color: var(--wet-stone);
+    font-size: 2.5em;
+    display: none;
+    align-items: center;
+    place-content: center;
+}
+
+.placeholder.wide {
+    width: 100%;
+    height: 100%;
+}
+
+.placeholder.visible {
+    display: flex;
+}

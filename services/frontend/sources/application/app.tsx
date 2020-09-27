@@ -27,7 +27,7 @@ export const App = () => {
     )
 }
 
-const Logo = () => <div className={styles.logo}>Scan</div>
+const Logo = () => <div className={styles.logo}>KeepScan</div>
 
 const Menu = ({ children }) => <div className={styles.menu}>{children}</div>
 

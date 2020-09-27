@@ -1,0 +1,14 @@
+.graphs_grid {
+    display: grid;
+    grid-template-rows: 150px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+
+    margin-bottom: 40px;
+}
+
+.lists_grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+}

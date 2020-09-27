@@ -1,8 +1,8 @@
-import React, { createElement, FC } from 'react'
+import React, { ComponentProps, createElement, FC } from 'react'
 import { useClasses, useStyles } from 'shared/hooks/styles'
 import styles from './display.css'
 
-type DisplayProps = {
+type DisplayProps = ComponentProps<'div'> & {
     // TODO: Allow react component
     as?: string
     size?: string | number

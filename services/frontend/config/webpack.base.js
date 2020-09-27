@@ -29,14 +29,6 @@ module.exports = (options) => {
                     exclude: /node_modules/,
                 },
                 {
-                    test: /\.(png|jpe?g|gif|svg)$/i,
-                    use: [
-                        {
-                            loader: 'file-loader',
-                        },
-                    ],
-                },
-                {
                     test: /\.(css|less)$/,
                     use: [
                         'style-loader',
@@ -52,7 +44,11 @@ module.exports = (options) => {
                     ],
                 },
                 {
-                    test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+                    test: /\.(svg)/,
+                    loader: 'url-loader'
+                },
+                {
+                    test: /\.(png|jpe?g|gif|ttf|eot|woff(2)?)(\?[a-z0-9=&.]+)?$/,
                     loader: 'file-loader',
                 },
             ],
