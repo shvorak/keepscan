@@ -16,3 +16,16 @@ export const queryList = (path: string) => (state: any) => {
     return []
 }
 
+export const queryById = (path: string, id: any) => (state: any) => {
+    let value = pathOr([], path.split('.'), state)
+
+    if (is(Object, value)) {
+        return value[id]
+    }
+
+    if (is(Array, value)) {
+        return value.find(x => x?.id === id)
+    }
+
+    return undefined
+}

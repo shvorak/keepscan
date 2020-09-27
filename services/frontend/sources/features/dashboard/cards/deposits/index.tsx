@@ -13,6 +13,7 @@ export const DepositsCard = () => {
         return deposits.map((deposit) => <DepositRow key={deposit.id} deposit={deposit} />)
     }, [deposits])
 
+
     return (
         <Card>
             <CardHead>Deposits</CardHead>

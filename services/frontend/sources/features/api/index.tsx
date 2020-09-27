@@ -8,7 +8,7 @@ export const Api = () => {
 
     return (
         <Card>
-            <CardHead>API Documentation</CardHead>
+            <CardHead size={3}>API Documentation</CardHead>
             <CardBody className={styles.body}>
                 <Placeholder wide>
                     very soon

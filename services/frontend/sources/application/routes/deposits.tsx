@@ -1,8 +1,15 @@
 import React from 'react'
-import { Heading } from 'uikit/typography'
+import { useParams } from 'react-router-dom'
+import { DepositDetails } from 'features/deposits'
 
-export const DepositsPage = () => {
+export { DepositList as DepositListPage } from 'features/deposits'
+
+
+export const DepositDetailsPage = () => {
+
+    const {id } = useParams<{id: string}>()
+
     return (
-        <Heading>Deposits</Heading>
+        <DepositDetails id={id} />
     )
 }

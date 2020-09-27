@@ -9,14 +9,18 @@ import { Display } from 'uikit/typography/display'
 import { formatStatus } from 'entities/Deposit/format'
 import { Workflow, WorkflowStep } from 'uikit/display/workflow'
 import { Amount } from 'uikit/crypto/amount'
+import { useLink } from 'shared/hooks/router'
 
 type DepositRowProps = {
     deposit: Deposit
 }
 
 export const DepositRow: FC<DepositRowProps> = ({ deposit }) => {
+
+    const onClick = useLink(`/deposits/${deposit.id}`)
+
     return (
-        <ListItem className={styles.row} interactive>
+        <ListItem className={styles.row} interactive onClick={onClick}>
             <div className={styles.cell__id}>
                 <Address value={deposit.id} />
                 <View paddingTop={8}>

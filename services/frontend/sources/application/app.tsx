@@ -4,8 +4,8 @@ import { NavLink, Route, Switch } from 'react-router-dom'
 import { useClasses } from 'shared/hooks/styles'
 
 import { ApiPage } from './routes/api'
-import { DepositsPage } from './routes/deposits'
 import { DashboardPage } from '~/application/routes/dashboard'
+import { DepositListPage, DepositDetailsPage } from './routes/deposits'
 
 export const App = () => {
     return (
@@ -25,7 +25,8 @@ export const App = () => {
                     <Switch>
                         <Route path="/" exact component={DashboardPage} />
                         <Route path="/api" exact component={ApiPage} />
-                        <Route path="/deposits" exact component={DepositsPage} />
+                        <Route path="/deposits" exact component={DepositListPage} />
+                        <Route path="/deposits/:id" exact component={DepositDetailsPage} />
                     </Switch>
                 </Section>
             </div>
