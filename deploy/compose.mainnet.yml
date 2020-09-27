@@ -11,7 +11,7 @@ services:
   api:
     image: registry.gitlab.com/emerido/keepscan/backend:latest
     ports:
-      - 50010:80
+      - 50020:80
     depends_on:
       - db
     environment:
@@ -19,7 +19,7 @@ services:
   web:
     image: registry.gitlab.com/emerido/keepscan/frontend:latest
     ports:
-      - 50012:80
+      - 50022:80
 volumes:
   bi-data:
   app-data:

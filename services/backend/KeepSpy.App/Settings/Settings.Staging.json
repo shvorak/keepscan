@@ -1,0 +1,22 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "Workers": {
+    "Bitcoin": {
+      "ApiUrl": "https://blockstream.info/testnet/api",
+      "Interval": 10,
+      "IsTestnet": true
+    },
+    "Ethereum": {
+      "ApiUrl": "https://api-ropsten.etherscan.io/api?apikey=4JQVAK5HNV1P6Z72E14ARGDPDUVDNJ5R5K",
+      "Interval": 10,
+      "IsTestnet": true
+    }
+  }
+}

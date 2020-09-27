@@ -6,13 +6,29 @@ include:
   - services/backend/.gitlab-ci.yml
   - services/frontend/.gitlab-ci.yml
 
+deploy:staging:
+  stage: deploy
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker-compose -f deploy/compose.testnet.yml pull
+    - docker-compose -f deploy/compose.testnet.yml -p keepscan-staging up --remove-orphans -d
+  only:
+    refs:
+      - master
+  environment:
+    name: production
+    url: https://testnet.keepscan.com
 
 deploy:production:
   stage: deploy
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker-compose -f deploy/compose.yml pull
-    - docker-compose -f deploy/compose.yml -p keepscan up --remove-orphans -d
+    - docker-compose -f deploy/compose.mainnet.yml pull
+    - docker-compose -f deploy/compose.mainnet.yml -p keepscan up --remove-orphans -d
   only:
     refs:
       - master
+  when: manual
+  environment:
+    name: production
+    url: https://keepscan.com
