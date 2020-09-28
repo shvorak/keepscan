@@ -15,6 +15,9 @@ type CardBodyProps = ComponentProps<'div'> & {}
 
 type CardListProps = ComponentProps<typeof List> & {}
 
+type CardMoreProps = ComponentProps<'button'> & {}
+
+
 export const Card: FC<CardProps> = ({ children, ...props }) => {
     const className = useClasses(styles, 'card', props)
     return (
@@ -49,4 +52,9 @@ export const CardBody: FC<CardBodyProps> = ({ children, ...props }) => {
 
 export const CardList: FC<CardListProps> = ({ children, ...props }) => {
     return <List {...props}>{children}</List>
+}
+
+export const CardMore: FC<CardMoreProps> = ({children, ...props}) => {
+    const className = useClasses(styles, 'more', props)
+    return <button className={className} {...props}>{children}</button>
 }
