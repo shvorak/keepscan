@@ -32,6 +32,7 @@ export const DepositRow: FC<DepositRowProps> = ({ deposit }) => {
                     {formatStatus(deposit)}
                 </Display>
                 <Workflow state="success">
+                    <WorkflowStep completed={deposit.status >= 0} />
                     <WorkflowStep completed={deposit.status >= 1} />
                     <WorkflowStep completed={deposit.status >= 2} />
                     <WorkflowStep completed={deposit.status >= 3} />
