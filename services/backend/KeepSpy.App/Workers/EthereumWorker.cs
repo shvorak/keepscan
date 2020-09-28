@@ -63,7 +63,7 @@ namespace KeepSpy.App.Workers
 
         void Run(KeepSpyContext db)
 		{
-            var network = db.Set<Network>().Single(n => n.Kind == NetworkKind.Ethereum && n.IsTestnet == _options.IsTestnet);
+            var network = db.Set<Network>().SingleOrDefault(n => n.Kind == NetworkKind.Ethereum && n.IsTestnet == _options.IsTestnet);
             if (network == null)
 			{
                 network = new Network
