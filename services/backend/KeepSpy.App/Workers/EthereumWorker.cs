@@ -130,6 +130,7 @@ namespace KeepSpy.App.Workers
                                 TokenID = transferLog.topics[3]
                             };
                             db.Add(deposit);
+                            AddTx(item, deposit);
                             _logger.LogInformation("TDT {0} created with TokenID: {1}", deposit.Id, deposit.TokenID);
                         }
                     }
@@ -213,6 +214,23 @@ namespace KeepSpy.App.Workers
                 network.LastBlockAt = DateTime.Now;
             }
             db.SaveChanges();
+
+            void AddTx(Etherscan.Tx tx, Deposit d)
+			{
+                if (db.Find<Transaction>(tx.hash) == null)
+				{
+                    db.Add(new Transaction
+                    {
+                        Id = tx.hash,
+                        Deposit = d,
+                        Block = uint.Parse(tx.blockNumber),
+                        Status = d.Status,
+                        IsError = tx.isError == "1",
+                        Error = tx.txreceipt_status,
+                        Timestamp = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(ulong.Parse(tx.timeStamp))
+                    });
+				}
+			}
         }
     }
 
