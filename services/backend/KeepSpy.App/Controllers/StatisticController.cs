@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KeepSpy.App.Models;
@@ -39,6 +41,12 @@ namespace KeepSpy.App.Controllers
                 SupplyCap = 250m
             };
         }
-        
+        [HttpGet("depositstat")]
+        public ActionResult<IEnumerable<DepositStat>> DepositStats()
+            => Enumerable.Range(-6, 7).Select(i => new DepositStat 
+            {
+                 MintedCount = _db.Set<Deposit>().Count(o => o.Contract.Active && o.LotSizeMinted.HasValue && o.CompletedAt.Value.Date == DateTime.Today.AddDays(i)),
+                 MintedAmount = _db.Set<Deposit>().Where(o => o.Contract.Active && o.LotSizeMinted.HasValue && o.CompletedAt.Value.Date == DateTime.Today.AddDays(i)).Sum(o => o.LotSize.Value)
+            }).ToList();
     }
 }
