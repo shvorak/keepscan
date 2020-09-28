@@ -25,7 +25,7 @@ namespace KeepSpy.App.Controllers
         {
             var totalMinted = await _db.Set<Deposit>()
                 // TODO: Add status redeemed
-                .Where(x => x.Status == DepositStatus.Minted && x.LotSize != null)
+                .Where(x => (x.Status == DepositStatus.Minted || x.Status == DepositStatus.Redeemed) && x.LotSize != null)
                 .Select(x => x.LotSize!.Value)
                 .SumAsync();
 

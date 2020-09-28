@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using KeepSpy.App.Abstraction;
 using KeepSpy.App.Models;
 using KeepSpy.Domain;
+using KeepSpy.Shared.Extensions;
+using KeepSpy.Shared.Models;
 using KeepSpy.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +23,8 @@ namespace KeepSpy.App.Controllers
         }
 
         [HttpGet]
-        public Task<Deposit[]> Get() => _db.Set<Deposit>().ToArrayAsync();
+        public Task<Paged<Deposit>> Get([FromQuery] PagerQuery query) 
+            => _db.Set<Deposit>().ToPagedAsync(query);
 
         [HttpGet("latest")]
         public Task<Deposit[]> Latest()
