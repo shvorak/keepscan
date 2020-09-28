@@ -50,9 +50,23 @@ namespace KeepSpy.App.Workers
 
         void Run(KeepSpyContext db)
 		{
-            var network = db.Set<Network>().Single(n => n.Kind == NetworkKind.Bitcoin && n.IsTestnet == _options.IsTestnet);
+            var network = db.Set<Network>().SingleOrDefault(n => n.Kind == NetworkKind.Bitcoin && n.IsTestnet == _options.IsTestnet);
+            if (network == null)
+            {
+                network = new Network
+                {
+                    Kind = NetworkKind.Bitcoin,
+                    IsTestnet = _options.IsTestnet,
+                    LastBlock = _apiClient.GetBlocks()[0].height,
+                    LastBlockAt = DateTime.Now,
+                    Id = Guid.NewGuid(),
+                    Name = "Bitcoin"
+                };
+                db.Add(network);
+                db.SaveChanges();
+            }
 
-            foreach(var deposit in db.Set<Deposit>().Where(o => o.Status >= DepositStatus.WaitingForBtc && o.BtcFunded == null && o.Contract.Network.IsTestnet == _options.IsTestnet))
+            foreach (var deposit in db.Set<Deposit>().Where(o => o.Status >= DepositStatus.WaitingForBtc && o.BtcFunded == null && o.Contract.Network.IsTestnet == _options.IsTestnet))
 			{
                 var utxo = _apiClient.GetUtxo(deposit.BitcoinAddress);
                 var amount = utxo.Where(o => o.status.confirmed).Sum(o => o.value) / 100000000M;

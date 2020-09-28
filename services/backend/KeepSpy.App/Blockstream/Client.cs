@@ -29,7 +29,15 @@ namespace KeepSpy.App.Blockstream
 		}
 		public Utxo[] GetUtxo(string addr)
 		{
-			return GetResult<Utxo[]>($"/address/{addr}/utxo");
+			try
+			{
+				return GetResult<Utxo[]>($"/address/{addr}/utxo");
+			}
+			catch 
+			{
+				return new Utxo[0];
+			}
+
 		}
 		public Address GetAddress(string addr)
 		{
