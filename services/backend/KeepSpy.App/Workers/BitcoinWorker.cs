@@ -52,12 +52,15 @@ namespace KeepSpy.App.Workers
 		{
             var network = db.Set<Network>().Single(n => n.Kind == NetworkKind.Bitcoin && n.IsTestnet == _options.IsTestnet);
 
-            foreach(var deposit in db.Set<Deposit>().Where(o => o.Status == DepositStatus.BtcAddressGenerated && o.Contract.Network.IsTestnet == _options.IsTestnet))
+            foreach(var deposit in db.Set<Deposit>().Where(o => o.Status >= DepositStatus.WaitingForBtc && o.BtcFunded == null && o.Contract.Network.IsTestnet == _options.IsTestnet))
 			{
                 var utxo = _apiClient.GetUtxo(deposit.BitcoinAddress);
-                if (utxo.Where(o => o.status.confirmed).Sum(o => o.value) / 100000000M >= deposit.LotSize)
+                var amount = utxo.Where(o => o.status.confirmed).Sum(o => o.value) / 100000000M;
+                if (amount >= deposit.LotSize)
 				{
-                    deposit.Status = DepositStatus.BtcReceived;
+                    deposit.BtcFunded = amount;
+                    if (deposit.Status == DepositStatus.WaitingForBtc)
+                        deposit.Status = DepositStatus.BtcReceived;
                     deposit.BitcoinFundedBlock = utxo.Where(o => o.status.confirmed).Max(o => o.status.block_height);
                     _logger.LogInformation("TDT {0} funded with {1} BTC", deposit.Id, utxo.Where(o => o.status.confirmed).Sum(o => o.value) / 100000000M);
                 }

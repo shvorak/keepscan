@@ -23,7 +23,7 @@ namespace KeepSpy.App.Etherscan
 			return JsonSerializer.Deserialize<Response<T>>(httpApiResult);
 		}
 
-		public Response<Tx> GetAccountTxList(string address, ulong fromBlock, ulong? toBlock = null, string sort = "asc", int? page = 1, int? limit = 1000)
+		public Response<Tx> GetAccountTxList(string address, ulong fromBlock, ulong? toBlock = null, string sort = "asc", int? page = 1, int? limit = 5000)
 		{
 			var parameters = new Dictionary<string, object>()
 			{
@@ -38,7 +38,7 @@ namespace KeepSpy.App.Etherscan
 			};
 			return GetResult<Tx>(parameters);
 		}
-		public Response<Log> GetLogs(string address, ulong fromBlock, ulong? toBlock = null, int? page = 1, int? limit = 1000, string topic0 = null)
+		public Response<Log> GetLogs(string address, ulong fromBlock, ulong? toBlock = null, int? page = 1, int? limit = 5000, string topic0 = null)
 		{
 			var parameters = new Dictionary<string, object>()
 			{
@@ -52,6 +52,13 @@ namespace KeepSpy.App.Etherscan
 				{"topic0", topic0 }
 			};
 			return GetResult<Log>(parameters);
+		}
+
+		public BlockNumber GetBlockNumber()
+		{
+			string requestUrl = _baseUrl + "&module=proxy&action=eth_blockNumber";
+			string httpApiResult = wc.DownloadString(requestUrl);
+			return JsonSerializer.Deserialize<BlockNumber>(httpApiResult);
 		}
 	}
 

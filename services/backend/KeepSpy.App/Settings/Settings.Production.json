@@ -6,6 +6,18 @@
       "Microsoft.Hosting.Lifetime": "Information"
     }
   },
+  "Workers": {
+    "Bitcoin": {
+      "ApiUrl": "https://blockstream.info/api",
+      "Interval": 60,
+      "IsTestnet": false
+    },
+    "Ethereum": {
+      "ApiUrl": "https://api.etherscan.io/api?apikey=4JQVAK5HNV1P6Z72E14ARGDPDUVDNJ5R5K",
+      "Interval": 10,
+      "IsTestnet": false
+    }
+  },
   "ConnectionStrings": {
     "Default": "User ID=keepscan;Host=db;Password=L9cZA9npgWEr94QpqgwyaQ73;Port=5432;Database=keepscan;Pooling=true;"
   }
