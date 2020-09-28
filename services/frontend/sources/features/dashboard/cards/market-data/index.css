@@ -1,0 +1,13 @@
+.card {
+    height: 200px;
+}
+.body {
+    display: flex;
+    place-content: center;
+    align-items: center;
+    padding-bottom: 50px;
+    padding-top: 50px;
+}
+.body h1 {
+    color: #a1a1a1;
+}

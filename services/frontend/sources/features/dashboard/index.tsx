@@ -2,10 +2,11 @@ import React from 'react'
 import styles from './index.css'
 import { DepositsCard } from 'features/dashboard/cards/deposits'
 import { RedeemsCard } from 'features/dashboard/cards/redeems'
-import { GraphCard } from 'features/dashboard/cards/graph-card'
+import { DepositGraph, GraphCard } from 'features/dashboard/cards/graph-card'
 import { StatCard } from 'features/dashboard/cards/stat-card'
 import { useSelector } from 'react-redux'
 import { getStatistic } from 'entities/Statistic/queries'
+import { MarketData } from 'features/dashboard/cards/market-data'
 
 export const Dashboard = () => {
     const stats = useSelector(getStatistic)
@@ -13,13 +14,13 @@ export const Dashboard = () => {
     return (
         <>
             <div className={styles.graphs_grid}>
-                <GraphCard title="tBTC Deposits" />
+                <DepositGraph title="tBTC Deposits" />
                 <GraphCard title="tBTC Redeems" />
-                <GraphCard title="Exchange rates">1 tBTC = 1 BTC</GraphCard>
+                <MarketData title="Market Data" />
             </div>
 
             <div className={styles.stats__grid}>
-                <StatCard name="Total Supply" value={stats.totalSupply} />
+                <StatCard name="Current Supply" value={stats.totalSupply} />
                 <StatCard name="Total Minted" value={stats.totalMinted} />
                 <StatCard name="Supply Cap" value={stats.supplyCap} />
             </div>

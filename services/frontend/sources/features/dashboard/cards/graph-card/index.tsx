@@ -4,6 +4,8 @@ import { Card, CardBody, CardHead } from 'uikit/layout/card'
 import { Placeholder } from 'uikit/display/placeholder'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import { format, subDays } from 'date-fns'
+import { Heading } from 'uikit/typography'
+import { Flex } from 'uikit/layout'
 
 const generateData = () => {
     const now = Date.now()
@@ -35,3 +37,23 @@ export const GraphCard = ({ title, children = null }) => {
         </Card>
     )
 }
+
+export const DepositGraph = ({title}) => {
+    const data = useMemo(() => generateData(), [])
+    return (
+        <Card className={styles.card}>
+            <CardHead stroked={false}>{title}</CardHead>
+            <CardBody className={styles.body}>
+                <ResponsiveContainer width="100%" height={135}>
+                    <BarChart width={200} height={200} data={data}>
+                        <Tooltip />
+                        <Bar dataKey="amount" fill="#48dbb4" />
+                        <XAxis dataKey="date" />
+                    </BarChart>
+                </ResponsiveContainer>
+            </CardBody>
+        </Card>
+    )
+}
+
+

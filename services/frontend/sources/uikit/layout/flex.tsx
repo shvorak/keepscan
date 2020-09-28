@@ -18,6 +18,10 @@ type FlexProps = ComponentProps<'div'> & {
     alignContent?: CSSProperties['alignContent']
     alignItems?: CSSProperties['alignItems']
     alignSelf?: CSSProperties['alignSelf']
+
+    placeContent?: CSSProperties['placeContent']
+    placeItems?: CSSProperties['placeItems']
+    placeSelf?: CSSProperties['placeSelf']
 }
 
 const FlexPropsAliases = {

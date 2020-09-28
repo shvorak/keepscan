@@ -43,7 +43,7 @@ namespace KeepSpy.App.Controllers
         }
         [HttpGet("depositstat")]
         public ActionResult<IEnumerable<DepositStat>> DepositStats()
-            => Enumerable.Range(-6, 7).Select(i => new DepositStat 
+            => Enumerable.Range(-9, 10).Select(i => new DepositStat 
             {
                  MintedCount = _db.Set<Deposit>().Count(o => o.Contract.Active && o.LotSizeMinted.HasValue && o.CompletedAt.Value.Date == DateTime.Today.AddDays(i)),
                  MintedAmount = _db.Set<Deposit>().Where(o => o.Contract.Active && o.LotSizeMinted.HasValue && o.CompletedAt.Value.Date == DateTime.Today.AddDays(i)).Sum(o => o.LotSize.Value)

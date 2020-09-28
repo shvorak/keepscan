@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux'
 import { useAction } from 'shared/hooks/redux'
 import { depositPageFetch } from 'entities/Deposit/actions'
 import { useMount } from 'shared/hooks/lifecycle'
+import { Display } from 'uikit/typography/display'
 
 
 export const DepositList = () => {
@@ -42,9 +43,7 @@ export const DepositDetails = ({id}) => {
         <Card>
             <CardHead size={3}>Deposit {deposit.id}</CardHead>
             <CardBody className={styles.body}>
-                <Placeholder wide>
-                    very soon
-                </Placeholder>
+                <Display>Whatever: {deposit.lotSizeFee}</Display>
             </CardBody>
         </Card>
     )

@@ -7,3 +7,6 @@ export const fetchDepositPage = (page: number) => rest.get('/deposit', {
         page
     }
 })
+
+
+export const fetchDepositById = (id: string) => rest.get(`/deposit/${id}`)

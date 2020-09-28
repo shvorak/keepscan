@@ -1,5 +1,5 @@
 import { call, fork, put, delay, takeLatest } from 'redux-saga/effects'
-import { fetchDepositPage, fetchLatestDeposits } from 'entities/Deposit/api'
+import { fetchDepositPage, fetchLatestDeposits } from 'entities/Deposit/requests'
 import { depositFetched, depositPageFetch } from 'entities/Deposit/actions'
 import { fetchNetworks } from 'entities/Network/api'
 import { networksFetched } from 'entities/Network/actions'

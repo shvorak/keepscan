@@ -26,6 +26,10 @@ namespace KeepSpy.App.Controllers
         public Task<Paged<Deposit>> Get([FromQuery] PagerQuery query) 
             => _db.Set<Deposit>().ToPagedAsync(query);
 
+        [HttpGet("{id}")]
+        public Task<Deposit> Get([FromRoute] string id) => _db.Set<Deposit>()
+            .Where(x => x.Id == id).SingleOrDefaultAsync();
+        
         [HttpGet("latest")]
         public Task<Deposit[]> Latest()
             => _db.Set<Deposit>().OrderByDescending(x => x.CreatedAt).Take(10).ToArrayAsync();

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using KeepSpy.Shared.Domain;
 
 namespace KeepSpy.Domain
@@ -27,5 +28,7 @@ namespace KeepSpy.Domain
         public uint? BitcoinFundedBlock { get; set; }
         public string? TokenID { get; set; }
         public decimal? BtcFunded { get; set; }
+
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }
