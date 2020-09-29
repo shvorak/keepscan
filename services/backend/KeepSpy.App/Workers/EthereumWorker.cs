@@ -18,8 +18,9 @@ namespace KeepSpy.App.Workers
         const string ApprovalEvent = "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925";
         const string GotRedemptionSignatureEvent = "0x7f7d7327762d01d2c4a552ea0be2bc5a76264574a80aa78083e691a840e509f2";
         const string RedeemedEvent = "0x44b7f176bcc739b54bd0800fe491cbdea19df7d4d6b19c281462e6b4fc504344";
-        const string StartedLiquidationEvent = "0x44b7f176bcc739b54bd0800fe491cbdea19df7d4d6b19c281462e6b4fc504344";
+        const string StartedLiquidationEvent = "0xbef11c059eefba82a15aea8a3a89c86fd08d7711c88fa7daea2632a55488510c";
         const string LiquidatedEvent = "0xa5ee7a2b0254fce91deed604506790ed7fa072d0b14cba4859c3bc8955b9caac";
+        const string SetupFailedEvent = "0x8fd2cfb62a35fccc1ecef829f83a6c2f840b73dad49d3eaaa402909752086d4b";
 
         private readonly EthereumWorkerOptions _options;
         private readonly IServiceScopeFactory _scopeFactory;
@@ -41,6 +42,7 @@ namespace KeepSpy.App.Workers
             tdtcontract = _options.IsTestnet ? "0x7cAad48DF199Cd661762485fc44126F4Fe8A58C9" : "0x10B66Bd1e3b5a936B7f8Dbc5976004311037Cdf0";
             vmcontract = _options.IsTestnet ? "0xC3879Fa416492EDF3a704EE8622A94e4C274c2F5" : "0x526c08E5532A9308b3fb33b7968eF78a5005d2AC";
             tbtccontract = _options.IsTestnet ? "0x7c07C42973047223F80C4A69Bb62D5195460Eb5F" : "0x8dAEBADE922dF735c38C80C7eBD708Af50815fAa";
+            tbtcsystem = _options.IsTestnet ? "0xc3f96306eDabACEa249D2D22Ec65697f38c6Da69" : "0xe20A5C79b39bC8C363f0f49ADcFa82C2a01ab64a";
             while (!stoppingToken.IsCancellationRequested)
             {
                 using (var scope = _scopeFactory.CreateScope())
@@ -65,6 +67,7 @@ namespace KeepSpy.App.Workers
         string tdtcontract;
         string vmcontract;
         string tbtccontract;
+        string tbtcsystem;
 
         void Run(KeepSpyContext db)
 		{
@@ -106,6 +109,7 @@ namespace KeepSpy.App.Workers
             var resultLogs = _apiClient.GetLogs(contract.Id, lastBlock + 1, lastBlock + delta);
             var tdtTransferLogs = _apiClient.GetLogs(tdtcontract, lastBlock, lastBlock + delta, topic0: TransferEvent);
             var regpubKeyLogs = _apiClient.GetLogs(null, lastBlock, lastBlock + delta, topic0: RegisteredPubKeyEvent);
+            var setupFailLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: SetupFailedEvent);
             var fundedLogs = _apiClient.GetLogs(null, lastBlock, lastBlock + delta, topic0: FundedEvent);
             var approvalLogs = _apiClient.GetLogs(tdtcontract, lastBlock, lastBlock + delta, topic0: ApprovalEvent);
             var tdt2btcTx = _apiClient.GetAccountTxList(vmcontract, lastBlock + 1, lastBlock + delta);
@@ -160,6 +164,18 @@ namespace KeepSpy.App.Workers
                     _logger.LogInformation("TDT {0} BTC address generated: {1}", deposit.Id, deposit.BitcoinAddress);
                 }
 			}
+            foreach (var setupFail in setupFailLogs.result)
+            {
+                string id = "0x" + setupFail.topics[1].Substring(26);
+                var deposit = db.Set<Deposit>().SingleOrDefault(o => o.Id == id);
+                if (deposit != null && deposit.Status != DepositStatus.SetupFailed)
+                {
+                    deposit.Status = DepositStatus.SetupFailed;
+                    deposit.UpdatedAt = setupFail.TimeStamp;
+                    AddLog(setupFail, deposit);
+                    _logger.LogInformation("TDT {0} setup failed", deposit.Id);
+                }
+            }
             foreach (var funded in fundedLogs.result)
             {
                 string id = "0x" + funded.topics[1].Substring(26);
@@ -241,7 +257,70 @@ namespace KeepSpy.App.Workers
                     }
                 }
             }
-            
+
+            var gotRedemtionSignatureLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: GotRedemptionSignatureEvent);
+            foreach (var gotRedemtion in gotRedemtionSignatureLogs.result)
+            {
+                if (gotRedemtion.topics.Count != 3)
+                    continue;
+                string id = "0x" + gotRedemtion.topics[1].Substring(26);
+                var redeem = db.Set<Redeem>().SingleOrDefault(o => o.Id == id);
+                if (redeem != null && redeem.Status == RedeemStatus.Requested)
+                {
+                    redeem.Status = RedeemStatus.Signed;
+                    redeem.UpdatedAt = gotRedemtion.TimeStamp;
+                    AddLog2(gotRedemtion, redeem);
+                    _logger.LogInformation("Redeem {0} signed", redeem.Id);
+                }
+            }
+            var redeemedLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: RedeemedEvent);
+            foreach (var redeemed in redeemedLogs.result)
+            {
+                if (redeemed.topics.Count != 3)
+                    continue;
+                string id = "0x" + redeemed.topics[1].Substring(26);
+                var redeem = db.Set<Redeem>().SingleOrDefault(o => o.Id == id);
+                if (redeem != null && redeem.Status == RedeemStatus.Signed)
+                {
+                    redeem.Status = RedeemStatus.Redeemed;
+                    redeem.UpdatedAt = redeemed.TimeStamp;
+                    redeem.CompletedAt = redeemed.TimeStamp;
+                    AddLog2(redeemed, redeem);
+                    _logger.LogInformation("Redeem {0} complete", redeem.Id);
+                }
+            }
+            var startedLiquidaionLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: StartedLiquidationEvent);
+            foreach (var startedLiquidaion in startedLiquidaionLogs.result)
+            {
+                if (startedLiquidaion.topics.Count != 2)
+                    continue;
+                string id = "0x" + startedLiquidaion.topics[1].Substring(26);
+                var redeem = db.Set<Redeem>().SingleOrDefault(o => o.Id == id);
+                if (redeem != null && redeem.Status == RedeemStatus.Requested)
+                {
+                    redeem.Status = RedeemStatus.Liquidation;
+                    redeem.UpdatedAt = startedLiquidaion.TimeStamp;
+                    AddLog2(startedLiquidaion, redeem);
+                    _logger.LogInformation("Redeem {0} started liquidation", redeem.Id);
+                }
+            }
+            var liquidatedLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: LiquidatedEvent);
+            foreach (var liquidated in liquidatedLogs.result)
+            {
+                if (liquidated.topics.Count != 2)
+                    continue;
+                string id = "0x" + liquidated.topics[1].Substring(26);
+                var redeem = db.Set<Redeem>().SingleOrDefault(o => o.Id == id);
+                if (redeem != null && redeem.Status == RedeemStatus.Requested)
+                {
+                    redeem.Status = RedeemStatus.Liquidated;
+                    redeem.UpdatedAt = liquidated.TimeStamp;
+                    redeem.CompletedAt = liquidated.TimeStamp;
+                    AddLog2(liquidated, redeem);
+                    _logger.LogInformation("Redeem {0} liquidated", redeem.Id);
+                }
+            }
+
             var bn = uint.MaxValue;
             if (resultTx.result.Count > 0)
                 bn = Math.Min(bn, resultTx.result.Max(o => uint.Parse(o.blockNumber)));
@@ -282,7 +361,7 @@ namespace KeepSpy.App.Workers
                         Id = tx.hash,
                         Redeem = r,
                         Block = uint.Parse(tx.blockNumber),
-                        Status = r.Deposit.Status,
+                        Status = DepositStatus.Closed,
                         RedeemStatus = r.Status,
                         IsError = tx.isError == "1",
                         Error = tx.txreceipt_status,
@@ -300,6 +379,22 @@ namespace KeepSpy.App.Workers
                         Deposit = d,
                         Block = uint.Parse(log.blockNumber.Substring(2), System.Globalization.NumberStyles.HexNumber),
                         Status = d.Status,
+                        Timestamp = log.TimeStamp,
+                        Error = ""
+                    });
+                }
+            }
+            void AddLog2(Etherscan.Log log, Redeem r)
+            {
+                if (db.Find<Transaction>(log.transactionHash) == null)
+                {
+                    db.Add(new Transaction
+                    {
+                        Id = log.transactionHash,
+                        Redeem = r,
+                        Block = uint.Parse(log.blockNumber.Substring(2), System.Globalization.NumberStyles.HexNumber),
+                        Status = DepositStatus.Closed,
+                        RedeemStatus = r.Status,
                         Timestamp = log.TimeStamp,
                         Error = ""
                     });
