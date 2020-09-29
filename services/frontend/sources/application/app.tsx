@@ -41,7 +41,7 @@ const Logo = () => {
         const config = {
             localhost: {name: 'Testnet Dev', link: 'https://keepscan.com', label: 'Click to switch into Mainnet' },
             'testnet.keepscan.com': {name: 'Testnet', link: 'https://keepscan.com', label: 'Click to switch into Mainnet' },
-            'keepscan.com': {name: 'Mainnet', link: 'https://keepscan.com', label: 'Click to switch into Testnet' },
+            'keepscan.com': {name: 'Mainnet', link: 'https://testnet.keepscan.com', label: 'Click to switch into Testnet' },
         }
 
         return config[location.hostname]
