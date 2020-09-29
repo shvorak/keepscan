@@ -12,8 +12,7 @@ namespace KeepSpy.Domain
 		SubmittingProof,
 		ApprovingSpendLimit,
 		Minted,
-		Redeemed,
-		SetupFailed,
-		Liquidated
+		Closed,
+		SetupFailed
 	}
 }
