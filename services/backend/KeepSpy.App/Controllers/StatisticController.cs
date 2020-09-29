@@ -56,7 +56,7 @@ namespace KeepSpy.App.Controllers
                 {
                     Date = date,
                     Count = query.Count(),
-                    Amount = query.Sum(o => o.LotSize.Value)
+                    Volume = query.Sum(o => o.LotSize.Value)
                 };
             }).ToList();
     }

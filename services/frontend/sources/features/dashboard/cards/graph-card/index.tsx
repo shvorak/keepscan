@@ -48,7 +48,7 @@ export const DepositGraph = ({title}) => {
                 <ResponsiveContainer width="100%" height={135}>
                     <BarChart width={200} height={200} data={data}>
                         <Tooltip content={CustomTooltip} />
-                        <Bar dataKey="amount" fill="#48dbb4" />
+                        <Bar dataKey="volume" fill="#48dbb4" />
                         <XAxis dataKey="label" />
                     </BarChart>
                 </ResponsiveContainer>
@@ -64,12 +64,13 @@ const CustomTooltip = (props) => {
     }
 
     const payload = [
-        ...props.payload,
         {
-            name: 'count',
             fill: "#48dbb4",
+            color: "#48dbb4",
             value: props.payload[0].payload.count,
+            name: 'count',
         },
+        ...props.payload,
     ]
 
     return <DefaultTooltipContent {...props} payload={payload} />
