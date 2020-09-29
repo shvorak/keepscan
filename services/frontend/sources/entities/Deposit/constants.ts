@@ -23,7 +23,7 @@ export const DepositStatus = {
 
 export const DepositStatusNames = {
     [DepositStatus.InitiatingDeposit]: 'Initiating deposit',
-    [DepositStatus.WaitingForBtc]: 'Getting BTC address',
+    [DepositStatus.WaitingForBtc]: 'Waiting for BTC',
     [DepositStatus.BtcReceived]: 'BTC received',
     [DepositStatus.SubmittingProof]: 'Submitting proof',
     [DepositStatus.ApprovingTdtSpendLimit]: 'Approving spend limit',

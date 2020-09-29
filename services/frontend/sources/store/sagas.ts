@@ -1,15 +1,19 @@
-import { call, fork, put, delay, takeLatest } from 'redux-saga/effects'
+import { call, fork, put, takeLatest } from 'redux-saga/effects'
 import { fetchDepositPage, fetchLatestDeposits } from 'entities/Deposit/requests'
 import { depositFetched, depositPageFetch } from 'entities/Deposit/actions'
 import { fetchNetworks } from 'entities/Network/api'
 import { networksFetched } from 'entities/Network/actions'
 import { fetchStatistic } from 'entities/Statistic/requests'
 import { statisticUpdated } from 'entities/Statistic/actions'
+import { dashboardSaga } from 'features/dashboard/sagas'
 
 export default function* startupSaga() {
     yield fork(startupNetworks)
     yield fork(startupDeposits)
     yield fork(startupStatistic)
+
+    yield fork(dashboardSaga)
+
     yield takeLatest(depositPageFetch, depositsPager)
 }
 

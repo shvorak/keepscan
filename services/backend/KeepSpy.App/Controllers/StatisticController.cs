@@ -25,7 +25,8 @@ namespace KeepSpy.App.Controllers
         {
             var totalMinted = await _db.Set<Deposit>()
                 // TODO: Add status redeemed
-                .Where(x => (x.Status == DepositStatus.Minted || x.Status == DepositStatus.Redeemed) && x.LotSize != null)
+                .Where(x => (x.Status == DepositStatus.Minted || x.Status == DepositStatus.Redeemed) &&
+                            x.LotSize != null)
                 .Select(x => x.LotSize!.Value)
                 .SumAsync();
 
@@ -33,7 +34,7 @@ namespace KeepSpy.App.Controllers
                 .Where(x => x.Status == DepositStatus.Minted && x.LotSize != null)
                 .Select(x => x.LotSize!.Value)
                 .SumAsync();
-            
+
             return new StatisticsDto
             {
                 TotalMinted = totalMinted,
@@ -41,12 +42,22 @@ namespace KeepSpy.App.Controllers
                 SupplyCap = 250m
             };
         }
-        [HttpGet("depositstat")]
+
+        [HttpGet("deposits")]
         public ActionResult<IEnumerable<DepositStat>> DepositStats()
-            => Enumerable.Range(-9, 10).Select(i => new DepositStat 
+            => Enumerable.Range(-9, 10).Select(i =>
             {
-                 MintedCount = _db.Set<Deposit>().Count(o => o.Contract.Active && o.LotSizeMinted.HasValue && o.CompletedAt.Value.Date == DateTime.Today.AddDays(i)),
-                 MintedAmount = _db.Set<Deposit>().Where(o => o.Contract.Active && o.LotSizeMinted.HasValue && o.CompletedAt.Value.Date == DateTime.Today.AddDays(i)).Sum(o => o.LotSize.Value)
+                var date = DateTime.Today.AddDays(i);
+                var query = _db.Set<Deposit>()
+                    .Where(o => o.Contract.Active && o.LotSizeMinted.HasValue &&
+                                o.CompletedAt.Value.Date == date);
+                
+                return new DepositStat
+                {
+                    Date = date,
+                    Count = query.Count(),
+                    Amount = query.Sum(o => o.LotSize.Value)
+                };
             }).ToList();
     }
 }

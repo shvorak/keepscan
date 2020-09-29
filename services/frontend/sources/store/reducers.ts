@@ -6,5 +6,8 @@ export default combineReducers({
         deposit: require('entities/Deposit/reducer').default,
         network: require('entities/Network/reducer').default,
         statistic: require('entities/Statistic/reducer').default,
+    }),
+    features: combineReducers({
+        dashboard: require('features/dashboard/reducer.ts').default
     })
 })
