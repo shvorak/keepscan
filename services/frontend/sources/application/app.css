@@ -24,6 +24,9 @@
     text-decoration: none;
     padding: 10px 0 10px 55px;
 }
+.headline .net {
+    padding-left: 10px;
+}
 
 .headline .menu {
     margin-left: auto;

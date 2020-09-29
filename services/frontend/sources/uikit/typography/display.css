@@ -5,3 +5,16 @@
 .display.secondary {
     color: #ababab;
 }
+
+.display-link {
+    color: var(--castle-black);
+    text-decoration: none;
+    transition: color .2s;
+}
+
+.display-link.secondary {
+    color: #ababab;
+}
+.display-link.secondary:hover {
+    color: var(--wet-stone);
+}

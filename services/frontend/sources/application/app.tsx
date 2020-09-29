@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styles from './app.css'
-import { Link, NavLink, Route, Switch } from 'react-router-dom'
+import { Link, NavLink, Route, Switch, useLocation } from 'react-router-dom'
 import { useClasses } from 'shared/hooks/styles'
 
 import { ApiPage } from './routes/api'
 import { DashboardPage } from '~/application/routes/dashboard'
 import { DepositListPage, DepositDetailsPage } from './routes/deposits'
+import { Display, DisplayLink } from 'uikit/typography/display'
+import { useMount } from 'shared/hooks/lifecycle'
 
 export const App = () => {
     return (
@@ -34,7 +36,28 @@ export const App = () => {
     )
 }
 
-const Logo = () => <Link to="/" className={styles.logo}>KeepScan</Link>
+const Logo = () => {
+    const net = useMemo(() => {
+        const config = {
+            localhost: {name: 'Testnet Dev', link: 'https://keepscan.com', label: 'Click to switch into Mainnet' },
+            'testnet.keepscan.com': {name: 'Testnet', link: 'https://keepscan.com', label: 'Click to switch into Mainnet' },
+            'keepscan.com': {name: 'Mainnet', link: 'https://keepscan.com', label: 'Click to switch into Testnet' },
+        }
+
+        return config[location.hostname]
+    }, [])
+
+    return (
+        <div>
+            <Link to="/" className={styles.logo}>
+                KeepScan
+            </Link>
+            <DisplayLink to={net.link} title={net.label} className={styles.net} secondary>
+                {net.name}
+            </DisplayLink>
+        </div>
+    )
+}
 
 const Menu = ({ children }) => <div className={styles.menu}>{children}</div>
 

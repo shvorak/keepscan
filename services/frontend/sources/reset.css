@@ -22,5 +22,6 @@ h6 {
 }
 
 * {
+    line-height: normal;
     box-sizing: border-box;
 }
