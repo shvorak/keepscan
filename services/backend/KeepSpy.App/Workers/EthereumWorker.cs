@@ -16,6 +16,11 @@ namespace KeepSpy.App.Workers
         const string FundedEvent = "0xe34c70bd3e03956978a5c76d2ea5f3a60819171afea6dee4fc12b2e45f72d43d";
         const string TransferEvent = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
         const string ApprovalEvent = "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925";
+        const string GotRedemptionSignatureEvent = "0x7f7d7327762d01d2c4a552ea0be2bc5a76264574a80aa78083e691a840e509f2";
+        const string RedeemedEvent = "0x44b7f176bcc739b54bd0800fe491cbdea19df7d4d6b19c281462e6b4fc504344";
+        const string StartedLiquidationEvent = "0x44b7f176bcc739b54bd0800fe491cbdea19df7d4d6b19c281462e6b4fc504344";
+        const string LiquidatedEvent = "0xa5ee7a2b0254fce91deed604506790ed7fa072d0b14cba4859c3bc8955b9caac";
+
         private readonly EthereumWorkerOptions _options;
         private readonly IServiceScopeFactory _scopeFactory;
 		private readonly ILogger<EthereumWorker> _logger;
@@ -121,7 +126,8 @@ namespace KeepSpy.App.Workers
 						{
                             deposit = new Deposit
                             {
-                                CreatedAt = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(ulong.Parse(item.timeStamp)),
+                                CreatedAt = item.TimeStamp,
+                                UpdatedAt = item.TimeStamp,
                                 Id = tdt_id,
                                 LotSize = lotSize,
                                 SenderAddress = item.from,
@@ -149,6 +155,8 @@ namespace KeepSpy.App.Workers
                     var address = new NBitcoin.PubKey(key).GetAddress(NBitcoin.ScriptPubKeyType.Segwit, network.IsTestnet ? NBitcoin.Network.TestNet : NBitcoin.Network.Main).ToString();
                     deposit.BitcoinAddress = address;
                     deposit.Status = DepositStatus.WaitingForBtc;
+                    deposit.UpdatedAt = pubKey.TimeStamp;
+                    AddLog(pubKey, deposit);
                     _logger.LogInformation("TDT {0} BTC address generated: {1}", deposit.Id, deposit.BitcoinAddress);
                 }
 			}
@@ -159,6 +167,8 @@ namespace KeepSpy.App.Workers
                 if (deposit != null && deposit.Status <= DepositStatus.BtcReceived)
                 {
                     deposit.Status = DepositStatus.SubmittingProof;
+                    deposit.UpdatedAt = funded.TimeStamp;
+                    AddLog(funded, deposit);
                     _logger.LogInformation("TDT {0} submitted proof", deposit.Id);
                 }
             }
@@ -171,35 +181,67 @@ namespace KeepSpy.App.Workers
                 if (deposit != null && deposit.Status == DepositStatus.SubmittingProof)
 				{
                     deposit.Status = DepositStatus.ApprovingSpendLimit;
+                    deposit.UpdatedAt = approval.TimeStamp;
+                    AddLog(approval, deposit);
                     _logger.LogInformation("TDT {0} tdt spend approved", deposit.Id);
                 }
             }
-            foreach (var mint in tdt2btcTx.result)
+            foreach (var vmTx in tdt2btcTx.result)
             {
-                if (mint.input.StartsWith("0xba2238d0") && mint.isError == "0")
+                if (vmTx.input.StartsWith("0xba2238d0"))
                 {
-                    var tdt_id = "0x" + mint.input.Substring(34);
+                    var tdt_id = "0x" + vmTx.input.Substring(34);
                     var deposit = db.Find<Deposit>(tdt_id);
-                    if (deposit != null)
+                    if (deposit != null && deposit.Status < DepositStatus.Minted)
 					{
-                        var tbtcTransferLogs = _apiClient.GetLogs(tbtccontract, ulong.Parse(mint.blockNumber), ulong.Parse(mint.blockNumber), topic0: TransferEvent);
-                        if (tbtcTransferLogs.status == "1")
+                        if (vmTx.isError == "0")
                         {
-                            var res = tbtcTransferLogs.result.Where(o => o.transactionHash == mint.hash).ToList();
-                            if (res.Count != 2)
-							{
-                                _logger.LogWarning("Tx: {0}", mint.hash);
-                                continue;
-							}
-                            deposit.LotSizeMinted = (decimal)(ulong.Parse(res[0].data.Substring(46), System.Globalization.NumberStyles.HexNumber) / 1E18);
-                            deposit.LotSizeFee = (decimal)(ulong.Parse(res[1].data.Substring(46), System.Globalization.NumberStyles.HexNumber) / 1E18);
-                            deposit.CompletedAt = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(ulong.Parse(mint.timeStamp));
-                            deposit.Status = DepositStatus.Minted;
-                            _logger.LogInformation("Minted {0} for {1}, fee {2}, TDT ID {3}", deposit.LotSizeMinted, deposit.SenderAddress, deposit.LotSizeFee, deposit.Id);
+                            var tbtcTransferLogs = _apiClient.GetLogs(tbtccontract, ulong.Parse(vmTx.blockNumber), ulong.Parse(vmTx.blockNumber), topic0: TransferEvent);
+                            if (tbtcTransferLogs.status == "1")
+                            {
+                                var res = tbtcTransferLogs.result.Where(o => o.transactionHash == vmTx.hash).ToList();
+                                if (res.Count != 2)
+                                {
+                                    _logger.LogWarning("Tx: {0}", vmTx.hash);
+                                    continue;
+                                }
+                                deposit.LotSizeMinted = (decimal)(ulong.Parse(res[0].data.Substring(46), System.Globalization.NumberStyles.HexNumber) / 1E18);
+                                deposit.LotSizeFee = (decimal)(ulong.Parse(res[1].data.Substring(46), System.Globalization.NumberStyles.HexNumber) / 1E18);
+                                deposit.CompletedAt = vmTx.TimeStamp;
+                                deposit.UpdatedAt = vmTx.TimeStamp;
+                                deposit.Status = DepositStatus.Minted;
+                                _logger.LogInformation("Minted {0} for {1}, fee {2}, TDT ID {3}", deposit.LotSizeMinted, deposit.SenderAddress, deposit.LotSizeFee, deposit.Id);
+                            }
                         }
+                        
+                        AddTx(vmTx, deposit);
+                    }
+                }
+                if (vmTx.input.StartsWith("0xbe138da7")) //tbtcToBtc
+                {
+                    var tdt_id = "0x" + vmTx.input.Substring(34, 40);
+                    var deposit = db.Find<Deposit>(tdt_id);
+                    var redeem = db.Find<Redeem>(tdt_id);
+                    if (redeem == null && deposit != null)
+                    {
+                        redeem = new Redeem
+                        {
+                            CreatedAt = vmTx.TimeStamp,
+                            Id = tdt_id,
+                            SenderAddress = vmTx.from,
+                            Deposit = deposit,
+                            Status = RedeemStatus.Requested,
+                            UpdatedAt = vmTx.TimeStamp
+                        };
+                        db.Add(redeem);
+                        deposit.Status = DepositStatus.Closed;
+                        deposit.UpdatedAt = vmTx.TimeStamp;
+                        AddTx2(vmTx, redeem);
+                        _logger.LogInformation("Redeem requested TDT ID {0}", deposit.Id);
                     }
                 }
             }
+            
             var bn = uint.MaxValue;
             if (resultTx.result.Count > 0)
                 bn = Math.Min(bn, resultTx.result.Max(o => uint.Parse(o.blockNumber)));
@@ -227,10 +269,42 @@ namespace KeepSpy.App.Workers
                         Status = d.Status,
                         IsError = tx.isError == "1",
                         Error = tx.txreceipt_status,
-                        Timestamp = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(ulong.Parse(tx.timeStamp))
+                        Timestamp = tx.TimeStamp
                     });
 				}
-			}
+            }
+            void AddTx2(Etherscan.Tx tx, Redeem r)
+            {
+                if (db.Find<Transaction>(tx.hash) == null)
+                {
+                    db.Add(new Transaction
+                    {
+                        Id = tx.hash,
+                        Redeem = r,
+                        Block = uint.Parse(tx.blockNumber),
+                        Status = r.Deposit.Status,
+                        RedeemStatus = r.Status,
+                        IsError = tx.isError == "1",
+                        Error = tx.txreceipt_status,
+                        Timestamp = tx.TimeStamp
+                    });
+                }
+            }
+            void AddLog(Etherscan.Log log, Deposit d)
+            {
+                if (db.Find<Transaction>(log.transactionHash) == null)
+                {
+                    db.Add(new Transaction
+                    {
+                        Id = log.transactionHash,
+                        Deposit = d,
+                        Block = uint.Parse(log.blockNumber.Substring(2), System.Globalization.NumberStyles.HexNumber),
+                        Status = d.Status,
+                        Timestamp = log.TimeStamp,
+                        Error = ""
+                    });
+                }
+            }
         }
     }
 

@@ -9,6 +9,7 @@ namespace KeepSpy.App.Etherscan
     {
         public string blockNumber { get; set; }
         public string timeStamp { get; set; }
+        public DateTime TimeStamp => new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(ulong.Parse(timeStamp));
         public string hash { get; set; }
         public string nonce { get; set; }
         public string blockHash { get; set; }
