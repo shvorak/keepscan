@@ -3,12 +3,13 @@ import styles from './app.css'
 import { Link, NavLink, Route, Switch } from 'react-router-dom'
 import { DisplayLink } from 'uikit/typography/display'
 import { useClasses } from 'shared/hooks/styles'
+import { ENV_CONFIG } from '~/application/env'
 
 import { ApiPage } from './routes/api'
 import { TdtPage } from './routes/tdt'
 import { DashboardPage } from './routes/dashboard'
-import { DepositDetailsPage, DepositListPage } from './routes/deposits'
-import { ENV_CONFIG } from '~/application/env'
+import { RedeemListPage } from './routes/redeems'
+import { DepositListPage, DepositDetailsPage } from './routes/deposits'
 
 export const App = () => {
     return (
@@ -22,6 +23,7 @@ export const App = () => {
                                 Dashboard
                             </MenuItem>
                             <MenuItem to="/deposits">Deposits</MenuItem>
+                            <MenuItem to="/redeems">Redeems</MenuItem>
                             <MenuItem to="/tdt">Get TDT</MenuItem>
                             <MenuItem to="/api">API</MenuItem>
                         </Menu>
@@ -32,6 +34,7 @@ export const App = () => {
                         <Route path="/" exact component={DashboardPage} />
                         <Route path="/api" exact component={ApiPage} />
                         <Route path="/tdt" exact component={TdtPage} />
+                        <Route path="/redeems" exact component={RedeemListPage} />
                         <Route path="/deposits" exact component={DepositListPage} />
                         <Route path="/deposits/:id" exact component={DepositDetailsPage} />
                     </Switch>
@@ -58,7 +61,11 @@ const Logo = () => {
 
 const Menu = ({ children }) => <div className={styles.menu}>{children}</div>
 
-const MenuItem = ({ to, exact = false, children }) => <NavLink to={to} exact={exact}>{children}</NavLink>
+const MenuItem = ({ to, exact = false, children }) => (
+    <NavLink to={to} exact={exact}>
+        {children}
+    </NavLink>
+)
 
 export const Section = ({ children, ...props }) => {
     const className = useClasses(styles, 'section', props)
