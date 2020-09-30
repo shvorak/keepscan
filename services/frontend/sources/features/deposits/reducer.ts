@@ -3,7 +3,7 @@ import { fetchTdt, fetchTdtFailure, fetchTdtSuccess } from 'features/deposits/ac
 
 const initialState = {
     tdt: null,
-    tdt_error: true,
+    tdt_error: false,
     tdt_loading: false,
 }
 

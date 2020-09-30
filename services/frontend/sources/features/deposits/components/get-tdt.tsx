@@ -32,12 +32,12 @@ export const GetTdt = () => {
         <Loading />
     ) : failure ? (
         <Failure selected={selected} />
-    ) : (
+    ) : address ? (
         <>
             <Heading className={styles.heading}>Your random TDT ID for {selected} lot size</Heading>
             <TdtAddress address={address} />
         </>
-    )
+    ) : null
 
     return (
         <>
