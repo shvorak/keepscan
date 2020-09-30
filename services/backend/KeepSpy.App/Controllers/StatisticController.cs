@@ -1,9 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using KeepSpy.App.Models;
+using AutoMapper;
+using KeepSpy.App.Abstraction;
 using KeepSpy.Domain;
+using KeepSpy.Models;
 using KeepSpy.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,26 +12,23 @@ using Microsoft.EntityFrameworkCore;
 namespace KeepSpy.App.Controllers
 {
     [Route("api/[controller]")]
-    public class StatisticController
+    public class StatisticController: BaseController
     {
-        private readonly KeepSpyContext _db;
-
-        public StatisticController(KeepSpyContext db)
+        public StatisticController(KeepSpyContext db, IMapper mapper) : base(db, mapper)
         {
-            _db = db;
         }
 
         [HttpGet]
         public async Task<StatisticsDto> Get()
         {
-            var totalMinted = await _db.Set<Deposit>()
+            var totalMinted = await Db.Set<Deposit>()
                 // TODO: Add status redeemed
                 .Where(x => (x.Status == DepositStatus.Minted || x.Status == DepositStatus.Closed) &&
                             x.LotSize != null)
                 .Select(x => x.LotSize!.Value)
                 .SumAsync();
 
-            var totalSupply = await _db.Set<Deposit>()
+            var totalSupply = await Db.Set<Deposit>()
                 .Where(x => x.Status == DepositStatus.Minted && x.LotSize != null)
                 .Select(x => x.LotSize!.Value)
                 .SumAsync();
@@ -48,7 +46,7 @@ namespace KeepSpy.App.Controllers
             => Enumerable.Range(-9, 10).Select(i =>
             {
                 var date = DateTime.Today.AddDays(i);
-                var query = _db.Set<Redeem>()
+                var query = Db.Set<Redeem>()
                     .Where(o => o.CompletedAt.HasValue && o.CompletedAt.Value.Date == date && o.Deposit.LotSize.HasValue);
 
                 return new DepositStat
@@ -64,7 +62,7 @@ namespace KeepSpy.App.Controllers
             => Enumerable.Range(-9, 10).Select(i =>
             {
                 var date = DateTime.Today.AddDays(i);
-                var query = _db.Set<Deposit>()
+                var query = Db.Set<Deposit>()
                     .Where(o => o.Contract.Active && o.LotSizeMinted.HasValue &&
                                 o.CompletedAt.Value.Date == date);
 

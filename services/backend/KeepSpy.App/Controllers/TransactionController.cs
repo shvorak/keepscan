@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using KeepSpy.App.Abstraction;
-using KeepSpy.App.Models;
 using KeepSpy.Domain;
 using KeepSpy.Storage;
 using Microsoft.AspNetCore.Mvc;
@@ -13,15 +13,15 @@ namespace KeepSpy.App.Controllers
     [Route("api/[controller]")]
     public class TransactionController : BaseController
     {
-        private readonly KeepSpyContext _db;
-
-        public TransactionController(KeepSpyContext db)
+        public TransactionController(KeepSpyContext db, IMapper mapper) : base(db, mapper)
         {
-            _db = db;
         }
 
         [HttpGet]
-        public Task<Transaction[]> Get(string id) => _db.Set<Transaction>().Where(t => t.DepositId == id).OrderByDescending(t => t.Timestamp).ToArrayAsync();
+        public Task<Transaction[]> Get(string id) => Db.Set<Transaction>()
+            .Where(t => t.DepositId == id)
+            .OrderByDescending(t => t.Timestamp)
+            .ToArrayAsync();
         
     }
 }

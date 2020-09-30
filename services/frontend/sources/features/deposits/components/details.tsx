@@ -69,28 +69,31 @@ const Loading = () => (
 
 const Content = ({ deposit }) => (
     <>
-        <div className={styles.cards}>
-            <Card className={styles.volume}>
+        <div className={styles.stat}>
+            <Card className={styles.stat_card}>
                 <CardHead stroked={false}>Lot size</CardHead>
-                <CardBody className={styles.volume__body}>
-                    <Amount className={styles.lot_size} value={deposit.lotSize} />
-                    <Display>
-                        Fee: <Amount className={styles.lot_size_fee} value={deposit.lotSizeFee} />
-                    </Display>
-                    <Display>
-                        Minted: <Amount className={styles.lot_size_fee} value={deposit.lotSizeMinted} />
-                    </Display>
+                <CardBody className={styles.stat_body}>
+                    <div className={styles.stat_volume}>
+                        <Amount className={styles.stat_volume_head} value={deposit.lotSize} />
+                        <Display>
+                            Minted: <Amount className={styles.stat_volume_sub} value={deposit.lotSizeMinted} />
+                        </Display>
+                        <Display>
+                            Fee: <Amount className={styles.stat_volume_sub} value={deposit.lotSizeFee} />
+                        </Display>
+                    </div>
                 </CardBody>
             </Card>
 
-            <Card className={styles.created}>
+            <Card className={styles.stat_card}>
                 <CardHead stroked={false}>Created</CardHead>
-                <CardBody>
-                    <DateTimeDistance value={deposit.createdAt} />
+                <CardBody className={styles.stat_body}>
+                    <DateTimeDistance className={styles.created_at} value={deposit.createdAt} />
                 </CardBody>
             </Card>
-            <Card className={styles.volume}>
-                <CardBody>
+            <Card className={styles.stat_card}>
+                <CardHead stroked={false}>Status</CardHead>
+                <CardBody className={styles.stat_body}>
                     <Heading>{formatStatus(deposit.status)}</Heading>
                 </CardBody>
             </Card>

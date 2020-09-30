@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace KeepSpy.App.Models
+namespace KeepSpy.Models
 {
 	public class DepositStat
 	{

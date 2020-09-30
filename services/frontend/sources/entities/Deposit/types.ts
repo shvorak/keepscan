@@ -13,4 +13,13 @@ export interface Deposit
     createdAt: string
     updatedAt?: string
     completedAt?: string
+
+    transactions: DepositTx[]
+}
+
+export interface DepositTx
+{
+    id: string
+    status: number
+    timestamp: number
 }

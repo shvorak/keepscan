@@ -12,31 +12,37 @@
     margin-left: auto;
 }
 
-.cards {
+.stat {
     display: grid;
     gap: 20px;
     margin-bottom: 20px;
-    grid-template-columns: 230px 400px 1fr;
+    grid-template-columns: 230px 300px 1fr;
 }
 
-.cards .volume {
+.stat_card {
     height: 120px;
 }
-.cards .volume__body {
-    padding: 0 15px 15px;
+.stat_body {
+    padding-top: 0;
+}
+
+.stat_volume {
     text-align: right;
 }
 
-.cards .volume__body .lot_size {
+.stat_volume_head {
     font-size: 1.4em;
 }
 
-.cards .volume__body .lot_size_fee {
+.stat_volume_sub {
     font-size: 1em;
     display: inline-block;
     color: #a1a1a1;
 }
 
+.created_at {
+    font-size: 1.4em;
+}
 
 .details {
     margin-bottom: 20px;

@@ -1,6 +1,9 @@
 using System;
+using AutoMapper;
 using KeepSpy.App.Converters.Json;
 using KeepSpy.App.Workers;
+using KeepSpy.Models;
+using KeepSpy.Models.Mapping;
 using KeepSpy.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +38,11 @@ namespace KeepSpy.App
                     options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
                 });
 
+            services.AddAutoMapper(config =>
+            {
+                config.AddProfile<MappingProfile>();
+            });
+            
             services.AddSingleton(Configuration.GetSection("Workers:Bitcoin").Get<BitcoinWorkerOptions>());
             services.AddSingleton(Configuration.GetSection("Workers:Ethereum").Get<EthereumWorkerOptions>());
 
