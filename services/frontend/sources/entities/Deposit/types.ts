@@ -20,6 +20,7 @@ export interface Deposit
 export interface DepositTx
 {
     id: string
+    block: number
     status: number
     timestamp: number
 }

@@ -1,6 +1,6 @@
 import { is, pathOr } from 'ramda'
 
-export const queryList = (path: string) => (state: any) => {
+export const queryList = <T>(path: string) => (state: any): T[] => {
     let value = pathOr([], path.split('.'), state)
 
     if (is(Object, value)) {

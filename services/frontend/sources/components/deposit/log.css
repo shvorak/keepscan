@@ -62,6 +62,10 @@
     color: var(--wet-stone);
 }
 
+.inline {
+    white-space: nowrap;
+}
+
 .status {
     display: inline-block;
     padding-right: 10px;
@@ -70,4 +74,11 @@
     display: inline-block;
     font-size: .9em;
     color: #a1a1a1;
+}
+.transaction {
+    display: inline-block;
+}
+.confirmations {
+    color: #a1a1a1;
+    font-size: .9em;
 }
