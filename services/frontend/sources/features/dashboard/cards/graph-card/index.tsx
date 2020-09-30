@@ -48,7 +48,7 @@ const CustomTooltip = (props) => {
         return null
     }
 
-    const color = props.payload.find(x => x.color).color
+    const color = props.payload && props.payload.find(x => x.color).color
 
     const payload = [
         {

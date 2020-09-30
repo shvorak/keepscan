@@ -10,6 +10,7 @@ export type Redeem = {
     bitcoinAddress?: string
     bitcoinRedeemedBlock?: number
 
+    lotSize: number
     btcFee?: number
     btcRedeemed?: number
 

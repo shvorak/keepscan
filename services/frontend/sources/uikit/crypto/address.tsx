@@ -10,16 +10,16 @@ type AddressProps = {
 }
 
 export const Address: FC<AddressProps> = ({ value, full, ...props }) => {
-    const short = useMemo(() => {
+    const address = useMemo(() => {
         return value && (full ? value : ellipsis(6, 4, value))
     }, [value])
 
     const className = useClasses(styles, 'address', props)
 
     return (
-        short && (
+        address && (
             <a href="#" className={className}>
-                {short}
+                {address}
             </a>
         )
     )
