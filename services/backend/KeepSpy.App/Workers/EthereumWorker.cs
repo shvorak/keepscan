@@ -348,7 +348,9 @@ namespace KeepSpy.App.Workers
                         Status = d.Status,
                         IsError = tx.isError == "1",
                         Error = tx.txreceipt_status,
-                        Timestamp = tx.TimeStamp
+                        Timestamp = tx.TimeStamp,
+                        Amount = decimal.Parse(tx.value) / 1000000000000000000,
+                        Fee = decimal.Parse(tx.gasPrice) / 1000000000000000000 * decimal.Parse(tx.gasUsed)
                     });
 				}
             }
@@ -365,7 +367,9 @@ namespace KeepSpy.App.Workers
                         RedeemStatus = r.Status,
                         IsError = tx.isError == "1",
                         Error = tx.txreceipt_status,
-                        Timestamp = tx.TimeStamp
+                        Timestamp = tx.TimeStamp,
+                        Amount = decimal.Parse(tx.value) / 1000000000000000000,
+                        Fee = decimal.Parse(tx.gasPrice) / 1000000000000000000 * decimal.Parse(tx.gasUsed)
                     });
                 }
             }
@@ -380,7 +384,8 @@ namespace KeepSpy.App.Workers
                         Block = uint.Parse(log.blockNumber.Substring(2), System.Globalization.NumberStyles.HexNumber),
                         Status = d.Status,
                         Timestamp = log.TimeStamp,
-                        Error = ""
+                        Error = "",
+                        Fee = (decimal)ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2), System.Globalization.NumberStyles.HexNumber)
                     });
                 }
             }
@@ -396,7 +401,8 @@ namespace KeepSpy.App.Workers
                         Status = DepositStatus.Closed,
                         RedeemStatus = r.Status,
                         Timestamp = log.TimeStamp,
-                        Error = ""
+                        Error = "",
+                        Fee = (decimal)ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2), System.Globalization.NumberStyles.HexNumber)
                     });
                 }
             }
