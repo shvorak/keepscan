@@ -58,6 +58,6 @@ const Loading = () => (
 const Failure = ({selected}) => (
     <Placeholder>
         <Heading size={3}>Ooooops :(</Heading>
-        <Display>Looks like what no TDT for {selected} lot size</Display>
+        <Display>Looks like there no TDT for {selected} lot size</Display>
     </Placeholder>
 )

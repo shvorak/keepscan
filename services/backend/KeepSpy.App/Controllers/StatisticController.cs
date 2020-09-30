@@ -49,13 +49,13 @@ namespace KeepSpy.App.Controllers
             {
                 var date = DateTime.Today.AddDays(i);
                 var query = _db.Set<Redeem>()
-                    .Where(o => o.CompletedAt.HasValue && o.CompletedAt.Value.Date == date && o.BtcRedeemed.HasValue);
+                    .Where(o => o.CompletedAt.HasValue && o.CompletedAt.Value.Date == date && o.Deposit.LotSize.HasValue);
 
                 return new DepositStat
                 {
                     Date = date,
                     Count = query.Count(),
-                    Volume = query.Sum(o => o.BtcRedeemed!.Value)
+                    Volume = query.Sum(o => o.Deposit.LotSize!.Value)
                 };
             }).ToArray();
 

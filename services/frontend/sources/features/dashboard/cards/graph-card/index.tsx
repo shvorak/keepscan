@@ -15,7 +15,7 @@ export const GraphCard = ({ title, children = null }) => {
                 <ResponsiveContainer width="100%" height={135}>
                     <BarChart width={200} height={200} data={data}>
                         <Tooltip />
-                        <Bar dataKey="amount" fill="#7850cd" />
+                        <Bar dataKey="volume" fill="#7850cd" />
                         <XAxis dataKey="label" />
                     </BarChart>
                 </ResponsiveContainer>
