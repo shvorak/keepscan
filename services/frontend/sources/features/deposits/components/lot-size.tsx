@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import styles from './lot-size.css'
 import { useClasses } from 'shared/hooks/styles'
+import { Amount } from 'uikit/crypto/amount'
 
 export const LotSizeList = ({ variants, selected, onSelect }) => {
     const lots = useMemo(() => {
@@ -18,7 +19,7 @@ export const LotSize = ({ size, selected, onSelect }) => {
 
     return (
         <div className={className} onClick={onClick}>
-            <div className={styles.size}>{size} ฿</div>
+            <Amount className={styles.size} value={size} precision={3} />
         </div>
     )
 }

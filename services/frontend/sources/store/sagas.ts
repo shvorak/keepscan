@@ -6,6 +6,7 @@ import { networksFetched } from 'entities/Network/actions'
 import { fetchStatistic } from 'entities/Statistic/requests'
 import { statisticUpdated } from 'entities/Statistic/actions'
 import { dashboardSaga } from 'features/dashboard/sagas'
+import { startupDepositSaga } from 'features/deposits/sagas'
 
 export default function* startupSaga() {
     yield fork(startupNetworks)
@@ -13,6 +14,7 @@ export default function* startupSaga() {
     yield fork(startupStatistic)
 
     yield fork(dashboardSaga)
+    yield fork(startupDepositSaga)
 
     yield takeLatest(depositPageFetch, depositsPager)
 }
@@ -22,6 +24,7 @@ function* startupNetworks() {
     yield put(networksFetched(networks.data))
 }
 
+// TODO: Move this into dashboard saga
 function* startupDeposits() {
     const deposits = yield call(fetchLatestDeposits)
     // yield delay(5000)

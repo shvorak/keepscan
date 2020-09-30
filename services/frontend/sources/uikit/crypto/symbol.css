@@ -1,22 +1,16 @@
 .symbol {
     width: 1em;
     height: 1em;
-    display: inline-block;
     position: relative;
+    display: inline-block;
     vertical-align: middle;
-    background-size: 100% 100%;
+    line-height: normal;
     background-repeat: no-repeat;
     background-position: 50% 50%;
-
-    fill: red;
-    color: red;
 }
-.symbol img {
-    fill: red;
-    color: red;
-    width: 1em;
-    height: 1em;
-    position: absolute;
-    left: 0;
+
+.symbol svg {
     top: -2px;
+    left: 0;
+    position: absolute;
 }
