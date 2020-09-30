@@ -1,4 +1,7 @@
 .body {
-    height: 800px;
-    padding-bottom: 50px;
+    min-height: 800px;
+}
+
+.loader {
+    padding: 30px;
 }

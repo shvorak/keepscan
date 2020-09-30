@@ -1,22 +1,21 @@
 import { createReducer, withProducer } from 'shared/reducers'
-import { fetchTdt, fetchTdtFailure, fetchTdtSuccess } from 'features/deposits/actions'
+import { depositPageLoaded } from 'features/deposits/actions'
+import { uniqBy } from 'ramda'
 
 const initialState = {
-    tdt: null,
-    tdt_error: false,
-    tdt_loading: false,
+    items: [],
+    pager: {
+        take: 10,
+        total: 0,
+        pages: 0,
+        current: 1,
+    }
 }
 
-export default createReducer<typeof initialState>(initialState, withProducer)
-    .on(fetchTdt, (state) => {
-        state.tdt_error = null
-        state.tdt_loading = true
-    })
-    .on(fetchTdtSuccess, (state, { payload }) => {
-        state.tdt = payload
-        state.tdt_loading = false
-    })
-    .on(fetchTdtFailure, (state) => {
-        state.tdt_error = true
-        state.tdt_loading = false
+const getId = record => record.id
+
+export default createReducer(initialState, withProducer)
+    .on(depositPageLoaded, (state, { payload }) => {
+        state.pager = payload.pager
+        state.items = uniqBy(getId, state.items.concat(payload.items))
     })

@@ -1,8 +1,6 @@
 import rest from 'shared/rest'
 
-// TODO: Rename rest action
-export const fetchTdtId = (lotSize: number) => rest.get('/deposit/random', {
-    params: {
-        lotSize
-    }
-})
+export const loadDepositsPage = (page: number, take: number = 10) =>
+    rest.get('/deposit', {
+        params: { page, take },
+    })

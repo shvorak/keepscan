@@ -23,5 +23,5 @@ export const Amount: FC<AmountProps> = ({value, currency, precision, ...props}) 
 
 Amount.defaultProps = {
     currency: 'btc',
-    precision: 2
+    precision: 10
 }

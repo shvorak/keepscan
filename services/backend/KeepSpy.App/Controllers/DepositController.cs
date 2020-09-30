@@ -24,7 +24,7 @@ namespace KeepSpy.App.Controllers
 
         [HttpGet]
         public Task<Paged<Deposit>> Get([FromQuery] PagerQuery query) 
-            => _db.Set<Deposit>().ToPagedAsync(query);
+            => _db.Set<Deposit>().OrderByDescending(x => x.CreatedAt).ToPagedAsync(query);
 
         [HttpGet("{id}")]
         public Task<Deposit> Get([FromRoute] string id) => _db.Set<Deposit>()

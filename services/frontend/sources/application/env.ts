@@ -15,3 +15,12 @@ export const ENV_CONFIG = {
         label: 'Click to switch into Mainnet',
     },
 }
+
+export const DAPP_CONFIG = {
+    'keepscan.com': {
+        host: 'https://dapp.tbtc.network'
+    },
+    'testnet.keepscan.com': {
+        host: 'https://dapp.test.tbtc.network'
+    },
+}

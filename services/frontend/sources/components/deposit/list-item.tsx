@@ -1,21 +1,21 @@
 import React, { FC } from 'react'
-import styles from './index.css'
+import styles from './list-item.css'
+import { View } from 'uikit/layout'
 import { Deposit } from 'entities/Deposit/types'
+import { useLink } from 'shared/hooks/router'
 import { ListItem } from 'uikit/data/list'
 import { Address } from 'uikit/crypto/address'
-import { View } from 'uikit/layout'
 import { DateTimeDistance } from 'uikit/display/datetime'
 import { Display } from 'uikit/typography/display'
 import { formatStatus } from 'entities/Deposit/format'
 import { Workflow, WorkflowStep } from 'uikit/display/workflow'
 import { Amount } from 'uikit/crypto/amount'
-import { useLink } from 'shared/hooks/router'
 
 type DepositRowProps = {
     deposit: Deposit
 }
 
-export const DepositRow: FC<DepositRowProps> = ({ deposit }) => {
+export const DepositItem: FC<DepositRowProps> = ({ deposit }) => {
 
     const onClick = useLink(`/deposits/${deposit.id}`)
 
@@ -29,7 +29,7 @@ export const DepositRow: FC<DepositRowProps> = ({ deposit }) => {
             </div>
             <View className={styles.cell__status}>
                 <Display size={15} secondary>
-                    {formatStatus(deposit)}
+                    {formatStatus(deposit.status)}
                 </Display>
                 <Workflow state="success">
                     <WorkflowStep completed={deposit.status >= 0} />

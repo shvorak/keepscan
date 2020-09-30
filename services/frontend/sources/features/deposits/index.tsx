@@ -1,50 +1,47 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import styles from './index.css'
-import { Card, CardBody, CardHead } from 'uikit/layout/card'
+import { Card, CardHead, CardList } from 'uikit/layout/card'
 import { Placeholder } from '~/uikit/display/placeholder'
-import { Redirect, useParams } from 'react-router-dom'
-import { getDepositById } from 'entities/Deposit/queries'
-import { Deposit } from 'entities/Deposit/types'
 import { useSelector } from 'react-redux'
 import { useAction } from 'shared/hooks/redux'
-import { depositPageFetch } from 'entities/Deposit/actions'
 import { useMount } from 'shared/hooks/lifecycle'
-import { Display } from 'uikit/typography/display'
-
+import { depositPageLoad } from 'features/deposits/actions'
+import { getDepositsList } from 'features/deposits/queries'
+import { DepositItem } from 'components/deposit/list-item'
+import { Scroller } from 'components/scroller'
 
 export const DepositList = () => {
-    const fetchPage = useAction(depositPageFetch)
+    const fetchPage = useAction(depositPageLoad)
+
+    const items = useSelector(getDepositsList)
 
     useMount(() => {
-        fetchPage({page: 23})
+        fetchPage({ page: 1, take: 20 })
     })
+
+    const nextPage = useCallback(() => {
+        console.log('Next page')
+    }, [])
+
+    const list = items.map((deposit) => {
+        return <DepositItem key={deposit.id} deposit={deposit} />
+    })
+
+    const loading = (
+        <Placeholder wide className={styles.loader}>
+            loading
+        </Placeholder>
+    )
 
     return (
         <Card>
             <CardHead size={3}>Deposits</CardHead>
-            <CardBody className={styles.body}>
-                <Placeholder wide>
-                    very soon
-                </Placeholder>
-            </CardBody>
+            <CardList className={styles.body}>
+                <Scroller visible loader={loading} onLoading={nextPage}>
+                    {list}
+                </Scroller>
+            </CardList>
         </Card>
     )
 }
 
-
-export const DepositDetails = ({id}) => {
-    const deposit: Deposit = useSelector(getDepositById(id))
-
-    if (null == deposit) {
-        return <Redirect to="/404" />
-    }
-
-    return (
-        <Card>
-            <CardHead size={3}>Deposit {deposit.id}</CardHead>
-            <CardBody className={styles.body}>
-                <Display>Whatever: {deposit.lotSizeFee}</Display>
-            </CardBody>
-        </Card>
-    )
-}

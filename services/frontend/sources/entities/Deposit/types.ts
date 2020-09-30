@@ -8,6 +8,7 @@ export interface Deposit
     lotSize: number
     lotSizeFee: number
     lotSizeMinted: number
+    bitcoinFundedBlock?: number
 
     createdAt: string
     updatedAt?: string

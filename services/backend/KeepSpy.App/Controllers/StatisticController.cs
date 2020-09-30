@@ -39,7 +39,7 @@ namespace KeepSpy.App.Controllers
             {
                 TotalMinted = totalMinted,
                 TotalSupply = totalSupply,
-                SupplyCap = 250m
+                SupplyCap = 500m
             };
         }
 

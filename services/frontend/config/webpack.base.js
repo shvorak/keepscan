@@ -19,6 +19,7 @@ module.exports = (options) => {
         },
         output: {
             path: paths.bundle,
+            publicPath: '/',
             filename: '[name]-[hash].js',
         },
         module: {
