@@ -1,28 +1,13 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import styles from './index.css'
-import { Card, CardBody, CardHead } from 'uikit/layout/card'
-import { Placeholder } from 'uikit/display/placeholder'
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import { format, subDays } from 'date-fns'
 import { useSelector } from 'react-redux'
-import { getDepositsStat } from 'features/dashboard/queries'
+import { Card, CardBody, CardHead } from 'uikit/layout/card'
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { getDepositsStat, getRedeemsStat } from 'features/dashboard/queries'
 import DefaultTooltipContent from 'recharts/lib/component/DefaultTooltipContent'
 
-const generateData = () => {
-    const now = Date.now()
-
-    return new Array(10).fill(null).map((_, i) => {
-        return {
-            date: format(subDays(now, 10 - i), 'dd MMM'),
-            amount: Math.floor(Math.random() * 600) + 200,
-        }
-    })
-}
-
-
 export const GraphCard = ({ title, children = null }) => {
-    const content = children ? children : <Placeholder wide>soon</Placeholder>
-    const data = useMemo(() => generateData(), [])
+    const data = useSelector(getRedeemsStat)
     return (
         <Card className={styles.card}>
             <CardHead stroked={false}>{title}</CardHead>
@@ -31,7 +16,7 @@ export const GraphCard = ({ title, children = null }) => {
                     <BarChart width={200} height={200} data={data}>
                         <Tooltip />
                         <Bar dataKey="amount" fill="#7850cd" />
-                        <XAxis dataKey="date" />
+                        <XAxis dataKey="label" />
                     </BarChart>
                 </ResponsiveContainer>
             </CardBody>

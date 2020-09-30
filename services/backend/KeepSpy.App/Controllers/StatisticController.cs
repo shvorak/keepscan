@@ -43,21 +43,37 @@ namespace KeepSpy.App.Controllers
             };
         }
 
+        [HttpGet("redeems")]
+        public ActionResult<DepositStat[]> RedeemStats()
+            => Enumerable.Range(-9, 10).Select(i =>
+            {
+                var date = DateTime.Today.AddDays(i);
+                var query = _db.Set<Redeem>()
+                    .Where(o => o.CompletedAt.HasValue && o.CompletedAt.Value.Date == date && o.BtcRedeemed.HasValue);
+
+                return new DepositStat
+                {
+                    Date = date,
+                    Count = query.Count(),
+                    Volume = query.Sum(o => o.BtcRedeemed!.Value)
+                };
+            }).ToArray();
+
         [HttpGet("deposits")]
-        public ActionResult<IEnumerable<DepositStat>> DepositStats()
+        public ActionResult<DepositStat[]> DepositStats()
             => Enumerable.Range(-9, 10).Select(i =>
             {
                 var date = DateTime.Today.AddDays(i);
                 var query = _db.Set<Deposit>()
                     .Where(o => o.Contract.Active && o.LotSizeMinted.HasValue &&
                                 o.CompletedAt.Value.Date == date);
-                
+
                 return new DepositStat
                 {
                     Date = date,
                     Count = query.Count(),
                     Volume = query.Sum(o => o.LotSize.Value)
                 };
-            }).ToList();
+            }).ToArray();
     }
 }

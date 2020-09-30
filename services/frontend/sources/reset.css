@@ -25,3 +25,8 @@ h6 {
     line-height: normal;
     box-sizing: border-box;
 }
+
+
+button {
+    font-family: 'Work Sans', sans-serif;
+}

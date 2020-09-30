@@ -9,6 +9,10 @@
     --state-color: var(--rustic-brass);
 }
 
+.workflow.variant__redeem.state__success {
+    --state-color: var(--signal-violet);
+}
+
 
 .workflow-step {
     --color: var(--wet-stone);

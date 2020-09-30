@@ -4,7 +4,8 @@ import { useClasses } from 'shared/hooks/styles'
 
 
 type WorkflowProps = {
-    state: 'success' | 'warning'
+    state: 'success' | 'warning',
+    variant?: 'redeem'
 }
 
 type WorkflowStepProps = {

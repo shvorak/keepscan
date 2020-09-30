@@ -1,13 +1,14 @@
 import React, { useMemo } from 'react'
 import styles from './app.css'
-import { Link, NavLink, Route, Switch, useLocation } from 'react-router-dom'
+import { Link, NavLink, Route, Switch } from 'react-router-dom'
+import { DisplayLink } from 'uikit/typography/display'
 import { useClasses } from 'shared/hooks/styles'
 
 import { ApiPage } from './routes/api'
-import { DashboardPage } from '~/application/routes/dashboard'
-import { DepositListPage, DepositDetailsPage } from './routes/deposits'
-import { Display, DisplayLink } from 'uikit/typography/display'
-import { useMount } from 'shared/hooks/lifecycle'
+import { TdtPage } from './routes/tdt'
+import { DashboardPage } from './routes/dashboard'
+import { DepositDetailsPage, DepositListPage } from './routes/deposits'
+import { ENV_CONFIG } from '~/application/env'
 
 export const App = () => {
     return (
@@ -17,8 +18,11 @@ export const App = () => {
                     <div className={styles.headline}>
                         <Logo />
                         <Menu>
-                            <MenuItem to="/" exact>Dashboard</MenuItem>
+                            <MenuItem to="/" exact>
+                                Dashboard
+                            </MenuItem>
                             <MenuItem to="/deposits">Deposits</MenuItem>
+                            <MenuItem to="/tdt">Get TDT</MenuItem>
                             <MenuItem to="/api">API</MenuItem>
                         </Menu>
                     </div>
@@ -27,6 +31,7 @@ export const App = () => {
                     <Switch>
                         <Route path="/" exact component={DashboardPage} />
                         <Route path="/api" exact component={ApiPage} />
+                        <Route path="/tdt" exact component={TdtPage} />
                         <Route path="/deposits" exact component={DepositListPage} />
                         <Route path="/deposits/:id" exact component={DepositDetailsPage} />
                     </Switch>
@@ -37,15 +42,7 @@ export const App = () => {
 }
 
 const Logo = () => {
-    const net = useMemo(() => {
-        const config = {
-            localhost: {name: 'Testnet Dev', link: 'https://keepscan.com', label: 'Click to switch into Mainnet' },
-            'testnet.keepscan.com': {name: 'Testnet', link: 'https://keepscan.com', label: 'Click to switch into Mainnet' },
-            'keepscan.com': {name: 'Mainnet', link: 'https://testnet.keepscan.com', label: 'Click to switch into Testnet' },
-        }
-
-        return config[location.hostname]
-    }, [])
+    const net = useMemo(() => ENV_CONFIG[location.hostname], [])
 
     return (
         <div>

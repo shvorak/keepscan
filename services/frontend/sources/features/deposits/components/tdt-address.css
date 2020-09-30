@@ -1,0 +1,18 @@
+.area {
+    display: flex;
+    border-radius: 4px;
+    border: 2px dashed var(--castle-black);
+}
+
+.body {
+    font-size: 1.2em;
+    flex-grow: 1;
+    padding: 8px 10px;
+    text-align: center;
+}
+
+.copy {
+    flex-shrink: 0;
+    width: 40px;
+    background: var(--wet-stone);
+}

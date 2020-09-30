@@ -1,7 +1,7 @@
 import { call, fork, put, takeLatest } from 'redux-saga/effects'
 import { fetchDepositPage, fetchLatestDeposits } from 'entities/Deposit/requests'
 import { depositFetched, depositPageFetch } from 'entities/Deposit/actions'
-import { fetchNetworks } from 'entities/Network/api'
+import { fetchNetworks } from 'entities/Network/requests'
 import { networksFetched } from 'entities/Network/actions'
 import { fetchStatistic } from 'entities/Statistic/requests'
 import { statisticUpdated } from 'entities/Statistic/actions'
