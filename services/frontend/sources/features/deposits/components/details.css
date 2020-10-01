@@ -12,6 +12,25 @@
     margin-left: auto;
 }
 
+.redeem {
+    border: 3px solid var(--castle-black);
+    background-color: transparent;
+    color: var(--castle-black);
+    transition: all .25s;
+    padding: 8px 12px;
+    font-size: 1.2em;
+    cursor: pointer;
+    font-weight: 500;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+.redeem:hover {
+    color: white;
+    background-color: var(--castle-black);
+}
+
+
 .stat {
     display: grid;
     gap: 20px;
@@ -45,6 +64,7 @@
 
 .details {
     margin-bottom: 20px;
+    position: relative;
 }
 
 .status {

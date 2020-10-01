@@ -23,4 +23,8 @@ export const DAPP_CONFIG = {
     'testnet.keepscan.com': {
         host: 'https://dapp.test.tbtc.network'
     },
+
+    ByHost(hostname: string) {
+        return DAPP_CONFIG[hostname] || DAPP_CONFIG['testnet.keepscan.com']
+    }
 }
