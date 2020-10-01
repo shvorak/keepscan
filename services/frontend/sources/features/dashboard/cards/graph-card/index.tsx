@@ -57,7 +57,7 @@ const CustomTooltip = (props) => {
             value: props.payload && props.payload[0].payload.count,
             name: 'count',
         },
-        ...props.payload,
+        ...props.payload || [],
     ]
 
     return <DefaultTooltipContent {...props} payload={payload} />
