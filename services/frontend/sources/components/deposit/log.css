@@ -46,6 +46,7 @@
     background: var(--simply-red);
     border-color: var(--simply-red);
 }
+
 .item.state__failure:after {
     content: "";
     background-image: url("static/icons/block.svg");

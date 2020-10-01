@@ -25,6 +25,7 @@ namespace KeepSpy.App.Controllers
         public Task<Paged<DepositDto>> Get([FromQuery] PagerQuery query) 
             => Db.Set<Deposit>()
                 .OrderByDescending(x => x.CreatedAt)
+                .Where(x => x.Status == DepositStatus.SetupFailed)
                 .ProjectTo<DepositDto>(Mapper.ConfigurationProvider)
                 .ToPagedAsync(query);
 
@@ -38,6 +39,7 @@ namespace KeepSpy.App.Controllers
         public Task<DepositDto[]> Latest()
             => Db.Set<Deposit>()
                 .OrderByDescending(x => x.CreatedAt)
+                .Where(x => x.Status == DepositStatus.SetupFailed)
                 .ProjectTo<DepositDto>(Mapper.ConfigurationProvider)
                 .Take(10)
                 .ToArrayAsync();

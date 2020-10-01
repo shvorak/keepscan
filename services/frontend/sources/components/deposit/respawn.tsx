@@ -25,5 +25,5 @@ export const Respawn = ({ deposit }) => {
         return null
     }
 
-    return <div onClick={open} className={styles.link} />
+    return <div onClick={open} title="Open in tBTC DApp" className={styles.link} />
 }

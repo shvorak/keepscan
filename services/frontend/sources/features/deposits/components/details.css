@@ -38,6 +38,7 @@
     grid-template-columns: 230px 300px 1fr;
 }
 
+
 .stat_card {
 }
 .stat_body {
@@ -69,4 +70,10 @@
 
 .status {
     font-size: 1.4em;
+}
+
+@media screen and (max-width: 600px) {
+    .stat {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
 }
