@@ -75,12 +75,6 @@ const Content = ({ deposit }) => (
                 <CardBody className={styles.stat_body}>
                     <div className={styles.stat_volume}>
                         <Amount className={styles.stat_volume_head} value={deposit.lotSize} />
-                        <Display>
-                            Minted: <Amount className={styles.stat_volume_sub} value={deposit.lotSizeMinted} />
-                        </Display>
-                        <Display>
-                            Fee: <Amount className={styles.stat_volume_sub} value={deposit.lotSizeFee} />
-                        </Display>
                     </div>
                 </CardBody>
             </Card>
@@ -94,7 +88,7 @@ const Content = ({ deposit }) => (
             <Card className={styles.stat_card}>
                 <CardHead stroked={false}>Status</CardHead>
                 <CardBody className={styles.stat_body}>
-                    <Heading>{formatStatus(deposit.status)}</Heading>
+                    <Display className={styles.status}>{formatStatus(deposit.status)}</Display>
                 </CardBody>
             </Card>
         </div>

@@ -15,9 +15,19 @@ type DepositLogProps = {
     deposit: Deposit
 }
 
+const DepositStatusOrder = [
+    DepositStatus.InitiatingDeposit,
+    DepositStatus.WaitingForBtc,
+    DepositStatus.BtcReceived,
+    DepositStatus.SubmittingProof,
+    DepositStatus.ApprovingTdtSpendLimit,
+    DepositStatus.Minted,
+    DepositStatus.Redeemed,
+]
+
 export const DepositLog: FC<DepositLogProps> = ({ deposit }) => {
     const statuses = useMemo(() => {
-        return Object.values(DepositStatus).map((status) => {
+        return DepositStatusOrder.map((status) => {
             const tx = find(x => x.status === status, deposit.transactions || [])
             return <DepositLogRecord key={status} status={status} deposit={deposit} tx={tx} />
         })
@@ -33,7 +43,7 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
     const transaction = tx && <Transaction tx={tx} lastBlock={lastBlock} />
     const props = useMemo(() => {
         return {
-            state: status <= deposit.status ? 'complete' : 'feature'
+            state: status <= deposit.status ? 'failure' : 'feature'
         }
     }, [status, deposit, tx])
 

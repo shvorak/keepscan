@@ -20,7 +20,6 @@
 }
 
 .stat_card {
-    height: 120px;
 }
 .stat_body {
     padding-top: 0;
@@ -46,4 +45,8 @@
 
 .details {
     margin-bottom: 20px;
+}
+
+.status {
+    font-size: 1.4em;
 }
