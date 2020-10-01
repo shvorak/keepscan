@@ -1,6 +1,6 @@
 import React from 'react'
-import { address, amount, datetime } from 'components/deposit/info.fields'
 import { field } from 'shared/schema'
+import { address, amount, datetime } from 'components/deposit/info.fields'
 import { Info } from 'uikit/display/info'
 
 const Schema = [
@@ -48,4 +48,5 @@ const Schema = [
     }),
 ]
 
-export const DepositInfo = ({ deposit }) => <Info object={deposit} schema={Schema} />
+
+export const RedeemInfo = ({ redeem }) => <Info object={redeem} schema={Schema} />

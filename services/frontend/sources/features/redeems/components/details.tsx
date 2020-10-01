@@ -5,12 +5,14 @@ import { useAction } from 'shared/hooks/redux'
 import { useMount } from 'shared/hooks/lifecycle'
 import { useTimeout } from 'shared/hooks/timers'
 import { getRedeemById } from 'entities/Redeem/queries'
-import { Card } from 'uikit/layout/card'
+import { Card, CardBody, CardHead } from 'uikit/layout/card'
 import { Placeholder } from 'uikit/display/placeholder'
 import { Heading } from 'uikit/typography'
 import { Display } from 'uikit/typography/display'
 import { Redeem } from 'entities/Redeem/types'
 import { fetchRedeem } from 'entities/Redeem/actions'
+import { RedeemInfo } from 'components/redeem/info'
+import { RedeemLog } from 'components/redeem/log'
 
 export const RedeemDetails = ({ id }) => {
     const [failed, setFailed] = useState(false)
@@ -63,7 +65,19 @@ const Content = ({redeem}) => {
 
     return (
         <>
+            <Card className={styles.panel}>
+                <CardHead>Operation details</CardHead>
+                <CardBody>
+                    <RedeemInfo redeem={redeem}  />
+                </CardBody>
+            </Card>
 
+            <Card className={styles.panel}>
+                <CardHead>Operation Log</CardHead>
+                <CardBody>
+                    <RedeemLog redeem={redeem} />
+                </CardBody>
+            </Card>
         </>
     )
 }

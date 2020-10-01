@@ -13,7 +13,7 @@ import { getEthereumLastBlock } from 'entities/Network/queries'
 import { isErrorStatus } from 'entities/Deposit/specs'
 import { buildStatuses, byStatus } from 'entities/Deposit/helpers'
 import { Respawn } from 'components/deposit/respawn'
-import { openEtherscan } from 'shared/links'
+import { TimelineEvent } from 'uikit/display/timeline'
 
 type DepositLogProps = {
     deposit: Deposit
@@ -48,27 +48,19 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
     const transaction = tx && <Transaction tx={tx} lastBlock={lastBlock} />
     const respawn = status === deposit.status && <Respawn deposit={deposit} />
 
-    const props = useMemo(() => {
-        return {
-            state: status <= deposit.status ? isErrorStatus(status) ? 'failure' : 'complete' : 'feature',
-        }
-    }, [status, deposit, tx])
-
-    const className = useClasses(styles, 'item', props)
+    const state = status <= deposit.status ? (isErrorStatus(status) ? 'failure' : 'complete') : 'feature'
 
     return (
-        <div className={className}>
-            <div className={styles.legend}>
-                <div className={styles.inline}>
-                    <Heading size={4} className={styles.status}>
-                        {formatStatus(status)}
-                    </Heading>
-                    {timestamp}
-                    {respawn}
-                </div>
-                <div className={styles.inline}>{transaction}</div>
+        <TimelineEvent state={state}>
+            <div className={styles.inline}>
+                <Heading size={4} className={styles.status}>
+                    {formatStatus(status)}
+                </Heading>
+                {timestamp}
+                {respawn}
             </div>
-        </div>
+            <div className={styles.inline}>{transaction}</div>
+        </TimelineEvent>
     )
 }
 
