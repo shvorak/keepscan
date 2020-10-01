@@ -30,7 +30,7 @@ export const PagerStateDefault: PagerState = {
 }
 
 export const pagerReducer = createReducer<PagerState>(PagerStateDefault, withProducer)
-    .on(pagerActions.pager.next, (state, {payload}) => {
+    .on(pagerActions.pager.next, (state) => {
         state.pager.page = clamp(1, state.pager.pages, state.pager.page + 1)
     })
     .on(pagerActions.query.changed, (state, {payload}) => {

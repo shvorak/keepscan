@@ -16,10 +16,11 @@ export type PagedQuery<T> = {
 
 export type Paged<T> = {
     items: T[],
-    pager: {
-        take: number
-        total: number
-        pages: number
-        current: number
-    }
+    pager: Pager
+}
+export type Pager = {
+    take: number
+    total: number
+    pages: number
+    current: number
 }

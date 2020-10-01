@@ -4,23 +4,19 @@ import { Card, CardHead, CardList } from 'uikit/layout/card'
 import { Placeholder } from '~/uikit/display/placeholder'
 import { useSelector } from 'react-redux'
 import { useAction } from 'shared/hooks/redux'
-import { useMount } from 'shared/hooks/lifecycle'
-import { depositPageLoad } from 'features/deposits/actions'
-import { getDepositsList } from 'features/deposits/queries'
+import { depositNextPage, depositPageLoad } from 'features/deposits/actions'
+import { getDepositsList, getDepositsPager } from 'features/deposits/queries'
 import { DepositItem } from 'components/deposit/list-item'
 import { Scroller } from 'components/scroller'
 
 export const DepositList = () => {
-    const fetchPage = useAction(depositPageLoad)
+    const nextPage = useAction(depositNextPage)
 
     const items = useSelector(getDepositsList)
+    const pager = useSelector(getDepositsPager)
 
-    useMount(() => {
-        fetchPage({ page: 1, take: 20 })
-    })
-
-    const nextPage = useCallback(() => {
-        console.log('Next page')
+    const onNextPage = useCallback(() => {
+        nextPage()
     }, [])
 
     const list = items.map((deposit) => {
@@ -33,11 +29,13 @@ export const DepositList = () => {
         </Placeholder>
     )
 
+    const loadable = items.length > 0 && pager && pager.pages > pager.current
+
     return (
         <Card>
             <CardHead size={3}>Deposits</CardHead>
             <CardList className={styles.body}>
-                <Scroller visible loader={loading} onLoading={nextPage}>
+                <Scroller visible={loadable} loader={loading} onLoading={onNextPage}>
                     {list}
                 </Scroller>
             </CardList>
