@@ -58,8 +58,6 @@ namespace KeepSpy.App.Workers
                         _logger.LogError(e, "EthereumWorker failure");
 					}
                 }
-
-                await Task.Delay(_options.Interval * 1000, stoppingToken);
             }
         }
 
@@ -104,7 +102,7 @@ namespace KeepSpy.App.Workers
                 _logger.LogCritical("No active contract at network {0}", network.Name);
                 return;
             }
-            uint delta = 3 * 24 * 60 * 4;
+            uint delta = 24 * 60 * 4;
             var resultTx = _apiClient.GetAccountTxList(contract.Id, lastBlock + 1, lastBlock + delta);
             var resultLogs = _apiClient.GetLogs(contract.Id, lastBlock + 1, lastBlock + delta);
             var tdtTransferLogs = _apiClient.GetLogs(tdtcontract, lastBlock, lastBlock + delta, topic0: TransferEvent);
@@ -160,9 +158,10 @@ namespace KeepSpy.App.Workers
                     deposit.BitcoinAddress = address;
                     deposit.Status = DepositStatus.WaitingForBtc;
                     deposit.UpdatedAt = pubKey.TimeStamp;
-                    AddLog(pubKey, deposit);
                     _logger.LogInformation("TDT {0} BTC address generated: {1}", deposit.Id, deposit.BitcoinAddress);
                 }
+                if (deposit != null)
+                    AddLog(pubKey, deposit, DepositStatus.WaitingForBtc);
 			}
             foreach (var setupFail in setupFailLogs.result)
             {
@@ -172,9 +171,10 @@ namespace KeepSpy.App.Workers
                 {
                     deposit.Status = DepositStatus.SetupFailed;
                     deposit.UpdatedAt = setupFail.TimeStamp;
-                    AddLog(setupFail, deposit);
                     _logger.LogInformation("TDT {0} setup failed", deposit.Id);
                 }
+                if (deposit != null)
+                    AddLog(setupFail, deposit, DepositStatus.SetupFailed);
             }
             foreach (var funded in fundedLogs.result)
             {
@@ -184,9 +184,10 @@ namespace KeepSpy.App.Workers
                 {
                     deposit.Status = DepositStatus.SubmittingProof;
                     deposit.UpdatedAt = funded.TimeStamp;
-                    AddLog(funded, deposit);
                     _logger.LogInformation("TDT {0} submitted proof", deposit.Id);
                 }
+                if (deposit != null)
+                    AddLog(funded, deposit, DepositStatus.SubmittingProof);
             }
             foreach (var approval in approvalLogs.result)
 			{
@@ -198,9 +199,10 @@ namespace KeepSpy.App.Workers
 				{
                     deposit.Status = DepositStatus.ApprovingSpendLimit;
                     deposit.UpdatedAt = approval.TimeStamp;
-                    AddLog(approval, deposit);
                     _logger.LogInformation("TDT {0} tdt spend approved", deposit.Id);
                 }
+                if (deposit != null)
+                    AddLog(approval, deposit, DepositStatus.ApprovingSpendLimit);
             }
             foreach (var vmTx in tdt2btcTx.result)
             {
@@ -229,9 +231,9 @@ namespace KeepSpy.App.Workers
                                 _logger.LogInformation("Minted {0} for {1}, fee {2}, TDT ID {3}", deposit.LotSizeMinted, deposit.SenderAddress, deposit.LotSizeFee, deposit.Id);
                             }
                         }
-                        
-                        AddTx(vmTx, deposit);
                     }
+                    if (deposit != null)
+                        AddTx(vmTx, deposit);
                 }
                 if (vmTx.input.StartsWith("0xbe138da7")) //tbtcToBtc
                 {
@@ -269,9 +271,10 @@ namespace KeepSpy.App.Workers
                 {
                     redeem.Status = RedeemStatus.Signed;
                     redeem.UpdatedAt = gotRedemtion.TimeStamp;
-                    AddLog2(gotRedemtion, redeem);
                     _logger.LogInformation("Redeem {0} signed", redeem.Id);
                 }
+                if (redeem != null)
+                    AddLog2(gotRedemtion, redeem, RedeemStatus.Signed);
             }
             var redeemedLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: RedeemedEvent);
             foreach (var redeemed in redeemedLogs.result)
@@ -285,9 +288,10 @@ namespace KeepSpy.App.Workers
                     redeem.Status = RedeemStatus.Redeemed;
                     redeem.UpdatedAt = redeemed.TimeStamp;
                     redeem.CompletedAt = redeemed.TimeStamp;
-                    AddLog2(redeemed, redeem);
                     _logger.LogInformation("Redeem {0} complete", redeem.Id);
                 }
+                if (redeem != null)
+                    AddLog2(redeemed, redeem, RedeemStatus.Redeemed);
             }
             var startedLiquidaionLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: StartedLiquidationEvent);
             foreach (var startedLiquidaion in startedLiquidaionLogs.result)
@@ -300,9 +304,10 @@ namespace KeepSpy.App.Workers
                 {
                     redeem.Status = RedeemStatus.Liquidation;
                     redeem.UpdatedAt = startedLiquidaion.TimeStamp;
-                    AddLog2(startedLiquidaion, redeem);
                     _logger.LogInformation("Redeem {0} started liquidation", redeem.Id);
                 }
+                if (redeem != null)
+                    AddLog2(startedLiquidaion, redeem, RedeemStatus.Liquidation);
             }
             var liquidatedLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: LiquidatedEvent);
             foreach (var liquidated in liquidatedLogs.result)
@@ -316,9 +321,10 @@ namespace KeepSpy.App.Workers
                     redeem.Status = RedeemStatus.Liquidated;
                     redeem.UpdatedAt = liquidated.TimeStamp;
                     redeem.CompletedAt = liquidated.TimeStamp;
-                    AddLog2(liquidated, redeem);
                     _logger.LogInformation("Redeem {0} liquidated", redeem.Id);
                 }
+                if (redeem != null)
+                    AddLog2(liquidated, redeem, RedeemStatus.Liquidated);
             }
 
             var bn = uint.MaxValue;
@@ -326,9 +332,12 @@ namespace KeepSpy.App.Workers
                 bn = Math.Min(bn, resultTx.result.Max(o => uint.Parse(o.blockNumber)));
             if (tdt2btcTx.result.Count > 0)
                 bn = Math.Min(bn, tdt2btcTx.result.Max(o => uint.Parse(o.blockNumber)));
+            var getBlockNumberResult = uint.Parse(_apiClient.GetBlockNumber().result.Substring(2), System.Globalization.NumberStyles.HexNumber);
             if (bn < uint.MaxValue)
                 lastBlock = bn;
-            var getBlockNumberResult = uint.Parse(_apiClient.GetBlockNumber().result.Substring(2), System.Globalization.NumberStyles.HexNumber);
+            else if (lastBlock + delta < getBlockNumberResult)
+                lastBlock += delta;
+            
             if (network.LastBlock != getBlockNumberResult)
             {
                 network.LastBlock = getBlockNumberResult;
@@ -336,6 +345,9 @@ namespace KeepSpy.App.Workers
             }
             db.SaveChanges();
             _logger.LogInformation($"Last block processed: {lastBlock}/{getBlockNumberResult}");
+
+            if (getBlockNumberResult - delta < lastBlock)
+                Thread.Sleep(_options.Interval * 1000);
 
             void AddTx(Etherscan.Tx tx, Deposit d)
 			{
@@ -353,6 +365,7 @@ namespace KeepSpy.App.Workers
                         Amount = decimal.Parse(tx.value) / 1000000000000000000,
                         Fee = decimal.Parse(tx.gasPrice) / 1000000000000000000 * decimal.Parse(tx.gasUsed)
                     });
+                    _logger.LogInformation($"Saved tx {tx.hash} ({tx.TimeStamp})");
 				}
             }
             void AddTx2(Etherscan.Tx tx, Redeem r)
@@ -372,9 +385,10 @@ namespace KeepSpy.App.Workers
                         Amount = decimal.Parse(tx.value) / 1000000000000000000,
                         Fee = decimal.Parse(tx.gasPrice) / 1000000000000000000 * decimal.Parse(tx.gasUsed)
                     });
+                    _logger.LogInformation($"Saved tx {tx.hash} ({tx.TimeStamp})");
                 }
             }
-            void AddLog(Etherscan.Log log, Deposit d)
+            void AddLog(Etherscan.Log log, Deposit d, DepositStatus s)
             {
                 if (db.Find<Transaction>(log.transactionHash) == null)
                 {
@@ -383,14 +397,15 @@ namespace KeepSpy.App.Workers
                         Id = log.transactionHash,
                         Deposit = d,
                         Block = uint.Parse(log.blockNumber.Substring(2), System.Globalization.NumberStyles.HexNumber),
-                        Status = d.Status,
+                        Status = s,
                         Timestamp = log.TimeStamp,
                         Error = "",
-                        Fee = (decimal)ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2), System.Globalization.NumberStyles.HexNumber)
+                        Fee = ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2), System.Globalization.NumberStyles.HexNumber)
                     });
+                    _logger.LogInformation($"Saved tx {log.transactionHash} ({log.TimeStamp})");
                 }
             }
-            void AddLog2(Etherscan.Log log, Redeem r)
+            void AddLog2(Etherscan.Log log, Redeem r, RedeemStatus s)
             {
                 if (db.Find<Transaction>(log.transactionHash) == null)
                 {
@@ -400,11 +415,12 @@ namespace KeepSpy.App.Workers
                         Redeem = r,
                         Block = uint.Parse(log.blockNumber.Substring(2), System.Globalization.NumberStyles.HexNumber),
                         Status = DepositStatus.Closed,
-                        RedeemStatus = r.Status,
+                        RedeemStatus = s,
                         Timestamp = log.TimeStamp,
                         Error = "",
-                        Fee = (decimal)ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2), System.Globalization.NumberStyles.HexNumber)
+                        Fee = ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2), System.Globalization.NumberStyles.HexNumber)
                     });
+                    _logger.LogInformation($"Saved tx {log.transactionHash} ({log.TimeStamp})");
                 }
             }
         }
