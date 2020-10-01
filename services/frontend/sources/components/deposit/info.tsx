@@ -67,8 +67,6 @@ export const DepositInfo = ({deposit}) => {
             })
     }, [deposit])
 
-
-
     return (
         <Info>
             {items}

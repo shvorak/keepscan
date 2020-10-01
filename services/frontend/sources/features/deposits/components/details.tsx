@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import styles from './details.css'
 import { Deposit } from 'entities/Deposit/types'
 import { useSelector } from 'react-redux'
@@ -14,8 +14,6 @@ import { useAction } from 'shared/hooks/redux'
 import { fetchDeposit } from 'entities/Deposit/actions'
 import { formatStatus } from 'entities/Deposit/format'
 import { DepositInfo } from 'components/deposit/info'
-import { DAPP_CONFIG } from '~/application/env'
-import { DepositStatus } from 'entities/Deposit/constants'
 import { DateTimeDistance } from 'uikit/display/datetime'
 import { DepositLog } from 'components/deposit/log'
 
@@ -107,27 +105,3 @@ const Content = ({ deposit }) => (
         </Card>
     </>
 )
-
-const RedeemActionConfig = {
-    [DepositStatus.InitiatingDeposit]: '/deposit/{0}/get-address',
-    [DepositStatus.WaitingForBtc]: '/deposit/{0}/pay',
-    [DepositStatus.BtcReceived]: '/deposit/{0}/pay/confirming',
-    [DepositStatus.SubmittingProof]: '/deposit/{0}/prove',
-    [DepositStatus.ApprovingTdtSpendLimit]: '/deposit/{0}/prove',
-    [DepositStatus.Minted]: '/deposit/{0}/congratulations',
-}
-
-const DepositDAppLink = ({ deposit }) => {
-    const config = DAPP_CONFIG[location.hostname] || DAPP_CONFIG['testnet.keepscan.com']
-    const action = RedeemActionConfig[deposit.status]
-
-    const open = useCallback(() => {
-        window.open(`${config.host}${action.replace('{0}', deposit.id)}`)
-    }, [action])
-
-    if (null == action) {
-        return null
-    }
-
-    return <div onClick={open}>Open in DApp</div>
-}

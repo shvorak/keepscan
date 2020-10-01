@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux'
 import { getEthereumLastBlock } from 'entities/Network/queries'
 import { isErrorStatus } from 'entities/Deposit/specs'
 import { buildStatuses, byStatus } from 'entities/Deposit/helpers'
+import { Respawn } from 'components/deposit/respawn'
 
 type DepositLogProps = {
     deposit: Deposit
@@ -44,6 +45,8 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
 
     const timestamp = tx && <DateTime value={tx.timestamp} className={styles.timestamp} />
     const transaction = tx && <Transaction tx={tx} lastBlock={lastBlock} />
+    const respawn = status === deposit.status && <Respawn deposit={deposit} />
+
     const props = useMemo(() => {
         return {
             state: status <= deposit.status ? isErrorStatus(status) ? 'failure' : 'complete' : 'feature',
@@ -60,6 +63,7 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
                         {formatStatus(status)}
                     </Heading>
                     {timestamp}
+                    {respawn}
                 </div>
                 <div className={styles.inline}>{transaction}</div>
             </div>
