@@ -59,7 +59,7 @@ const Logo = () => {
             <Link to="/" className={styles.logo}>
                 KeepScan
             </Link>
-            <DisplayLink to={net.link} title={net.label} className={styles.net} secondary>
+            <DisplayLink to={net.link} title={net.label} className={styles.net}>
                 {net.name}
             </DisplayLink>
         </div>
