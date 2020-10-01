@@ -1,26 +1,80 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styles from './info.css'
-import { Amount } from 'uikit/crypto/amount'
-import { Address } from 'uikit/crypto/address'
-import { DateTime } from 'uikit/display/datetime'
+import { address, amount, datetime } from 'components/deposit/info.fields'
+
+const field = (name, options) => ({
+    name,
+    options,
+})
+
+const Schema = [
+    field('senderAddress', {
+        label: 'Initiator',
+        render: address
+    }),
+    field('contractId', {
+        label: 'tBTC contract',
+        render: address
+    }),
+    field('lotSize', {
+        label: 'Lot size',
+        render: amount
+    }),
+    field('lotSizeFee', {
+        label: 'Lot size fee',
+        render: amount
+    }),
+    field('lotSizeMinted', {
+        label: 'Lot size minted',
+        render: amount
+    }),
+    field('bitcoinAddress', {
+        label: 'Bitcoin deposit address',
+        render: address,
+        payload: {
+            color: 'brass'
+        }
+    }),
+    field('bitcoinFundedBlock', {
+        label: 'Bitcoin funded block'
+    }),
+    field('createdAt', {
+        label: 'Initiated',
+        render: datetime
+    }),
+    field('updatedAt', {
+        label: 'Updated',
+        render: datetime
+    }),
+    field('completedAt', {
+        label: 'Completed',
+        render: datetime
+    }),
+]
+
 
 export const DepositInfo = ({deposit}) => {
+
+    const items = useMemo(() => {
+        return Schema.filter(field => {
+            const value = deposit[field.name]
+            return value != null && value !== 0
+        })
+            .map(field => {
+                const value = deposit[field.name]
+                const render = field.options.render ? field.options.render({value, ...field.options.payload || {}}) : value
+                return <Item key={field.name} label={field.options.label} value={render} />
+            })
+    }, [deposit])
+
+
+
     return (
         <Info>
-            <Item label="Initiator" value={<Address value={deposit.senderAddress} full />} />
-            <Item label="tBTC contract" value={<Address value={deposit.contractId} full />} />
-            <Item label="Lot size" value={<Amount value={deposit.lotSize} />} />
-            <Item label="Lot size fee" value={<Amount value={deposit.lotSizeFee} precision={10} />} />
-            <Item label="Lot size minted" value={<Amount value={deposit.lotSizeMinted} precision={10} />} />
-            <Item label="Bitcoin deposit address" value={<Address color="brass" value={deposit.bitcoinAddress} full />} />
-            <Item label="Bitcoin funded block" value={deposit.bitcoinFundedBlock} />
-            <Item label="Initiated" value={<DateTime value={deposit.createdAt} />} />
-            <Item label="Updated" value={<DateTime value={deposit.updatedAt} />} />
-            <Item label="Completed" value={<DateTime value={deposit.completedAt} />} />
+            {items}
         </Info>
     )
 }
-
 
 
 const Info = ({children}) => (
