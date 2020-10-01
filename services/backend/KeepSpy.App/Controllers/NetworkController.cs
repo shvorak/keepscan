@@ -19,12 +19,5 @@ namespace KeepSpy.App.Controllers
         [HttpGet]
         public Task<Network[]> Get() => Db.Set<Network>().ToArrayAsync();
 
-        [HttpGet("reset")]
-        public async Task<int> Reset()
-		{
-            var ethTestNet = await Db.Set<Network>().SingleAsync(o => o.IsTestnet && o.Kind == NetworkKind.Ethereum);
-            ethTestNet.LastBlock = 8594983;
-            return await Db.SaveChangesAsync();
-        }
     }
 }

@@ -18,6 +18,7 @@ namespace KeepSpy.App.Etherscan
 
 		Response<T> GetResult<T>(Dictionary<string, object> parameters)
 		{
+			System.Threading.Thread.Sleep(300);
 			string requestUrl = _baseUrl + "&" + string.Join("&", parameters.Where(p => p.Value != null).Select(kvp => $"{kvp.Key}={kvp.Value}"));
 			string httpApiResult = wc.DownloadString(requestUrl);
 			return JsonSerializer.Deserialize<Response<T>>(httpApiResult);
