@@ -335,6 +335,7 @@ namespace KeepSpy.App.Workers
                 network.LastBlockAt = DateTime.Now;
             }
             db.SaveChanges();
+            _logger.LogInformation($"Last block processed: {lastBlock}/{getBlockNumberResult}");
 
             void AddTx(Etherscan.Tx tx, Deposit d)
 			{

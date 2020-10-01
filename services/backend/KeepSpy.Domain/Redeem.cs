@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using KeepSpy.Shared.Domain;
 
 namespace KeepSpy.Domain
@@ -16,5 +17,7 @@ namespace KeepSpy.Domain
 		public uint? BitcoinRedeemedBlock { get; set; }
 		public DateTime? UpdatedAt { get; set; }
 		public DateTime? CompletedAt { get; set; }
+		
+		public ICollection<Transaction> Transactions { get; set; }
 	}
 }
