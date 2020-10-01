@@ -10,37 +10,43 @@ import { TdtPage } from './routes/tdt'
 import { DashboardPage } from './routes/dashboard'
 import { RedeemDetailsPage, RedeemListPage } from './routes/redeems'
 import { DepositListPage, DepositDetailsPage } from './routes/deposits'
+import { GithubLink } from 'components/github'
 
 export const App = () => {
     return (
         <div className={styles.layout}>
-            <div className={styles.header}>
+                <div className={styles.header}>
+                    <Section>
+                        <div className={styles.headline}>
+                            <Logo />
+                            <Menu>
+                                <MenuItem to="/" exact>
+                                    Dashboard
+                                </MenuItem>
+                                <MenuItem to="/deposits">Deposits</MenuItem>
+                                <MenuItem to="/redeems">Redeems</MenuItem>
+                                <MenuItem to="/tdt">Get TDT</MenuItem>
+                                {/*<MenuItem to="/api">API</MenuItem>*/}
+                            </Menu>
+                        </div>
+                    </Section>
+                    <Section className={styles.content}>
+                        <Switch>
+                            <Route path="/" exact component={DashboardPage} />
+                            <Route path="/api" exact component={ApiPage} />
+                            <Route path="/tdt" exact component={TdtPage} />
+                            <Route path="/redeems" exact component={RedeemListPage} />
+                            <Route path="/redeems/:id" exact component={RedeemDetailsPage} />
+                            <Route path="/deposits" exact component={DepositListPage} />
+                            <Route path="/deposits/:id" exact component={DepositDetailsPage} />
+                        </Switch>
+                    </Section>
+                </div>
+            <Footer>
                 <Section>
-                    <div className={styles.headline}>
-                        <Logo />
-                        <Menu>
-                            <MenuItem to="/" exact>
-                                Dashboard
-                            </MenuItem>
-                            <MenuItem to="/deposits">Deposits</MenuItem>
-                            <MenuItem to="/redeems">Redeems</MenuItem>
-                            <MenuItem to="/tdt">Get TDT</MenuItem>
-                            {/*<MenuItem to="/api">API</MenuItem>*/}
-                        </Menu>
-                    </div>
+                    <GithubLink to="https://github.com/emerido/keepscan" />
                 </Section>
-                <Section className={styles.content}>
-                    <Switch>
-                        <Route path="/" exact component={DashboardPage} />
-                        <Route path="/api" exact component={ApiPage} />
-                        <Route path="/tdt" exact component={TdtPage} />
-                        <Route path="/redeems" exact component={RedeemListPage} />
-                        <Route path="/redeems/:id" exact component={RedeemDetailsPage} />
-                        <Route path="/deposits" exact component={DepositListPage} />
-                        <Route path="/deposits/:id" exact component={DepositDetailsPage} />
-                    </Switch>
-                </Section>
-            </div>
+            </Footer>
         </div>
     )
 }
@@ -76,3 +82,5 @@ export const Section = ({ children, ...props }) => {
         </div>
     )
 }
+
+export const Footer = ({ children }) => <div className={styles.footer}>{children}</div>
