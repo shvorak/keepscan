@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styles from './get-tdt.css'
 import { Heading } from 'uikit/typography'
-import { LotSizeList } from 'features/deposits/components/lot-size'
-import { TdtAddress } from 'features/deposits/components/tdt-address'
+import { LotSizeList } from 'features/get-tdt/components/lot-size'
+import { TdtAddress } from 'features/get-tdt/components/tdt-address'
 import { useAction } from 'shared/hooks/redux'
-import { fetchTdt } from 'features/deposits/actions'
 import { useSelector } from 'react-redux'
-import { getTdtAddress, getTdtFailure, getTdtLoading } from 'features/deposits/queries'
 import { Placeholder } from 'uikit/display/placeholder'
 import { Display } from 'uikit/typography/display'
+import { fetchTdt } from 'features/get-tdt/actions'
+import { getTdtAddress, getTdtFailure, getTdtLoading } from 'features/get-tdt/queries'
 
 // TODO: Replace with real lot sizes based on network and contract
 const LOT_SIZES = [0.001, 0.01, 0.1, 0.2, 0.5, 1]

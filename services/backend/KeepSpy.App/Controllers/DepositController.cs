@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using KeepSpy.App.Abstraction;
-using KeepSpy.App.Models;
 using KeepSpy.Domain;
+using KeepSpy.Models;
 using KeepSpy.Shared.Extensions;
 using KeepSpy.Shared.Models;
 using KeepSpy.Storage;
@@ -15,31 +17,30 @@ namespace KeepSpy.App.Controllers
     [Route("api/[controller]")]
     public class DepositController : BaseController
     {
-        private readonly KeepSpyContext _db;
-
-        public DepositController(KeepSpyContext db)
+        public DepositController(KeepSpyContext db, IMapper mapper) : base(db, mapper)
         {
-            _db = db;
         }
 
         [HttpGet]
         public Task<Paged<Deposit>> Get([FromQuery] PagerQuery query) 
-            => _db.Set<Deposit>().ToPagedAsync(query);
+            => Db.Set<Deposit>().OrderByDescending(x => x.CreatedAt).ToPagedAsync(query);
 
         [HttpGet("{id}")]
-        public Task<Deposit> Get([FromRoute] string id) => _db.Set<Deposit>()
-            .Where(x => x.Id == id).SingleOrDefaultAsync();
+        public Task<DepositDto> Get([FromRoute] string id) => Db.Set<Deposit>()
+            .Where(x => x.Id == id)
+            .ProjectTo<DepositDto>(Mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
         
         [HttpGet("latest")]
         public Task<Deposit[]> Latest()
-            => _db.Set<Deposit>().OrderByDescending(x => x.CreatedAt).Take(10).ToArrayAsync();
+            => Db.Set<Deposit>().OrderByDescending(x => x.CreatedAt).Take(10).ToArrayAsync();
 
 
         [HttpGet("random")]
         public async Task<RandomTdtId?> Random([FromQuery] decimal lotSize)
         {
             var rand = new Random();
-            var query = _db.Set<Deposit>()
+            var query = Db.Set<Deposit>()
                 .Where(x => x.Status == DepositStatus.Minted && x.LotSize == lotSize && x.Contract.Active);
 
             var count = await query.CountAsync();
@@ -59,5 +60,7 @@ namespace KeepSpy.App.Controllers
                 .Skip(rand.Next(count))
                 .FirstAsync();
         }
+
+
     }
 }

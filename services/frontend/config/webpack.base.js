@@ -8,6 +8,7 @@ const paths = {
 
 const plugins = {
     Html: require('html-webpack-plugin'),
+    Copy: require('copy-webpack-plugin'),
     Define: require('webpack').DefinePlugin,
 }
 
@@ -19,6 +20,7 @@ module.exports = (options) => {
         },
         output: {
             path: paths.bundle,
+            publicPath: '/',
             filename: '[name]-[hash].js',
         },
         module: {
@@ -75,6 +77,9 @@ module.exports = (options) => {
             }),
             new plugins.Define({
                 'process.env.NODE_ENV': JSON.stringify(options.mode),
+            }),
+            new plugins.Copy({
+                patterns: [{ from: 'sources/static/favicons/', to: paths.bundle }],
             }),
         ],
     }

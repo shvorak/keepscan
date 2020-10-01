@@ -14,7 +14,7 @@ export const GraphCard = ({ title, children = null }) => {
             <CardBody className={styles.body}>
                 <ResponsiveContainer width="100%" height={135}>
                     <BarChart width={200} height={200} data={data}>
-                        <Tooltip />
+                        <Tooltip content={CustomTooltip}  />
                         <Bar dataKey="volume" fill="#7850cd" />
                         <XAxis dataKey="label" />
                     </BarChart>
@@ -48,10 +48,12 @@ const CustomTooltip = (props) => {
         return null
     }
 
+    const color = props.payload && props.payload.find(x => x.color).color
+
     const payload = [
         {
-            fill: "#48dbb4",
-            color: "#48dbb4",
+            fill: color,
+            color: color,
             value: props.payload[0].payload.count,
             name: 'count',
         },

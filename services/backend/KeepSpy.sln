@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeepSpy.Shared", "KeepSpy.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeepSpy.Domain", "KeepSpy.Domain\KeepSpy.Domain.csproj", "{3A02F97E-08CF-4E1C-8E77-A6DEA62F06C7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeepSpy.Models", "KeepSpy.Models\KeepSpy.Models.csproj", "{C2373B9F-8051-4F4A-BB4D-B1EDF8F4A514}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{3A02F97E-08CF-4E1C-8E77-A6DEA62F06C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A02F97E-08CF-4E1C-8E77-A6DEA62F06C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A02F97E-08CF-4E1C-8E77-A6DEA62F06C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2373B9F-8051-4F4A-BB4D-B1EDF8F4A514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2373B9F-8051-4F4A-BB4D-B1EDF8F4A514}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2373B9F-8051-4F4A-BB4D-B1EDF8F4A514}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2373B9F-8051-4F4A-BB4D-B1EDF8F4A514}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

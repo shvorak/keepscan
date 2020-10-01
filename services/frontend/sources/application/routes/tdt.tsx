@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './tdt.css'
 import { Card, CardBody, CardHead } from 'uikit/layout/card'
-import { GetTdt } from 'features/deposits/components/get-tdt'
+import { GetTdt } from 'features/get-tdt'
 
 export const TdtPage = () => {
     return (

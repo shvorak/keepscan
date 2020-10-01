@@ -1,5 +1,5 @@
 import { createReducer, withProducer } from 'shared/reducers'
-import { depositCreated, depositFetched } from 'entities/Deposit/actions'
+import { depositCreated, depositFetched, fetchDeposit, fetchDepositSuccess } from 'entities/Deposit/actions'
 import { Deposit } from 'entities/Deposit/types'
 
 
@@ -13,4 +13,7 @@ export default createReducer<State>(initialState, withProducer)
     })
     .on(depositFetched, (state, { payload }) => {
         payload.forEach(deposit => state[deposit.id] = deposit)
+    })
+    .on(fetchDepositSuccess, (state, {payload: deposit}) => {
+        state[deposit.id] = deposit
     })

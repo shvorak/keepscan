@@ -1,6 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using KeepSpy.App.Abstraction;
 using KeepSpy.Domain;
+using KeepSpy.Models;
 using KeepSpy.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,19 +13,17 @@ namespace KeepSpy.App.Controllers
 {
     
     [Route("api/[controller]")]
-    public class RedeemController
+    public class RedeemController: BaseController
     {
-        private readonly KeepSpyContext _db;
-
-        public RedeemController(KeepSpyContext db)
+        public RedeemController(KeepSpyContext db, IMapper mapper) : base(db, mapper)
         {
-            _db = db;
         }
 
         [HttpGet("latest")]
-        public Task<Redeem[]> Latest() => _db.Set<Redeem>()
+        public Task<RedeemDto[]> Latest() => Db.Set<Redeem>()
             .OrderByDescending(x => x.CreatedAt)
             .Take(10)
+            .ProjectTo<RedeemDto>(Mapper.ConfigurationProvider)
             .ToArrayAsync();
     }
 }

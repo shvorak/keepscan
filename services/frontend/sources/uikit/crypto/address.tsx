@@ -1,26 +1,31 @@
-import React, { FC, useMemo } from 'react'
+import React, { ComponentProps, FC, useMemo } from 'react'
 import styles from './address.css'
 import { useClasses } from 'shared/hooks/styles'
+import { ellipsis } from 'shared/string'
 
-type AddressProps = {
+type AddressProps = ComponentProps<'a'> & {
+    full?: boolean
     value: string
     color?: 'green' | 'brass' | 'violet'
 }
 
-
-export const Address: FC<AddressProps> = ({value, ...props}) => {
-    const short = useMemo(() => {
-        return value && [
-            value.toString().substr(0, 6),
-            value.toString().substr(-4)
-        ].join('...')
+export const Address: FC<AddressProps> = ({ value, full, ...props }) => {
+    const address = useMemo(() => {
+        return value && (full ? value : ellipsis(6, 4, value))
     }, [value])
 
     const className = useClasses(styles, 'address', props)
 
-    return short && <a href="#" className={className}>{short}</a>
+    return (
+        address && (
+            <a href="#" className={className} {...props}>
+                {address}
+            </a>
+        )
+    )
 }
 
 Address.defaultProps = {
-    color: 'violet'
+    full: false,
+    color: 'violet',
 }

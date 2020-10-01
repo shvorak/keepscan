@@ -29,4 +29,6 @@ export const DepositStatusNames = {
     [DepositStatus.ApprovingTdtSpendLimit]: 'Approving spend limit',
     [DepositStatus.Minted]: 'Minted',
     [DepositStatus.Redeemed]: 'Redeemed',
+    [DepositStatus.SetupFailed]: 'Setup failed',
+    [DepositStatus.Liquidated]: 'Liquidated'
 }

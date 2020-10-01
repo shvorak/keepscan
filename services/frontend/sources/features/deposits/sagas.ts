@@ -1,21 +1,28 @@
-import { fetchTdt, fetchTdtFailure, fetchTdtSuccess } from 'features/deposits/actions'
+import { depositPageFailed, depositPageLoad, depositPageLoaded } from 'features/deposits/actions'
 import { call, put, takeLatest } from 'redux-saga/effects'
-import { fetchTdtId } from 'features/deposits/requests'
-import { is } from 'ramda'
+import { loadDepositsPage } from 'features/deposits/requests'
+import { fetchDepositById } from 'entities/Deposit/requests'
+import { fetchDeposit, fetchDepositFailure, fetchDepositSuccess } from 'entities/Deposit/actions'
 
 export function* startupDepositSaga() {
-    yield takeLatest(fetchTdt, fetchTdtSaga)
+    yield takeLatest(depositPageLoad, loadPagesSaga)
+    yield takeLatest(fetchDeposit, fetchDepositSaga)
 }
 
-function* fetchTdtSaga({payload}) {
+function* loadPagesSaga({ payload }) {
     try {
-        const result = yield call(fetchTdtId, payload)
-        if (is(Object, result.data)) {
-            yield put(fetchTdtSuccess(result.data))
-        } else {
-            yield put(fetchTdtFailure())
-        }
+        const result = yield call(loadDepositsPage, payload.page, payload.take)
+        yield put(depositPageLoaded(result.data))
     } catch (e) {
-        yield put(fetchTdtFailure())
+        yield put(depositPageFailed())
+    }
+}
+
+function* fetchDepositSaga({ payload }) {
+    try {
+        const result = yield call(fetchDepositById, payload)
+        yield put(fetchDepositSuccess(result.data))
+    } catch (e) {
+        yield put(fetchDepositFailure(e.message))
     }
 }

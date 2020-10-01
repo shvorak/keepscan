@@ -17,11 +17,11 @@ export const Amount: FC<AmountProps> = ({value, currency, precision, ...props}) 
         return Number(Number(value).toFixed(precision)).toString()
     }, [value, precision])
     return (
-        <Display className={styles.amount} {...props}>{number} <Symbol size={20} currency={currency} /></Display>
+        <Display className={styles.amount} {...props}>{number} ฿</Display>
     )
 }
 
 Amount.defaultProps = {
     currency: 'btc',
-    precision: 2
+    precision: 10
 }

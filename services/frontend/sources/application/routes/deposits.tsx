@@ -1,6 +1,6 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { DepositDetails } from 'features/deposits'
+import { DepositDetails } from 'features/deposits/components/details'
 
 export { DepositList as DepositListPage } from 'features/deposits'
 

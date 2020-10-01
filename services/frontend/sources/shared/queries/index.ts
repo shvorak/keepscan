@@ -1,6 +1,6 @@
 import { is, pathOr } from 'ramda'
 
-export const queryList = (path: string) => (state: any) => {
+export const queryList = <T>(path: string) => (state: any): T[] => {
     let value = pathOr([], path.split('.'), state)
 
     if (is(Object, value)) {
@@ -20,12 +20,12 @@ export const queryById = (path: string, id: any) => (state: any) => {
     let value = pathOr([], path.split('.'), state)
 
     if (is(Object, value)) {
-        return value[id]
+        return value[id] || null
     }
 
     if (is(Array, value)) {
         return value.find(x => x?.id === id)
     }
 
-    return undefined
+    return null
 }

@@ -13,6 +13,7 @@ WORKDIR /src
 COPY KeepSpy.sln .
 COPY KeepSpy.App/KeepSpy.App.csproj ./KeepSpy.App/
 COPY KeepSpy.Shared/KeepSpy.Shared.csproj ./KeepSpy.Shared/
+COPY KeepSpy.Models/KeepSpy.Models.csproj ./KeepSpy.Models/
 COPY KeepSpy.Domain/KeepSpy.Domain.csproj ./KeepSpy.Domain/
 COPY KeepSpy.Storage/KeepSpy.Storage.csproj ./KeepSpy.Storage/
 COPY KeepSpy.Tests/KeepSpy.Tests.csproj ./KeepSpy.Tests/

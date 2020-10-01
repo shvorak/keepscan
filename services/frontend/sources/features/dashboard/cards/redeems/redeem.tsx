@@ -38,7 +38,7 @@ export const RedeemRow: FC<RedeemRowProps> = ({redeem}) => {
                 </Workflow>
             </View>
             <View className={styles.cell__value}>
-                <Amount value={redeem.btcRedeemed} />
+                <Amount value={redeem.lotSize} />
             </View>
             <View className={styles.cell__address}>
                 <Display>

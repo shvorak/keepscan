@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using AutoMapper;
 using KeepSpy.App.Abstraction;
 using KeepSpy.Domain;
 using KeepSpy.Storage;
@@ -11,22 +12,19 @@ namespace KeepSpy.App.Controllers
     [Route("api/[controller]")]
     public class NetworkController: BaseController
     {
-        public KeepSpyContext DbContext { get; }
-
-        public NetworkController(KeepSpyContext dbContext)
+        public NetworkController(KeepSpyContext db, IMapper mapper) : base(db, mapper)
         {
-            DbContext = dbContext;
         }
 
         [HttpGet]
-        public Task<Network[]> Get() => DbContext.Set<Network>().ToArrayAsync();
+        public Task<Network[]> Get() => Db.Set<Network>().ToArrayAsync();
 
         [HttpGet("reset")]
         public async Task<int> Reset()
 		{
-            var ethTestNet = await DbContext.Set<Network>().SingleAsync(o => o.IsTestnet && o.Kind == NetworkKind.Ethereum);
+            var ethTestNet = await Db.Set<Network>().SingleAsync(o => o.IsTestnet && o.Kind == NetworkKind.Ethereum);
             ethTestNet.LastBlock = 8594983;
-            return await DbContext.SaveChangesAsync();
+            return await Db.SaveChangesAsync();
         }
     }
 }

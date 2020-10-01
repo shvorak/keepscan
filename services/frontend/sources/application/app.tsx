@@ -25,7 +25,7 @@ export const App = () => {
                             <MenuItem to="/deposits">Deposits</MenuItem>
                             <MenuItem to="/redeems">Redeems</MenuItem>
                             <MenuItem to="/tdt">Get TDT</MenuItem>
-                            <MenuItem to="/api">API</MenuItem>
+                            {/*<MenuItem to="/api">API</MenuItem>*/}
                         </Menu>
                     </div>
                 </Section>
