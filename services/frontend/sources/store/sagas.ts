@@ -1,4 +1,4 @@
-import { call, fork, put, takeLatest } from 'redux-saga/effects'
+import { call, delay, fork, put, takeLatest } from 'redux-saga/effects'
 import { fetchDepositPage, fetchLatestDeposits } from 'entities/Deposit/requests'
 import { depositFetched, depositPageFetch } from 'entities/Deposit/actions'
 import { fetchNetworks } from 'entities/Network/requests'
@@ -24,6 +24,13 @@ export default function* startupSaga() {
 }
 
 function* startupNetworks() {
+    while (true) {
+        yield call(networksFetch)
+        yield delay(10000)
+    }
+}
+
+function* networksFetch() {
     const networks = yield call(fetchNetworks)
     yield put(networksFetched(networks.data))
 }
