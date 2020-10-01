@@ -5,7 +5,7 @@ import { Card, CardHead, CardList, CardMore } from 'uikit/layout/card'
 import { useSelector } from 'react-redux'
 import { getLatestRedeems } from 'features/dashboard/queries'
 import { useLink } from 'shared/hooks/router'
-import { RedeemRow } from 'features/dashboard/cards/redeems/redeem'
+import { RedeemItem } from 'components/redeem/list-item'
 
 export const RedeemsCard = () => {
     const redeems = useSelector(getLatestRedeems)
@@ -13,7 +13,7 @@ export const RedeemsCard = () => {
     const toRedeems = useLink('/redeems')
 
     const redeemsList = useMemo(() => {
-        return redeems.map((redeem) => <RedeemRow key={redeem.id} redeem={redeem} />)
+        return redeems.map((redeem) => <RedeemItem key={redeem.id} redeem={redeem} />)
     }, [redeems])
 
     return (

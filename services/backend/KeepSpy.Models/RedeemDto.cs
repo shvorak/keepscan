@@ -17,5 +17,7 @@ namespace KeepSpy.Models
         public uint? BitcoinRedeemedBlock { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
+
+        public RedeemTxDto[] Transactions { get; set; }
     }
 }

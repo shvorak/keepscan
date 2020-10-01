@@ -8,6 +8,7 @@ import { statisticUpdated } from 'entities/Statistic/actions'
 import { dashboardSaga } from 'features/dashboard/sagas'
 import { startupDepositSaga } from 'features/deposits/sagas'
 import { startupGetTdtSaga } from 'features/get-tdt/sagas'
+import { startupRedeemSaga } from 'features/redeems/sagas'
 
 export default function* startupSaga() {
     yield fork(startupNetworks)
@@ -16,6 +17,7 @@ export default function* startupSaga() {
 
     yield fork(dashboardSaga)
     yield fork(startupGetTdtSaga)
+    yield fork(startupRedeemSaga)
     yield fork(startupDepositSaga)
 
     yield takeLatest(depositPageFetch, depositsPager)

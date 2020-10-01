@@ -1,0 +1,49 @@
+.row.row {
+    height: 70px;
+    display: flex;
+    align-items: center;
+}
+.cell__id {
+    width: 30%;
+}
+.cell__status {
+    width: 30%;
+}
+.cell__address {
+    text-align: right;
+    width: 25%;
+}
+.cell__value {
+    width: 130px;
+    padding: 0 15px;
+    text-align: right;
+}
+
+
+@media screen and (max-width: 600px) {
+    .row.row.row {
+        flex-wrap: wrap;
+        height: 120px;
+    }
+    .list.list {
+        height: 1200px;
+    }
+
+    .cell__id {
+        width: 60%;
+    }
+    .cell__value {
+        order: 2;
+        padding-right: 0;
+    }
+    .cell__status {
+        width: 50%;
+        order: 4;
+        text-align: right;
+    }
+    .cell__address {
+        order: 3;
+        width: 50%;
+        text-align: left;
+    }
+}

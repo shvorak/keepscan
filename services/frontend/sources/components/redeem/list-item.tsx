@@ -1,22 +1,21 @@
 import React, { FC } from 'react'
+import styles from './list-item.css'
 import { Redeem } from 'entities/Redeem/types'
-import styles from 'features/dashboard/cards/deposits/index.css'
-import { ListItem } from 'uikit/data/list'
 import { useLink } from 'shared/hooks/router'
+import { ListItem } from 'uikit/data/list'
 import { Address } from 'uikit/crypto/address'
 import { View } from 'uikit/layout'
 import { DateTimeDistance } from 'uikit/display/datetime'
 import { Display } from 'uikit/typography/display'
+import { formatStatus } from 'entities/Redeem/format'
 import { Workflow, WorkflowStep } from 'uikit/display/workflow'
 import { Amount } from 'uikit/crypto/amount'
-import { formatStatus } from 'entities/Redeem/format'
+import { RedeemStatus } from 'entities/Redeem/constants'
 
 type RedeemRowProps = {
     redeem: Redeem
 }
-
-
-export const RedeemRow: FC<RedeemRowProps> = ({redeem}) => {
+export const RedeemItem: FC<RedeemRowProps> = ({ redeem }) => {
     const onClick = useLink(`/redeems/${redeem.id}`)
 
     return (
@@ -31,11 +30,7 @@ export const RedeemRow: FC<RedeemRowProps> = ({redeem}) => {
                 <Display size={15} secondary>
                     {formatStatus(redeem)}
                 </Display>
-                <Workflow state="success" variant="redeem">
-                    <WorkflowStep completed={redeem.status >= 0} />
-                    <WorkflowStep completed={redeem.status >= 1} />
-                    <WorkflowStep completed={redeem.status >= 2} />
-                </Workflow>
+                <RedeemWorkflow redeem={redeem} />
             </View>
             <View className={styles.cell__value}>
                 <Amount value={redeem.lotSize} />
@@ -52,3 +47,17 @@ export const RedeemRow: FC<RedeemRowProps> = ({redeem}) => {
     )
 }
 
+
+const RedeemWorkflow = ({redeem}) => {
+    const state = redeem.status === RedeemStatus.Liquidated
+        ? 'warning'
+        : 'success'
+
+    return (
+        <Workflow state={state} variant="redeem">
+            <WorkflowStep completed={redeem.status >= 0} />
+            <WorkflowStep completed={redeem.status >= 1} />
+            <WorkflowStep completed={redeem.status >= 2} />
+        </Workflow>
+    )
+}

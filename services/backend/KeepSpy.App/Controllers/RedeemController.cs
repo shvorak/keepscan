@@ -5,6 +5,8 @@ using AutoMapper.QueryableExtensions;
 using KeepSpy.App.Abstraction;
 using KeepSpy.Domain;
 using KeepSpy.Models;
+using KeepSpy.Shared.Extensions;
+using KeepSpy.Shared.Models;
 using KeepSpy.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +21,18 @@ namespace KeepSpy.App.Controllers
         {
         }
 
+        [HttpGet("{id}")]
+        public Task<RedeemDto> Get(string id) => Db.Set<Redeem>()
+            .Where(x => x.Id == id)
+            .ProjectTo<RedeemDto>(Mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
+        
+        [HttpGet]
+        public Task<Paged<RedeemDto>> Get([FromQuery] PagerQuery query) => Db.Set<Redeem>()
+            .OrderByDescending(x => x.CreatedAt)
+            .ProjectTo<RedeemDto>(Mapper.ConfigurationProvider)
+            .ToPagedAsync(query);
+        
         [HttpGet("latest")]
         public Task<RedeemDto[]> Latest() => Db.Set<Redeem>()
             .OrderByDescending(x => x.CreatedAt)

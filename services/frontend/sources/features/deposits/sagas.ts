@@ -9,17 +9,16 @@ export function* startupDepositSaga() {
     yield takeLatest(fetchDeposit, fetchDepositSaga)
 }
 
-function* loadPagesSaga({ payload }) {
+function* loadPagesSaga() {
     try {
         const pager = yield select(state => state.features.deposits?.pager)
-        console.log(pager)
         const result = yield call(loadDepositsPage, pager.current, pager.take)
         yield put(depositPageLoaded(result.data))
     } catch (e) {
         yield put(depositPageFailed())
     } finally {
         if (yield cancelled()) {
-            console.log('cancelled')
+            // TODO: Cancel
         }
     }
 }
