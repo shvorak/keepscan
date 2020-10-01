@@ -23,4 +23,5 @@ export interface DepositTx
     block: number
     status: number
     timestamp: number
+    isError: boolean
 }

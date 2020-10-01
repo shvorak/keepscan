@@ -18,7 +18,7 @@ export const DepositStatus = {
     Minted: 5,
     Redeemed: 6,
     SetupFailed: 7,
-    Liquidated: 8
+    Liquidated: 8,
 }
 
 export const DepositStatusNames = {
@@ -30,5 +30,7 @@ export const DepositStatusNames = {
     [DepositStatus.Minted]: 'Minted',
     [DepositStatus.Redeemed]: 'Redeemed',
     [DepositStatus.SetupFailed]: 'Setup failed',
-    [DepositStatus.Liquidated]: 'Liquidated'
+    [DepositStatus.Liquidated]: 'Liquidated',
 }
+
+export const DepositStatusErrors = [DepositStatus.SetupFailed, DepositStatus.Liquidated]

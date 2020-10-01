@@ -5,11 +5,13 @@ import { formatStatus } from 'entities/Deposit/format'
 import { DepositStatus } from 'entities/Deposit/constants'
 import { DateTime } from 'uikit/display/datetime'
 import { useClasses } from 'shared/hooks/styles'
-import { find } from 'ramda'
+import { find, prop, sortBy } from 'ramda'
 import { Deposit } from 'entities/Deposit/types'
 import { Address } from 'uikit/crypto/address'
 import { useSelector } from 'react-redux'
 import { getEthereumLastBlock } from 'entities/Network/queries'
+import { isErrorStatus } from 'entities/Deposit/specs'
+import { buildStatuses, byStatus } from 'entities/Deposit/helpers'
 
 type DepositLogProps = {
     deposit: Deposit
@@ -27,8 +29,9 @@ const DepositStatusOrder = [
 
 export const DepositLog: FC<DepositLogProps> = ({ deposit }) => {
     const statuses = useMemo(() => {
-        return DepositStatusOrder.map((status) => {
-            const tx = find(x => x.status === status, deposit.transactions || [])
+        const transactions = sortBy(prop('timestamp'), deposit.transactions || [])
+        return buildStatuses(DepositStatusOrder, transactions).map((status) => {
+            const tx = find(byStatus(status), transactions)
             return <DepositLogRecord key={status} status={status} deposit={deposit} tx={tx} />
         })
     }, [deposit])
@@ -43,7 +46,7 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
     const transaction = tx && <Transaction tx={tx} lastBlock={lastBlock} />
     const props = useMemo(() => {
         return {
-            state: status <= deposit.status ? 'failure' : 'feature'
+            state: status <= deposit.status ? isErrorStatus(status) ? 'failure' : 'complete' : 'feature',
         }
     }, [status, deposit, tx])
 
@@ -53,7 +56,9 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
         <div className={className}>
             <div className={styles.legend}>
                 <div className={styles.inline}>
-                    <Heading size={4} className={styles.status}>{formatStatus(status)}</Heading>
+                    <Heading size={4} className={styles.status}>
+                        {formatStatus(status)}
+                    </Heading>
                     {timestamp}
                 </div>
                 <div className={styles.inline}>{transaction}</div>
@@ -62,7 +67,7 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
     )
 }
 
-const Transaction = ({tx, lastBlock}) => {
+const Transaction = ({ tx, lastBlock }) => {
     if (null == tx) {
         return null
     }
@@ -74,7 +79,7 @@ const Transaction = ({tx, lastBlock}) => {
     )
 }
 
-const Confirmations = ({block, lastBlock}) => {
+const Confirmations = ({ block, lastBlock }) => {
     const count = lastBlock - block
 
     return count > 0 && <span className={styles.confirmations}> - {count} confirmations</span>
