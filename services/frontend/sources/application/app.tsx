@@ -8,7 +8,7 @@ import { ENV_CONFIG } from '~/application/env'
 import { ApiPage } from './routes/api'
 import { TdtPage } from './routes/tdt'
 import { DashboardPage } from './routes/dashboard'
-import { RedeemListPage } from './routes/redeems'
+import { RedeemDetailsPage, RedeemListPage } from './routes/redeems'
 import { DepositListPage, DepositDetailsPage } from './routes/deposits'
 
 export const App = () => {
@@ -35,6 +35,7 @@ export const App = () => {
                         <Route path="/api" exact component={ApiPage} />
                         <Route path="/tdt" exact component={TdtPage} />
                         <Route path="/redeems" exact component={RedeemListPage} />
+                        <Route path="/redeems/:id" exact component={RedeemDetailsPage} />
                         <Route path="/deposits" exact component={DepositListPage} />
                         <Route path="/deposits/:id" exact component={DepositDetailsPage} />
                     </Switch>

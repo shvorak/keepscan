@@ -1,0 +1,13 @@
+.title {
+    color: var(--dry-stone);
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.title .tdt {
+    padding-left: 20px;
+}
+
+.title .action {
+    margin-left: auto;
+}

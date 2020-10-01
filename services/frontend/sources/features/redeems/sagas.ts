@@ -1,9 +1,12 @@
 import { call, cancelled, put, select, takeLatest } from 'redux-saga/effects'
 import { redeemNextPage, redeemPageFailed, redeemPageLoaded } from 'features/redeems/actions'
+import { fetchRedeem, fetchRedeemFailure, fetchRedeemSuccess } from 'entities/Redeem/actions'
 import { loadRedeemsPage } from 'features/redeems/requests'
+import { fetchRedeemById } from 'entities/Redeem/requests'
 
 export function* startupRedeemSaga() {
     yield takeLatest(redeemNextPage, loadPagesSaga)
+    yield takeLatest(fetchRedeem, fetchRedeemSaga)
 }
 
 function* loadPagesSaga() {
@@ -17,5 +20,14 @@ function* loadPagesSaga() {
         if (yield cancelled()) {
             // TODO: Cancel
         }
+    }
+}
+
+function* fetchRedeemSaga({ payload }) {
+    try {
+        const result = yield call(fetchRedeemById, payload)
+        yield put(fetchRedeemSuccess(result.data))
+    } catch (e) {
+        yield put(fetchRedeemFailure(e.message))
     }
 }
