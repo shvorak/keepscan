@@ -29,13 +29,16 @@ export const DisplayLink: FC<DisplayLinkProps> = ({ children, to, ...props }) =>
     const className = useClasses(styles, 'display-link', props)
     const styleMap = useStyles(props, DisplayPropsStyles)
 
-    const href = useMemo(() => {
-        // TODO:
-        return to
+    const rules = useMemo(() => {
+        const isExternal = to.match('https://')
+        return {
+            target: isExternal && '__blank',
+            rel: isExternal && 'noreferer noopener'
+        }
     }, [to])
 
     return (
-        <a href={href} className={className} style={styleMap} {...props}>
+        <a href={to} className={className} style={styleMap} {...rules} {...props}>
             {children}
         </a>
     )

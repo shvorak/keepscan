@@ -28,3 +28,18 @@ export const DAPP_CONFIG = {
         return DAPP_CONFIG[hostname] || DAPP_CONFIG['testnet.keepscan.com']
     }
 }
+
+export const HOST_ENV = location.hostname === 'keepscan.com' ? 'mainNet' : 'testNet'
+
+export const INDEXERS_CONFIG = {
+    mainNet: {
+        bitcoin: 'https://blockstream.info',
+        ethereum: 'https://etherscan.io'
+    },
+    testNet: {
+        bitcoin: 'https://blockstream.info/testnet',
+        ethereum: 'https://ropsten.etherscan.io'
+    }
+}
+
+export const INDEXERS = INDEXERS_CONFIG[HOST_ENV]

@@ -43,8 +43,8 @@
 
 .item.state__failure,
 .item.state__failure:before {
-    background: #c72033;
-    border-color: #c72033;
+    background: var(--simply-red);
+    border-color: var(--simply-red);
 }
 .item.state__failure:after {
     content: "";

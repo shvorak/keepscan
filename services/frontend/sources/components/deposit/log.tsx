@@ -13,6 +13,7 @@ import { getEthereumLastBlock } from 'entities/Network/queries'
 import { isErrorStatus } from 'entities/Deposit/specs'
 import { buildStatuses, byStatus } from 'entities/Deposit/helpers'
 import { Respawn } from 'components/deposit/respawn'
+import { openEtherscan } from 'shared/links'
 
 type DepositLogProps = {
     deposit: Deposit
@@ -77,7 +78,7 @@ const Transaction = ({ tx, lastBlock }) => {
     }
     return (
         <>
-            <Address value={tx.id} className={styles.transaction} />
+            <Address value={tx.id} kind="tx" className={styles.transaction} />
             <Confirmations block={tx.block} lastBlock={lastBlock} />
         </>
     )

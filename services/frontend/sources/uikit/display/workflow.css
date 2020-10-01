@@ -6,7 +6,7 @@
     --state-color: var(--electric-green);
 }
 .workflow.state__warning {
-    --state-color: var(--rustic-brass);
+    --state-color: var(--simply-red);
 }
 
 .workflow.variant__redeem.state__success {
