@@ -85,6 +85,7 @@
     display: inline-block;
     font-size: .9em;
     color: #a1a1a1;
+    margin-right: 5px;
 }
 .transaction {
     display: inline-block;
