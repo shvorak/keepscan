@@ -33,4 +33,14 @@ export const DepositStatusNames = {
     [DepositStatus.Liquidated]: 'Liquidated',
 }
 
-export const DepositStatusErrors = [DepositStatus.SetupFailed, DepositStatus.Liquidated]
+export const DepositSuccessStatuses = [
+    DepositStatus.InitiatingDeposit,
+    DepositStatus.WaitingForBtc,
+    DepositStatus.BtcReceived,
+    DepositStatus.SubmittingProof,
+    DepositStatus.ApprovingTdtSpendLimit,
+    DepositStatus.Minted,
+    DepositStatus.Redeemed,
+]
+
+export const DepositFailureStatuses = [DepositStatus.SetupFailed, DepositStatus.Liquidated]

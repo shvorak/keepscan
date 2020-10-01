@@ -1,3 +1,3 @@
-import { DepositStatusErrors } from 'entities/Deposit/constants'
+import { DepositFailureStatuses } from 'entities/Deposit/constants'
 
-export const isErrorStatus = (status: number) => DepositStatusErrors.includes(status)
+export const isErrorStatus = (status: number) => DepositFailureStatuses.includes(status)
