@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using KeepSpy.Shared.Domain;
 
 namespace KeepSpy.Domain
@@ -18,6 +20,8 @@ namespace KeepSpy.Domain
         public uint LastBlock { get; set; }
 
         public DateTime LastBlockAt { get; set; }
+
+        public ICollection<Contract> Contracts { get; set; }
         
     }
 }

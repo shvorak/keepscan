@@ -1,6 +1,8 @@
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using KeepSpy.App.Abstraction;
+using KeepSpy.App.Workers;
 using KeepSpy.Domain;
 using KeepSpy.Storage;
 using Microsoft.AspNetCore.Mvc;
@@ -8,16 +10,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KeepSpy.App.Controllers
 {
-    
     [Route("api/[controller]")]
-    public class NetworkController: BaseController
+    public class NetworkController : BaseController
     {
-        public NetworkController(KeepSpyContext db, IMapper mapper) : base(db, mapper)
+        private readonly BitcoinWorkerOptions _bitcoinWorkerOptions;
+        private readonly EthereumWorkerOptions _ethereumWorkerOptions;
+
+        public NetworkController(KeepSpyContext db, IMapper mapper, BitcoinWorkerOptions bitcoinWorkerOptions,
+            EthereumWorkerOptions ethereumWorkerOptions) : base(db, mapper)
         {
+            _bitcoinWorkerOptions = bitcoinWorkerOptions;
+            _ethereumWorkerOptions = ethereumWorkerOptions;
         }
 
         [HttpGet]
-        public Task<Network[]> Get() => Db.Set<Network>().ToArrayAsync();
-
+        public Task<Network[]> Get() => Db.Set<Network>()
+            // TODO: Remove this condition after removing test networks in production environment 
+            .Where(x => x.Kind == NetworkKind.Bitcoin && x.IsTestnet == _bitcoinWorkerOptions.IsTestnet ||
+                        x.Kind == NetworkKind.Ethereum && x.IsTestnet == _ethereumWorkerOptions.IsTestnet)
+            .ToArrayAsync();
     }
 }
