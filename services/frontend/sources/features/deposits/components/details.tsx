@@ -17,7 +17,7 @@ import { DepositInfo } from 'components/deposit/info'
 import { DateTimeDistance } from 'uikit/display/datetime'
 import { DepositLog } from 'components/deposit/log'
 import { DepositStatus } from 'entities/Deposit/constants'
-import { DAPP_CONFIG } from '~/application/env'
+import { DAPP, DAPP_CONFIG } from '~/application/env'
 
 export const DepositDetails = ({ id }) => {
     const [failed, setFailed] = useState(false)
@@ -112,8 +112,7 @@ const Content = ({ deposit }) => (
 
 const Redeem = ({deposit}) => {
     const onRedeem = useCallback(() => {
-        const dapp = DAPP_CONFIG.ByHost(location.hostname)
-        window.open(`${dapp.host}/deposit/${deposit.id}/redeem`, 'blank')
+        window.open(`${DAPP}/deposit/${deposit.id}/redeem`, 'blank')
     }, [deposit])
 
     if (deposit.status !== DepositStatus.Minted) {

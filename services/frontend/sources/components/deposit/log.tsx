@@ -1,13 +1,9 @@
 import React, { FC, useMemo } from 'react'
 import styles from './log.css'
-import { Heading } from 'uikit/typography'
 import { formatStatus } from 'entities/Deposit/format'
 import { DepositStatus } from 'entities/Deposit/constants'
-import { DateTime } from 'uikit/display/datetime'
-import { useClasses } from 'shared/hooks/styles'
 import { find, prop, sortBy } from 'ramda'
 import { Deposit } from 'entities/Deposit/types'
-import { Address } from 'uikit/crypto/address'
 import { useSelector } from 'react-redux'
 import { getEthereumLastBlock } from 'entities/Network/queries'
 import { isErrorStatus } from 'entities/Deposit/specs'
@@ -15,6 +11,7 @@ import { buildStatuses, byStatus } from 'entities/Deposit/helpers'
 import { Respawn } from 'components/deposit/respawn'
 import { TimelineEvent } from 'uikit/display/timeline'
 import { DisplayLink } from 'uikit/typography/display'
+import { Status, Timestamp, Transaction } from 'components/timeline'
 
 type DepositLogProps = {
     deposit: Deposit
@@ -45,12 +42,14 @@ export const DepositLog: FC<DepositLogProps> = ({ deposit }) => {
 export const DepositLogRecord = ({ status, deposit, tx = null }) => {
     const lastBlock = useSelector(getEthereumLastBlock)
 
-    const timestamp = tx && <DateTime value={tx.timestamp} className={styles.timestamp} />
+    const timestamp = tx && <Timestamp value={tx.timestamp} />
     const transaction = tx && <Transaction tx={tx} lastBlock={lastBlock} />
     const respawn = status === deposit.status && <Respawn deposit={deposit} />
 
     const redeem = status === deposit.status && status === DepositStatus.Redeemed && (
-        <DisplayLink to={`/redeems/${deposit.id}`} className={styles.redeemLink}>Open redeem operation</DisplayLink>
+        <DisplayLink to={`/redeems/${deposit.id}`} className={styles.redeemLink}>
+            Open redeem operation
+        </DisplayLink>
     )
 
     const state = status <= deposit.status ? (isErrorStatus(status) ? 'failure' : 'complete') : 'feature'
@@ -58,9 +57,7 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
     return (
         <TimelineEvent state={state}>
             <div className={styles.inline}>
-                <Heading size={4} className={styles.status}>
-                    {formatStatus(status)}
-                </Heading>
+                <Status>{formatStatus(status)}</Status>
                 {timestamp}
                 {respawn}
             </div>
@@ -70,22 +67,4 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
             </div>
         </TimelineEvent>
     )
-}
-
-const Transaction = ({ tx, lastBlock }) => {
-    if (null == tx) {
-        return null
-    }
-    return (
-        <>
-            <Address value={tx.id} copy={false} kind="tx" className={styles.transaction} />
-            <Confirmations block={tx.block} lastBlock={lastBlock} />
-        </>
-    )
-}
-
-const Confirmations = ({ block, lastBlock }) => {
-    const count = lastBlock - block
-
-    return count > 0 && <span className={styles.confirmations}> - {count} confirmations</span>
 }

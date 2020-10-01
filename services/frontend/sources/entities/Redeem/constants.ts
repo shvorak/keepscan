@@ -14,3 +14,8 @@ export const RedeemStatusNames = {
     [RedeemStatus.Liquidation]: 'Liquidation',
     [RedeemStatus.Liquidated]: 'Liquidated',
 }
+
+export const RedeemFailureStatuses = [
+    RedeemStatus.Liquidation,
+    RedeemStatus.Liquidated
+]

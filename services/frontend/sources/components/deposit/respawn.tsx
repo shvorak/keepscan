@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import styles from './respawn.css'
-import { DAPP_CONFIG } from '~/application/env'
+import { DAPP } from '~/application/env'
 import { DepositStatus } from 'entities/Deposit/constants'
 
 const RedeemActionConfig = {
@@ -13,11 +13,10 @@ const RedeemActionConfig = {
 
 
 export const Respawn = ({ deposit }) => {
-    const config = DAPP_CONFIG[location.hostname] || DAPP_CONFIG['testnet.keepscan.com']
     const action = RedeemActionConfig[deposit.status]
 
     const open = useCallback(() => {
-        window.open(`${config.host}${action.replace('{0}', deposit.id)}`)
+        window.open(`${DAPP}${action.replace('{0}', deposit.id)}`)
     }, [action])
 
     if (null == action) {

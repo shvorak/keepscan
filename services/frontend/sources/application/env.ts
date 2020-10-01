@@ -16,20 +16,15 @@ export const ENV_CONFIG = {
     },
 }
 
-export const DAPP_CONFIG = {
-    'keepscan.com': {
-        host: 'https://dapp.tbtc.network'
-    },
-    'testnet.keepscan.com': {
-        host: 'https://dapp.test.tbtc.network'
-    },
-
-    ByHost(hostname: string) {
-        return DAPP_CONFIG[hostname] || DAPP_CONFIG['testnet.keepscan.com']
-    }
-}
 
 export const HOST_ENV = location.hostname === 'keepscan.com' ? 'mainNet' : 'testNet'
+
+export const DAPP_CONFIG = {
+    mainNet: 'https://dapp.tbtc.network',
+    testNet: 'https://dapp.test.tbtc.network'
+}
+
+export const DAPP = DAPP_CONFIG[HOST_ENV]
 
 export const INDEXERS_CONFIG = {
     mainNet: {

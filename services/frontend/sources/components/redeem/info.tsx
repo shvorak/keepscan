@@ -8,20 +8,16 @@ const Schema = [
         label: 'Initiator',
         render: address,
     }),
+    field('id', {
+        label: 'TDT',
+        render: address,
+    }),
     field('contractId', {
         label: 'tBTC contract',
         render: address,
     }),
     field('lotSize', {
         label: 'Lot size',
-        render: amount,
-    }),
-    field('lotSizeFee', {
-        label: 'Lot size fee',
-        render: amount,
-    }),
-    field('lotSizeMinted', {
-        label: 'Lot size minted',
         render: amount,
     }),
     field('bitcoinAddress', {

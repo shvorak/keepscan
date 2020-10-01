@@ -4,6 +4,7 @@ import { useClasses } from 'shared/hooks/styles'
 
 type TimelineEventProps = ComponentProps<'div'> & {
     state?: 'complete' | 'failure' | 'feature'
+    style?: 'violet'
 }
 
 export const TimelineEvent: FC<TimelineEventProps> = ({ children, ...props }) => {

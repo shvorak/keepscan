@@ -30,6 +30,7 @@
     background-size: 100% 100%;
 }
 
+
 .item.state__complete,
 .item.state__complete:before {
     background: var(--electric-green);
@@ -40,6 +41,12 @@
     background-image: url("static/icons/check.svg");
 
 }
+.item.style__violet.state__complete,
+.item.style__violet.state__complete:before {
+    background: var(--signal-violet);
+    border-color: var(--signal-violet);
+}
+
 
 .item.state__failure,
 .item.state__failure:before {
@@ -68,6 +75,10 @@
     display: flex;
     flex-direction: column;
     place-content: center;
+}
+
+.legend > div {
+    white-space: nowrap;
 }
 
 .item.state__feature .legend {

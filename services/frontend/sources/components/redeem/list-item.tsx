@@ -28,7 +28,7 @@ export const RedeemItem: FC<RedeemRowProps> = ({ redeem }) => {
             </div>
             <View className={styles.cell__status}>
                 <Display size={15} secondary>
-                    {formatStatus(redeem)}
+                    {formatStatus(redeem.status)}
                 </Display>
                 <RedeemWorkflow redeem={redeem} />
             </View>
