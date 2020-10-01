@@ -7,5 +7,6 @@ export { RedeemList as RedeemListPage } from 'features/redeems'
 export const RedeemDetailsPage = () => {
     const { id } = useParams<{ id: string }>()
 
-    return <RedeemDetails id={id} />
+    return null
+    // return <RedeemDetails id={id} />
 }
