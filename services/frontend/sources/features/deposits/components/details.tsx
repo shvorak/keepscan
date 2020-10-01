@@ -17,7 +17,7 @@ import { DepositInfo } from 'components/deposit/info'
 import { DateTimeDistance } from 'uikit/display/datetime'
 import { DepositLog } from 'components/deposit/log'
 import { DepositStatus } from 'entities/Deposit/constants'
-import { DAPP, DAPP_CONFIG } from '~/application/env'
+import { DAPP } from '~/application/env'
 import { OperationCard, OperationCards } from 'components/details'
 
 export const DepositDetails = ({ id }) => {
@@ -33,13 +33,13 @@ export const DepositDetails = ({ id }) => {
     })
 
     // If deposit is null after 3 seconds we display error content
-    useTimeout(3000, () => {
+    useTimeout(6000, () => {
         setFailed(deposit == null)
     })
 
     const content = failed ? <Failed id={id} /> : loading ? <Loading /> : <Content deposit={deposit} />
 
-    const hasRedeem = deposit && deposit.status >= DepositStatus.Minted
+    const hasRedeem = deposit && deposit.status > DepositStatus.Minted
 
     return (
         <>
@@ -63,7 +63,7 @@ export const DepositDetails = ({ id }) => {
 
 const Failed = ({ id }) => (
     <Card>
-        <Placeholder wide>
+        <Placeholder wide className={styles.placeholder}>
             <Heading>Oooops :(</Heading>
             <Display>Can't retrieve information about deposit with id {id}</Display>
         </Placeholder>
@@ -72,7 +72,7 @@ const Failed = ({ id }) => (
 
 const Loading = () => (
     <Card>
-        <Placeholder wide>loading</Placeholder>
+        <Placeholder wide className={styles.placeholder}>loading</Placeholder>
     </Card>
 )
 

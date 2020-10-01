@@ -31,7 +31,7 @@ export const RedeemDetails = ({ id }) => {
     })
 
     // If redeem is null after 3 seconds we display error content
-    useTimeout(3000, () => {
+    useTimeout(6000, () => {
         setFailed(redeem == null)
     })
 
@@ -54,7 +54,7 @@ export const RedeemDetails = ({ id }) => {
 
 const Failed = ({ id }) => (
     <Card>
-        <Placeholder wide>
+        <Placeholder wide className={styles.placeholder}>
             <Heading>Oooops :(</Heading>
             <Display>Can't retrieve information about redeem with id {id}</Display>
         </Placeholder>
@@ -63,7 +63,7 @@ const Failed = ({ id }) => (
 
 const Loading = () => (
     <Card>
-        <Placeholder wide>loading</Placeholder>
+        <Placeholder wide className={styles.placeholder}>loading</Placeholder>
     </Card>
 )
 

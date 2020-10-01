@@ -43,6 +43,11 @@
     position: relative;
 }
 
+.placeholder {
+    padding: 50px 30px;
+    text-align: center;
+}
+
 .redeem {
     border: 3px solid var(--castle-black);
     background-color: transparent;

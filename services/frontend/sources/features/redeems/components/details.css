@@ -42,3 +42,8 @@
     margin-top: 20px;
     position: relative;
 }
+
+.placeholder {
+    padding: 50px 30px;
+    text-align: center;
+}
