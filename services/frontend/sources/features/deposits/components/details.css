@@ -12,12 +12,32 @@
     margin-left: auto;
 }
 
+.redeem {
+    border: 3px solid var(--castle-black);
+    background-color: transparent;
+    color: var(--castle-black);
+    transition: all .25s;
+    padding: 8px 12px;
+    font-size: 1.2em;
+    cursor: pointer;
+    font-weight: 500;
+    position: absolute;
+    top: 65px;
+    right: 15px;
+}
+.redeem:hover {
+    color: white;
+    background-color: var(--castle-black);
+}
+
+
 .stat {
     display: grid;
     gap: 20px;
     margin-bottom: 20px;
     grid-template-columns: 230px 300px 1fr;
 }
+
 
 .stat_card {
 }
@@ -45,8 +65,15 @@
 
 .details {
     margin-bottom: 20px;
+    position: relative;
 }
 
 .status {
     font-size: 1.4em;
+}
+
+@media screen and (max-width: 600px) {
+    .stat {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
 }

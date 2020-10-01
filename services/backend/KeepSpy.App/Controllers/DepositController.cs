@@ -22,8 +22,11 @@ namespace KeepSpy.App.Controllers
         }
 
         [HttpGet]
-        public Task<Paged<Deposit>> Get([FromQuery] PagerQuery query) 
-            => Db.Set<Deposit>().OrderByDescending(x => x.CreatedAt).ToPagedAsync(query);
+        public Task<Paged<DepositDto>> Get([FromQuery] PagerQuery query) 
+            => Db.Set<Deposit>()
+                .OrderByDescending(x => x.CreatedAt)
+                .ProjectTo<DepositDto>(Mapper.ConfigurationProvider)
+                .ToPagedAsync(query);
 
         [HttpGet("{id}")]
         public Task<DepositDto> Get([FromRoute] string id) => Db.Set<Deposit>()
@@ -32,8 +35,12 @@ namespace KeepSpy.App.Controllers
             .SingleOrDefaultAsync();
         
         [HttpGet("latest")]
-        public Task<Deposit[]> Latest()
-            => Db.Set<Deposit>().OrderByDescending(x => x.CreatedAt).Take(10).ToArrayAsync();
+        public Task<DepositDto[]> Latest()
+            => Db.Set<Deposit>()
+                .OrderByDescending(x => x.CreatedAt)
+                .ProjectTo<DepositDto>(Mapper.ConfigurationProvider)
+                .Take(10)
+                .ToArrayAsync();
 
 
         [HttpGet("random")]

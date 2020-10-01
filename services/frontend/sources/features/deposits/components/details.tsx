@@ -14,10 +14,10 @@ import { useAction } from 'shared/hooks/redux'
 import { fetchDeposit } from 'entities/Deposit/actions'
 import { formatStatus } from 'entities/Deposit/format'
 import { DepositInfo } from 'components/deposit/info'
-import { DAPP_CONFIG } from '~/application/env'
-import { DepositStatus } from 'entities/Deposit/constants'
 import { DateTimeDistance } from 'uikit/display/datetime'
 import { DepositLog } from 'components/deposit/log'
+import { DepositStatus } from 'entities/Deposit/constants'
+import { DAPP_CONFIG } from '~/application/env'
 
 export const DepositDetails = ({ id }) => {
     const [failed, setFailed] = useState(false)
@@ -94,13 +94,15 @@ const Content = ({ deposit }) => (
         </div>
 
         <Card className={styles.details}>
+            <CardHead>Operation Info</CardHead>
             <CardBody className={styles.body}>
                 <DepositInfo deposit={deposit} />
+                <Redeem deposit={deposit} />
             </CardBody>
         </Card>
 
         <Card>
-            <CardHead>Log</CardHead>
+            <CardHead>Operation Log</CardHead>
             <CardBody className={styles.body}>
                 <DepositLog deposit={deposit} />
             </CardBody>
@@ -108,26 +110,14 @@ const Content = ({ deposit }) => (
     </>
 )
 
-const RedeemActionConfig = {
-    [DepositStatus.InitiatingDeposit]: '/deposit/{0}/get-address',
-    [DepositStatus.WaitingForBtc]: '/deposit/{0}/pay',
-    [DepositStatus.BtcReceived]: '/deposit/{0}/pay/confirming',
-    [DepositStatus.SubmittingProof]: '/deposit/{0}/prove',
-    [DepositStatus.ApprovingTdtSpendLimit]: '/deposit/{0}/prove',
-    [DepositStatus.Minted]: '/deposit/{0}/congratulations',
-}
+const Redeem = ({deposit}) => {
+    const onRedeem = useCallback(() => {
+        const dapp = DAPP_CONFIG.ByHost(location.hostname)
+        window.open(`${dapp.host}/deposit/${deposit.id}/redeem`, 'blank')
+    }, [deposit])
 
-const DepositDAppLink = ({ deposit }) => {
-    const config = DAPP_CONFIG[location.hostname] || DAPP_CONFIG['testnet.keepscan.com']
-    const action = RedeemActionConfig[deposit.status]
-
-    const open = useCallback(() => {
-        window.open(`${config.host}${action.replace('{0}', deposit.id)}`)
-    }, [action])
-
-    if (null == action) {
+    if (deposit.status !== DepositStatus.Minted) {
         return null
     }
-
-    return <div onClick={open}>Open in DApp</div>
+    return <button onClick={onRedeem} className={styles.redeem}>Redeem</button>
 }

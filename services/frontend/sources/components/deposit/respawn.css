@@ -1,0 +1,10 @@
+.link {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    background-image: url("static/coins/tbtc.svg");
+    background-size: 100%;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-bottom: 3px;
+}

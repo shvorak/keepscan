@@ -1,6 +1,35 @@
 .address {
+    position: relative;
     font-family: monospace;
+    cursor: pointer;
+    white-space: nowrap;
 }
+
+.address.copied:after {
+    content: "Copied!";
+    position: absolute;
+    padding: 2px 4px;
+    background: white;
+    border: 1px solid var(--dry-stone);
+    color: var(--castle-black);
+    font-size: .8em;
+    border-radius: 2px;
+    margin-left: -35px;
+    left: 50%;
+    top: -25px;
+    z-index: 100;
+}
+
+.opener {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 2px;
+    margin-left: 3px;
+    background: url("static/icons/external-link.svg");
+}
+
 
 .address.color__brass {
     color: var(--rustic-brass);

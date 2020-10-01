@@ -54,7 +54,7 @@ const CustomTooltip = (props) => {
         {
             fill: color,
             color: color,
-            value: props.payload[0].payload.count,
+            value: props.payload && props.payload[0].payload.count,
             name: 'count',
         },
         ...props.payload,

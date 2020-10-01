@@ -18,3 +18,12 @@
 .value {
 
 }
+
+@media screen and (max-width: 600px) {
+    .item {
+        flex-direction: column;
+    }
+    .label {
+        margin-bottom: 5px;
+    }
+}

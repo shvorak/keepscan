@@ -10,10 +10,22 @@ import { Display } from 'uikit/typography/display'
 import { formatStatus } from 'entities/Deposit/format'
 import { Workflow, WorkflowStep } from 'uikit/display/workflow'
 import { Amount } from 'uikit/crypto/amount'
+import { buildStatuses } from 'entities/Deposit/helpers'
+import { DepositStatus } from 'entities/Deposit/constants'
+import { isErrorStatus } from 'entities/Deposit/specs'
 
 type DepositRowProps = {
     deposit: Deposit
 }
+
+const DepositSuccessStatuses = [
+    DepositStatus.InitiatingDeposit,
+    DepositStatus.WaitingForBtc,
+    DepositStatus.BtcReceived,
+    DepositStatus.SubmittingProof,
+    DepositStatus.ApprovingTdtSpendLimit,
+    DepositStatus.Minted
+]
 
 export const DepositItem: FC<DepositRowProps> = ({ deposit }) => {
 
@@ -22,7 +34,7 @@ export const DepositItem: FC<DepositRowProps> = ({ deposit }) => {
     return (
         <ListItem className={styles.row} interactive onClick={onClick}>
             <div className={styles.cell__id}>
-                <Address value={deposit.id} />
+                <Address link={false} value={deposit.id} />
                 <View paddingTop={8}>
                     <DateTimeDistance size={14} value={deposit.createdAt} secondary />
                 </View>
@@ -31,26 +43,31 @@ export const DepositItem: FC<DepositRowProps> = ({ deposit }) => {
                 <Display size={15} secondary>
                     {formatStatus(deposit.status)}
                 </Display>
-                <Workflow state="success">
-                    <WorkflowStep completed={deposit.status >= 0} />
-                    <WorkflowStep completed={deposit.status >= 1} />
-                    <WorkflowStep completed={deposit.status >= 2} />
-                    <WorkflowStep completed={deposit.status >= 3} />
-                    <WorkflowStep completed={deposit.status >= 4} />
-                    <WorkflowStep completed={deposit.status >= 5} />
-                </Workflow>
+                <DepositFlow deposit={deposit} />
             </View>
             <View className={styles.cell__value}>
                 <Amount value={deposit.lotSize} />
             </View>
             <View className={styles.cell__address}>
                 <Display>
-                    <Address color="green" value={deposit.senderAddress} />
+                    <Address link={false} color="green" value={deposit.senderAddress} />
                 </Display>
                 <Display>
-                    <Address color="brass" value={deposit.bitcoinAddress} />
+                    <Address link={false} color="brass" value={deposit.bitcoinAddress} />
                 </Display>
             </View>
         </ListItem>
+    )
+}
+
+const DepositFlow = ({deposit}) => {
+    const statuses = buildStatuses(DepositSuccessStatuses, deposit.transactions || [])
+        .map(status => <WorkflowStep key={status} completed={deposit.status >= status} />)
+
+    const state = isErrorStatus(deposit.status) ? 'warning' : 'success'
+    return (
+        <Workflow state={state}>
+            {statuses}
+        </Workflow>
     )
 }
