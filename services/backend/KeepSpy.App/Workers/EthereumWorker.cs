@@ -48,7 +48,7 @@ namespace KeepSpy.App.Workers
                 using (var scope = _scopeFactory.CreateScope())
                 {
                     var db = scope.ServiceProvider.GetRequiredService<KeepSpyContext>();
-
+                    _logger.LogInformation("EthereumWorker loop");
                     try
 					{
                         Run(db);
