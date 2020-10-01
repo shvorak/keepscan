@@ -30,7 +30,7 @@ export const DisplayLink: FC<DisplayLinkProps> = ({ children, to, ...props }) =>
     const styleMap = useStyles(props, DisplayPropsStyles)
 
     const rules = useMemo(() => {
-        const isExternal = to.match('https://')
+        const isExternal = to && to.match('https://')
         return {
             target: isExternal && '__blank',
             rel: isExternal && 'noreferer noopener'

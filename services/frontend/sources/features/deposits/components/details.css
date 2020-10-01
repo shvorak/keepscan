@@ -17,13 +17,13 @@
     background-color: transparent;
     color: var(--castle-black);
     transition: all .25s;
-    padding: 8px 12px;
-    font-size: 1.2em;
+    padding: 5px 12px;
+    font-size: 1.1em;
     cursor: pointer;
     font-weight: 500;
     position: absolute;
-    top: 65px;
-    right: 15px;
+    top: 6px;
+    right: 6px;
 }
 .redeem:hover {
     color: white;

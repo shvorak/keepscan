@@ -8,8 +8,12 @@ const Schema = [
         label: 'Initiator',
         render: address,
     }),
+    field('id', {
+        label: 'TDT',
+        render: address,
+    }),
     field('contractId', {
-        label: 'tBTC contract',
+        label: 'Deposit Factory Contract',
         render: address,
     }),
     field('lotSize', {

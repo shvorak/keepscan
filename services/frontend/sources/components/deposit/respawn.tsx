@@ -9,7 +9,6 @@ const RedeemActionConfig = {
     [DepositStatus.BtcReceived]: '/deposit/{0}/pay/confirming',
     [DepositStatus.SubmittingProof]: '/deposit/{0}/prove',
     [DepositStatus.ApprovingTdtSpendLimit]: '/deposit/{0}/prove',
-    [DepositStatus.Minted]: '/deposit/{0}/congratulations',
 }
 
 

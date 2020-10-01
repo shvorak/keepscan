@@ -1,11 +1,10 @@
 .address {
-    position: relative;
     font-family: monospace;
     cursor: pointer;
     white-space: nowrap;
 }
 
-.address.copied:after {
+.address.copied .clipboard:after {
     content: "Copied!";
     position: absolute;
     padding: 2px 4px;
@@ -20,14 +19,15 @@
     z-index: 100;
 }
 
-.opener {
+.clipboard {
     width: 1em;
     height: 1em;
     display: inline-block;
     vertical-align: middle;
     margin-bottom: 2px;
     margin-left: 3px;
-    background: url("static/icons/external-link.svg");
+    position: relative;
+    background: url("static/icons/files.svg");
 }
 
 

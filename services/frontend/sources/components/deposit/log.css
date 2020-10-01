@@ -1,79 +1,3 @@
-.log {
-
-}
-
-.item {
-    width: 40px;
-    height: 40px;
-    margin-top: 30px;
-    position: relative;
-    border-radius: 50%;
-    background: var(--dry-stone);
-    border: 1px solid var(--wet-stone);
-}
-.item:before {
-    content: "";
-    width: 5px;
-    height: 30px;
-    top: -31px;
-    left: 17px;
-    display: block;
-    position: absolute;
-    background: var(--wet-stone);
-}
-.item:after {
-    position: absolute;
-    height: 20px;
-    width: 20px;
-    left: 9px;
-    top: 9px;
-    background-size: 100% 100%;
-}
-
-.item.state__complete,
-.item.state__complete:before {
-    background: var(--electric-green);
-    border-color: var(--electric-green);
-}
-.item.state__complete:after {
-    content: "";
-    background-image: url("static/icons/check.svg");
-
-}
-
-.item.state__failure,
-.item.state__failure:before {
-    background: var(--simply-red);
-    border-color: var(--simply-red);
-}
-
-.item.state__failure:after {
-    content: "";
-    background-image: url("static/icons/block.svg");
-}
-
-.item:first-child {
-    margin-top: 0;
-}
-.item:first-child:before {
-    content: none;
-}
-
-.legend {
-    white-space: nowrap;
-    position: absolute;
-    top: 0;
-    left: 50px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    place-content: center;
-}
-
-.item.state__feature .legend {
-    color: var(--wet-stone);
-}
-
 .inline {
     white-space: nowrap;
 }
@@ -91,7 +15,24 @@
 .transaction {
     display: inline-block;
 }
+
 .confirmations {
     color: #a1a1a1;
     font-size: .9em;
+}
+
+.redeemLink {
+    color: var(--signal-violet);
+    font-size: 1em;
+}
+
+.redeemLink:after {
+    width: 1em;
+    height: 1em;
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 2px;
+    margin-left: 3px;
+    background: url("static/icons/external-link.svg");
 }

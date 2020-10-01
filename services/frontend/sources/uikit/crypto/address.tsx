@@ -34,6 +34,7 @@ export const Address: FC<AddressProps> = ({ value, copy, link, kind, full, ...pr
     })
 
     const onCopy = useCallback(event => {
+        event.preventDefault()
         event.stopPropagation()
         clipboard.copy(value)
     }, [value])
@@ -47,11 +48,11 @@ export const Address: FC<AddressProps> = ({ value, copy, link, kind, full, ...pr
     const indexerLink = link && getNetworkLink(value, kind)
 
     return (
-        <div className={className} onClick={copy && onCopy}>
+        <DisplayLink to={indexerLink} className={className}>
             {address}
 
-            {indexerLink && <DisplayLink className={styles.opener} to={indexerLink} />}
-        </div>
+            {copy && <div className={styles.clipboard} onClick={onCopy} />}
+        </DisplayLink>
     )
 }
 

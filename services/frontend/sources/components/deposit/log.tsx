@@ -14,6 +14,7 @@ import { isErrorStatus } from 'entities/Deposit/specs'
 import { buildStatuses, byStatus } from 'entities/Deposit/helpers'
 import { Respawn } from 'components/deposit/respawn'
 import { TimelineEvent } from 'uikit/display/timeline'
+import { DisplayLink } from 'uikit/typography/display'
 
 type DepositLogProps = {
     deposit: Deposit
@@ -48,6 +49,10 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
     const transaction = tx && <Transaction tx={tx} lastBlock={lastBlock} />
     const respawn = status === deposit.status && <Respawn deposit={deposit} />
 
+    const redeem = status === deposit.status && status === DepositStatus.Redeemed && (
+        <DisplayLink to={`/redeems/${deposit.id}`} className={styles.redeemLink}>Open redeem operation</DisplayLink>
+    )
+
     const state = status <= deposit.status ? (isErrorStatus(status) ? 'failure' : 'complete') : 'feature'
 
     return (
@@ -59,7 +64,10 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
                 {timestamp}
                 {respawn}
             </div>
-            <div className={styles.inline}>{transaction}</div>
+            <div className={styles.inline}>
+                {transaction}
+                {redeem}
+            </div>
         </TimelineEvent>
     )
 }
@@ -70,7 +78,7 @@ const Transaction = ({ tx, lastBlock }) => {
     }
     return (
         <>
-            <Address value={tx.id} kind="tx" className={styles.transaction} />
+            <Address value={tx.id} copy={false} kind="tx" className={styles.transaction} />
             <Confirmations block={tx.block} lastBlock={lastBlock} />
         </>
     )
