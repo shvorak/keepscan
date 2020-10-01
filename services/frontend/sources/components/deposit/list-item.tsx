@@ -62,7 +62,7 @@ export const DepositItem: FC<DepositRowProps> = ({ deposit }) => {
 
 const DepositFlow = ({deposit}) => {
     const statuses = buildStatuses(DepositSuccessStatuses, deposit.transactions || [])
-        .map(status => <WorkflowStep completed={deposit.status >= status} />)
+        .map(status => <WorkflowStep key={status} completed={deposit.status >= status} />)
 
     const state = isErrorStatus(deposit.status) ? 'warning' : 'success'
     return (
