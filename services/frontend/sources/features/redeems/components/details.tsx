@@ -8,11 +8,15 @@ import { getRedeemById } from 'entities/Redeem/queries'
 import { Card, CardBody, CardHead } from 'uikit/layout/card'
 import { Placeholder } from 'uikit/display/placeholder'
 import { Heading } from 'uikit/typography'
-import { Display } from 'uikit/typography/display'
+import { Display, DisplayLink } from 'uikit/typography/display'
 import { Redeem } from 'entities/Redeem/types'
 import { fetchRedeem } from 'entities/Redeem/actions'
 import { RedeemInfo } from 'components/redeem/info'
 import { RedeemLog } from 'components/redeem/log'
+import { OperationCard, OperationCards } from 'components/details'
+import { Amount } from 'uikit/crypto/amount'
+import { DateTimeDistance } from 'uikit/display/datetime'
+import { formatStatus } from 'entities/Redeem/format'
 
 export const RedeemDetails = ({ id }) => {
     const [failed, setFailed] = useState(false)
@@ -36,7 +40,9 @@ export const RedeemDetails = ({ id }) => {
     return (
         <>
             <div className={styles.title}>
-                <Heading>Redeem</Heading>
+                <Heading className={styles.name}>Redeem</Heading>
+                <DisplayLink to={`/deposits/${id}`} className={styles.switch}>Deposit</DisplayLink>
+
                 <Display className={styles.tdt} size={20}>
                     {id}
                 </Display>
@@ -61,14 +67,28 @@ const Loading = () => (
     </Card>
 )
 
-const Content = ({redeem}) => {
-
+const Content = ({ redeem }) => {
+    // TODO: Fix bug in Amount className
     return (
         <>
+            <OperationCards>
+                <OperationCard title="Lot size">
+                    <Amount className={null} value={redeem.lotSize} />
+                </OperationCard>
+
+                <OperationCard title="Initiated">
+                    <DateTimeDistance className={styles.created_at} value={redeem.createdAt} />
+                </OperationCard>
+
+                <OperationCard title="Status">
+                    <Display className={styles.status}>{formatStatus(redeem.status)}</Display>
+                </OperationCard>
+            </OperationCards>
+
             <Card className={styles.panel}>
                 <CardHead>Operation details</CardHead>
                 <CardBody>
-                    <RedeemInfo redeem={redeem}  />
+                    <RedeemInfo redeem={redeem} />
                 </CardBody>
             </Card>
 

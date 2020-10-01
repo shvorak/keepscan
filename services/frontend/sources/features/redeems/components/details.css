@@ -1,18 +1,42 @@
 .title {
     color: var(--dry-stone);
-    display: flex;
     align-items: center;
     margin-bottom: 20px;
 }
 .title .tdt {
-    padding-left: 20px;
+    padding-top: 7px;
+    display: block;
+}
+
+.title .name {
+    display: inline-block;
 }
 
 .title .action {
     margin-left: auto;
 }
 
-
+.switch {
+    color: #787878;
+    font-size: 2em;
+    font-weight: 500;
+    display: inline-block;
+    margin-left: 30px;
+    transition: color .25s;
+    position: relative;
+}
+.switch:hover {
+    color: white;
+}
+.switch:before {
+    content: "";
+    background-color: #787878;
+    position: absolute;
+    height: 100%;
+    width: 2px;
+    left: -15px;
+    top: 0;
+}
 
 .panel {
     margin-bottom: 20px;

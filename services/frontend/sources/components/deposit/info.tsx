@@ -12,10 +12,10 @@ const Schema = [
         label: 'TDT',
         render: address,
     }),
-    field('contractId', {
-        label: 'Deposit Factory Contract',
-        render: address,
-    }),
+    // field('contractId', {
+    //     label: 'Deposit Factory Contract',
+    //     render: address,
+    // }),
     field('lotSize', {
         label: 'Lot size',
         render: amount,

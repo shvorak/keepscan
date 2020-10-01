@@ -1,4 +1,5 @@
 import React, { ComponentProps, createElement, FC, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { useClasses, useStyles } from 'shared/hooks/styles'
 import styles from './display.css'
 
@@ -29,17 +30,26 @@ export const DisplayLink: FC<DisplayLinkProps> = ({ children, to, ...props }) =>
     const className = useClasses(styles, 'display-link', props)
     const styleMap = useStyles(props, DisplayPropsStyles)
 
+    const isExternal = to && to.match('https://')
+
     const rules = useMemo(() => {
-        const isExternal = to && to.match('https://')
         return {
             target: isExternal && '__blank',
-            rel: isExternal && 'noreferer noopener'
+            rel: isExternal && 'noreferer noopener',
         }
     }, [to])
 
+    if (isExternal) {
+        return (
+            <a href={to} className={className} style={styleMap} {...rules} {...props}>
+                {children}
+            </a>
+        )
+    }
+
     return (
-        <a href={to} className={className} style={styleMap} {...rules} {...props}>
+        <Link to={to} className={className} style={styleMap}>
             {children}
-        </a>
+        </Link>
     )
 }

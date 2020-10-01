@@ -1,76 +1,47 @@
 .title {
     color: var(--dry-stone);
-    display: flex;
     align-items: center;
     margin-bottom: 20px;
 }
 .title .tdt {
-    padding-left: 20px;
+    padding-top: 7px;
+    display: block;
+}
+
+.title .name {
+    display: inline-block;
 }
 
 .title .action {
     margin-left: auto;
 }
 
-.redeem {
-    border: 3px solid var(--castle-black);
-    background-color: transparent;
-    color: var(--castle-black);
-    transition: all .25s;
-    padding: 5px 12px;
-    font-size: 1.1em;
-    cursor: pointer;
+.switch {
+    color: #787878;
+    font-size: 2em;
     font-weight: 500;
-    position: absolute;
-    top: 6px;
-    right: 6px;
-}
-.redeem:hover {
-    color: white;
-    background-color: var(--castle-black);
-}
-
-
-.stat {
-    display: grid;
-    gap: 20px;
-    margin-bottom: 20px;
-    grid-template-columns: 230px 300px 1fr;
-}
-
-
-.stat_card {
-}
-.stat_body {
-    padding-top: 0;
-}
-
-.stat_volume {
-    text-align: right;
-}
-
-.stat_volume_head {
-    font-size: 1.4em;
-}
-
-.stat_volume_sub {
-    font-size: 1em;
     display: inline-block;
-    color: #a1a1a1;
-}
-
-.created_at {
-    font-size: 1.4em;
-}
-
-.details {
-    margin-bottom: 20px;
+    margin-left: 30px;
+    transition: color .25s;
     position: relative;
 }
-
-.status {
-    font-size: 1.4em;
+.switch:hover {
+    color: white;
 }
+.switch:before {
+    content: "";
+    background-color: #787878;
+    position: absolute;
+    height: 100%;
+    width: 2px;
+    left: -15px;
+    top: 0;
+}
+
+.panel {
+    margin-bottom: 20px;
+}
+
 
 @media screen and (max-width: 600px) {
     .stat {

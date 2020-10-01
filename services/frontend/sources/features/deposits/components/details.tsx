@@ -7,7 +7,7 @@ import { useTimeout } from 'shared/hooks/timers'
 import { Card, CardBody, CardHead } from 'uikit/layout/card'
 import { Placeholder } from 'uikit/display/placeholder'
 import { Heading } from 'uikit/typography'
-import { Display } from 'uikit/typography/display'
+import { Display, DisplayLink } from 'uikit/typography/display'
 import { Amount } from 'uikit/crypto/amount'
 import { useMount } from 'shared/hooks/lifecycle'
 import { useAction } from 'shared/hooks/redux'
@@ -18,6 +18,7 @@ import { DateTimeDistance } from 'uikit/display/datetime'
 import { DepositLog } from 'components/deposit/log'
 import { DepositStatus } from 'entities/Deposit/constants'
 import { DAPP, DAPP_CONFIG } from '~/application/env'
+import { OperationCard, OperationCards } from 'components/details'
 
 export const DepositDetails = ({ id }) => {
     const [failed, setFailed] = useState(false)
@@ -38,10 +39,18 @@ export const DepositDetails = ({ id }) => {
 
     const content = failed ? <Failed id={id} /> : loading ? <Loading /> : <Content deposit={deposit} />
 
+    const hasRedeem = deposit && deposit.status >= DepositStatus.Minted
+
     return (
         <>
             <div className={styles.title}>
-                <Heading>Deposit</Heading>
+                <Heading className={styles.name}>Deposit</Heading>
+                {hasRedeem && (
+                    <DisplayLink to={`/redeems/${deposit.id}`} className={styles.switch}>
+                        Redeem
+                    </DisplayLink>
+                )}
+
                 <Display className={styles.tdt} size={20}>
                     {id}
                 </Display>
@@ -69,31 +78,21 @@ const Loading = () => (
 
 const Content = ({ deposit }) => (
     <>
-        <div className={styles.stat}>
-            <Card className={styles.stat_card}>
-                <CardHead stroked={false}>Lot size</CardHead>
-                <CardBody className={styles.stat_body}>
-                    <div className={styles.stat_volume}>
-                        <Amount className={styles.stat_volume_head} value={deposit.lotSize} />
-                    </div>
-                </CardBody>
-            </Card>
+        <OperationCards>
+            <OperationCard title="Lot size">
+                <Amount className={null} value={deposit.lotSize} />
+            </OperationCard>
 
-            <Card className={styles.stat_card}>
-                <CardHead stroked={false}>Created</CardHead>
-                <CardBody className={styles.stat_body}>
-                    <DateTimeDistance className={styles.created_at} value={deposit.createdAt} />
-                </CardBody>
-            </Card>
-            <Card className={styles.stat_card}>
-                <CardHead stroked={false}>Status</CardHead>
-                <CardBody className={styles.stat_body}>
-                    <Display className={styles.status}>{formatStatus(deposit.status)}</Display>
-                </CardBody>
-            </Card>
-        </div>
+            <OperationCard title="Initiated">
+                <DateTimeDistance value={deposit.createdAt} />
+            </OperationCard>
 
-        <Card className={styles.details}>
+            <OperationCard title="Status">
+                <Display>{formatStatus(deposit.status)}</Display>
+            </OperationCard>
+        </OperationCards>
+
+        <Card className={styles.panel}>
             <CardHead>Operation Info</CardHead>
             <CardBody className={styles.body}>
                 <DepositInfo deposit={deposit} />
@@ -110,7 +109,7 @@ const Content = ({ deposit }) => (
     </>
 )
 
-const Redeem = ({deposit}) => {
+const Redeem = ({ deposit }) => {
     const onRedeem = useCallback(() => {
         window.open(`${DAPP}/deposit/${deposit.id}/redeem`, 'blank')
     }, [deposit])
@@ -118,5 +117,9 @@ const Redeem = ({deposit}) => {
     if (deposit.status !== DepositStatus.Minted) {
         return null
     }
-    return <button onClick={onRedeem} className={styles.redeem}>Redeem</button>
+    return (
+        <button onClick={onRedeem} className={styles.redeem}>
+            Redeem
+        </button>
+    )
 }

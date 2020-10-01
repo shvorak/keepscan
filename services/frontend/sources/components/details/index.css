@@ -1,0 +1,12 @@
+
+.card_block {
+    display: grid;
+    gap: 20px;
+    margin-bottom: 20px;
+    grid-template-columns: 230px 300px 1fr;
+}
+
+.card_body {
+    padding-top: 0;
+    font-size: 1.4em;
+}

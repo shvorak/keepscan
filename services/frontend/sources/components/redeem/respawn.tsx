@@ -5,9 +5,9 @@ import { DisplayLink } from 'uikit/typography/display'
 import { DAPP } from '~/application/env'
 
 const RespawnActions = {
-    [RedeemStatus.Requested]: 'redeem/{0}/redemption',
-    [RedeemStatus.Signed]: 'redeem/{0}/redemption/signing',
-    [RedeemStatus.Redeemed]: 'redeem/{0}/redemption/confirming',
+    [RedeemStatus.Requested]: 'deposit/{0}/redemption',
+    [RedeemStatus.Signed]: 'deposit/{0}/redemption/signing',
+    [RedeemStatus.Redeemed]: 'deposit/{0}/redemption/confirming',
 }
 
 export const RedeemRespawn = ({ status, redeem }) => {
