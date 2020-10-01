@@ -9,6 +9,7 @@ import { useClipboard } from 'use-clipboard-copy'
 type AddressProps = ComponentProps<'a'> & {
     full?: boolean
     kind?: 'address' | 'tx'
+    link?: boolean
     value: string
     color?: 'green' | 'brass' | 'violet'
 }
@@ -22,7 +23,7 @@ const getNetworkLink = (address: string, kind: 'address' | 'tx' = 'address') => 
     return `${baseUrl}/${kind}/${address}`
 }
 
-export const Address: FC<AddressProps> = ({ value, kind, full, ...props }) => {
+export const Address: FC<AddressProps> = ({ value, link, kind, full, ...props }) => {
     const address = useMemo(() => {
         return value && (full ? value : ellipsis(6, 4, value))
     }, [value])
@@ -42,7 +43,7 @@ export const Address: FC<AddressProps> = ({ value, kind, full, ...props }) => {
         return null
     }
 
-    const indexerLink = getNetworkLink(value, kind)
+    const indexerLink = link && getNetworkLink(value, kind)
 
     return (
         <div className={className} onClick={onCopy}>
@@ -55,6 +56,7 @@ export const Address: FC<AddressProps> = ({ value, kind, full, ...props }) => {
 
 Address.defaultProps = {
     full: false,
+    link: true,
     kind: 'address',
     color: 'violet',
 }

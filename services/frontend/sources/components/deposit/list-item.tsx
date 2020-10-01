@@ -34,7 +34,7 @@ export const DepositItem: FC<DepositRowProps> = ({ deposit }) => {
     return (
         <ListItem className={styles.row} interactive onClick={onClick}>
             <div className={styles.cell__id}>
-                <Address value={deposit.id} />
+                <Address link={false} value={deposit.id} />
                 <View paddingTop={8}>
                     <DateTimeDistance size={14} value={deposit.createdAt} secondary />
                 </View>
@@ -50,10 +50,10 @@ export const DepositItem: FC<DepositRowProps> = ({ deposit }) => {
             </View>
             <View className={styles.cell__address}>
                 <Display>
-                    <Address color="green" value={deposit.senderAddress} />
+                    <Address link={false} color="green" value={deposit.senderAddress} />
                 </Display>
                 <Display>
-                    <Address color="brass" value={deposit.bitcoinAddress} />
+                    <Address link={false} color="brass" value={deposit.bitcoinAddress} />
                 </Display>
             </View>
         </ListItem>
