@@ -11,6 +11,7 @@ import { formatStatus } from 'entities/Redeem/format'
 import { Workflow, WorkflowStep } from 'uikit/display/workflow'
 import { Amount } from 'uikit/crypto/amount'
 import { RedeemStatus } from 'entities/Redeem/constants'
+import { isErrorStatus } from 'entities/Redeem/specs'
 
 type RedeemRowProps = {
     redeem: Redeem
@@ -49,15 +50,26 @@ export const RedeemItem: FC<RedeemRowProps> = ({ redeem }) => {
 
 
 const RedeemWorkflow = ({redeem}) => {
-    const state = redeem.status === RedeemStatus.Liquidated
+    const state = isErrorStatus(redeem.status)
         ? 'warning'
         : 'success'
+
+    const steps = isErrorStatus(redeem.status) ? (
+        <>
+            <WorkflowStep completed={redeem.status >= 3} />
+            <WorkflowStep completed={redeem.status >= 4} />
+        </>
+    ) : (
+        <>
+            <WorkflowStep completed={redeem.status >= 1} />
+            <WorkflowStep completed={redeem.status >= 2} />
+        </>
+    )
 
     return (
         <Workflow state={state} variant="redeem">
             <WorkflowStep completed={redeem.status >= 0} />
-            <WorkflowStep completed={redeem.status >= 1} />
-            <WorkflowStep completed={redeem.status >= 2} />
+            {steps}
         </Workflow>
     )
 }
