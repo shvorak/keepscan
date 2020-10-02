@@ -62,7 +62,7 @@ namespace KeepSpy.App.Workers
                     _logger.LogInformation("EthereumWorker loop");
                     try
                     {
-                        await Run(db, keychain);
+                        Run(db, keychain);
                     }
                     catch (Exception e)
                     {
