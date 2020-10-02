@@ -144,10 +144,11 @@ namespace KeepSpy.App.Workers
                     }
 				}
 			}
-            foreach(var pubKey in regpubKeyLogs.result)
+            db.SaveChanges();
+            foreach (var pubKey in regpubKeyLogs.result)
 			{
                 string id = "0x" + pubKey.topics[1].Substring(26);
-                var deposit = db.Set<Deposit>().SingleOrDefault(o => o.Id == id);
+                var deposit = db.Find<Deposit>(id);
                 if (deposit != null && deposit.Status == DepositStatus.InitiatingDeposit)
 				{
                     var _signingGroupPubkeyX = pubKey.data.Substring(2, 64);
@@ -163,10 +164,11 @@ namespace KeepSpy.App.Workers
                 if (deposit != null)
                     AddLog(pubKey, deposit, DepositStatus.WaitingForBtc);
 			}
+            db.SaveChanges();
             foreach (var setupFail in setupFailLogs.result)
             {
                 string id = "0x" + setupFail.topics[1].Substring(26);
-                var deposit = db.Set<Deposit>().SingleOrDefault(o => o.Id == id);
+                var deposit = db.Find<Deposit>(id);
                 if (deposit != null && deposit.Status != DepositStatus.SetupFailed)
                 {
                     deposit.Status = DepositStatus.SetupFailed;
@@ -176,10 +178,11 @@ namespace KeepSpy.App.Workers
                 if (deposit != null)
                     AddLog(setupFail, deposit, DepositStatus.SetupFailed);
             }
+            db.SaveChanges();
             foreach (var funded in fundedLogs.result)
             {
                 string id = "0x" + funded.topics[1].Substring(26);
-                var deposit = db.Set<Deposit>().SingleOrDefault(o => o.Id == id);
+                var deposit = db.Find<Deposit>(id);
                 if (deposit != null && deposit.Status <= DepositStatus.BtcReceived)
                 {
                     deposit.Status = DepositStatus.SubmittingProof;
@@ -189,6 +192,7 @@ namespace KeepSpy.App.Workers
                 if (deposit != null)
                     AddLog(funded, deposit, DepositStatus.SubmittingProof);
             }
+            db.SaveChanges();
             foreach (var approval in approvalLogs.result)
 			{
                 if (approval.topics.Count != 4)
@@ -204,6 +208,7 @@ namespace KeepSpy.App.Workers
                 if (deposit != null)
                     AddLog(approval, deposit, DepositStatus.ApprovingSpendLimit);
             }
+            db.SaveChanges();
             foreach (var vmTx in tdt2btcTx.result)
             {
                 if (vmTx.input.StartsWith("0xba2238d0"))
@@ -259,14 +264,14 @@ namespace KeepSpy.App.Workers
                     }
                 }
             }
-
+            db.SaveChanges();
             var gotRedemtionSignatureLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: GotRedemptionSignatureEvent);
             foreach (var gotRedemtion in gotRedemtionSignatureLogs.result)
             {
                 if (gotRedemtion.topics.Count != 3)
                     continue;
                 string id = "0x" + gotRedemtion.topics[1].Substring(26);
-                var redeem = db.Set<Redeem>().SingleOrDefault(o => o.Id == id);
+                var redeem = db.Find<Redeem>(id);
                 if (redeem != null && redeem.Status == RedeemStatus.Requested)
                 {
                     redeem.Status = RedeemStatus.Signed;
@@ -276,13 +281,14 @@ namespace KeepSpy.App.Workers
                 if (redeem != null)
                     AddLog2(gotRedemtion, redeem, RedeemStatus.Signed);
             }
+            db.SaveChanges();
             var redeemedLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: RedeemedEvent);
             foreach (var redeemed in redeemedLogs.result)
             {
                 if (redeemed.topics.Count != 3)
                     continue;
                 string id = "0x" + redeemed.topics[1].Substring(26);
-                var redeem = db.Set<Redeem>().SingleOrDefault(o => o.Id == id);
+                var redeem = db.Find<Redeem>(id);
                 if (redeem != null && redeem.Status == RedeemStatus.Signed)
                 {
                     redeem.Status = RedeemStatus.Redeemed;
@@ -293,13 +299,14 @@ namespace KeepSpy.App.Workers
                 if (redeem != null)
                     AddLog2(redeemed, redeem, RedeemStatus.Redeemed);
             }
+            db.SaveChanges();
             var startedLiquidaionLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: StartedLiquidationEvent);
             foreach (var startedLiquidaion in startedLiquidaionLogs.result)
             {
                 if (startedLiquidaion.topics.Count != 2)
                     continue;
                 string id = "0x" + startedLiquidaion.topics[1].Substring(26);
-                var redeem = db.Set<Redeem>().SingleOrDefault(o => o.Id == id);
+                var redeem = db.Find<Redeem>(id);
                 if (redeem != null && redeem.Status == RedeemStatus.Requested)
                 {
                     redeem.Status = RedeemStatus.Liquidation;
@@ -309,13 +316,14 @@ namespace KeepSpy.App.Workers
                 if (redeem != null)
                     AddLog2(startedLiquidaion, redeem, RedeemStatus.Liquidation);
             }
+            db.SaveChanges();
             var liquidatedLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: LiquidatedEvent);
             foreach (var liquidated in liquidatedLogs.result)
             {
                 if (liquidated.topics.Count != 2)
                     continue;
                 string id = "0x" + liquidated.topics[1].Substring(26);
-                var redeem = db.Set<Redeem>().SingleOrDefault(o => o.Id == id);
+                var redeem = db.Find<Redeem>(id);
                 if (redeem != null && redeem.Status == RedeemStatus.Requested)
                 {
                     redeem.Status = RedeemStatus.Liquidated;
