@@ -20,6 +20,6 @@ namespace KeepSpy.Domain
         public string? Sender { get; set; }
         public string? Recipient { get; set; }
         public NetworkKind Kind { get; set; }
-
+        
     }
 }

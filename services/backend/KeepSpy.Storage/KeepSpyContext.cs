@@ -14,9 +14,6 @@ namespace KeepSpy.Storage
         {
             modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
             modelBuilder.ApplyPostgresConventions();
-            modelBuilder.Entity<Transaction>()
-               .Property(b => b.Kind)
-               .HasDefaultValue(NetworkKind.Ethereum);
         }
     }
 }

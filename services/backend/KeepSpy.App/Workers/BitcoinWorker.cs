@@ -106,7 +106,7 @@ namespace KeepSpy.App.Workers
                             Timestamp = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(tx.status.block_time),
                             Amount = (sender == deposit.BitcoinAddress ? tx.vout[0].value / 100000000M : tx.vout.Where(o => o.scriptpubkey_address == deposit.BitcoinAddress).Sum(v => v.value/ 100000000M)) ,
                             Fee = tx.fee / 100000000M,
-                            Kind = network.Kind,
+                            Kind = NetworkKind.Bitcoin,
                             Sender = sender,
                             Recipient = recipient
                         };
