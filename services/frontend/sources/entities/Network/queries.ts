@@ -10,3 +10,6 @@ const getLastBlock = (networkKind: 1 | 2) => (state) => {
 
 
 export const getEthereumLastBlock = getLastBlock(1)
+
+
+export const getNetworkLastBlock = (kind: 1 | 2) => getLastBlock(kind)
