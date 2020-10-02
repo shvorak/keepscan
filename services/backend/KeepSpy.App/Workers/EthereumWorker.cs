@@ -78,7 +78,7 @@ namespace KeepSpy.App.Workers
         string tbtccontract;
         string tbtcsystem;
 
-        async Task Run(KeepSpyContext db, KeychainService keychainService)
+        void Run(KeepSpyContext db, KeychainService keychainService)
         {
             var network = db.Set<Network>()
                 .SingleOrDefault(n => n.Kind == NetworkKind.Ethereum && n.IsTestnet == _options.IsTestnet);
@@ -172,7 +172,7 @@ namespace KeepSpy.App.Workers
                     var pubkeyX = pubKey.data.Substring(2, 64);
                     var pubkeyY = pubKey.data.Substring(66, 64);
 
-                    var address = await keychainService.GetBtcAddress(pubkeyX, pubkeyY, network.IsTestnet);
+                    var address = keychainService.GetBtcAddress(pubkeyX, pubkeyY, network.IsTestnet);
 
                     deposit.BitcoinAddress = address;
                     deposit.Status = DepositStatus.WaitingForBtc;

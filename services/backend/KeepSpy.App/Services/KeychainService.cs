@@ -13,18 +13,18 @@ namespace KeepSpy.App.Services
             _http = http;
         }
 
-        public async Task<string?> GetBtcAddress(string keyX, string keyY, bool isTest = true)
+        public string? GetBtcAddress(string keyX, string keyY, bool isTest = true)
         {
             var network = isTest ? "testnet" : "mainnet";
             try
             {
-                return await _http.GetStringAsync($"/btc/pubkey?x={keyX}&y={keyY}&network={network}");
+                return _http.GetStringAsync($"/btc/pubkey?x={keyX}&y={keyY}&network={network}").ConfigureAwait(false)
+                    .GetAwaiter().GetResult();
             }
             catch (Exception e)
             {
                 return null;
             }
         }
-        
     }
 }
