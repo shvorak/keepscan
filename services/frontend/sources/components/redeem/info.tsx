@@ -21,7 +21,7 @@ const Schema = [
         render: amount,
     }),
     field('bitcoinAddress', {
-        label: 'Bitcoin deposit address',
+        label: 'Bitcoin recipient address',
         render: address,
         payload: {
             color: 'brass',

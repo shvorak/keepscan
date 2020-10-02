@@ -18,8 +18,12 @@ namespace KeepSpy.App.Services
             var network = isTest ? "testnet" : "mainnet";
             try
             {
-                return _http.GetStringAsync($"/btc/pubkey?x={keyX}&y={keyY}&network={network}").ConfigureAwait(false)
-                    .GetAwaiter().GetResult();
+                var address = _http.GetStringAsync($"/btc/pubkey?x={keyX}&y={keyY}&network={network}")
+                    .ConfigureAwait(false)
+                    .GetAwaiter()
+                    .GetResult();
+
+                return string.IsNullOrEmpty(address) ? null : address;
             }
             catch (Exception e)
             {
