@@ -15,7 +15,7 @@ namespace KeepSpy.App.Services
 
         public string? GetBtcAddress(string keyX, string keyY, bool isTest = true)
         {
-            var network = isTest ? "testnet" : "mainnet";
+            var network = isTest ? "testnet" : "main";
             try
             {
                 var address = _http.GetStringAsync($"/btc/pubkey?x={keyX}&y={keyY}&network={network}")
