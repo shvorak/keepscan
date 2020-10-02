@@ -39,7 +39,7 @@ export const DepositDetails = ({ id }) => {
 
     const content = failed ? <Failed id={id} /> : loading ? <Loading /> : <Content deposit={deposit} />
 
-    const hasRedeem = deposit && deposit.status > DepositStatus.Minted
+    const hasRedeem = deposit && deposit.status === DepositStatus.Redeemed
 
     return (
         <>

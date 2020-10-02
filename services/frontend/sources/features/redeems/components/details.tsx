@@ -86,7 +86,7 @@ const Content = ({ redeem }) => {
             </OperationCards>
 
             <Card className={styles.panel}>
-                <CardHead>Operation details</CardHead>
+                <CardHead>Operation Info</CardHead>
                 <CardBody>
                     <RedeemInfo redeem={redeem} />
                 </CardBody>
