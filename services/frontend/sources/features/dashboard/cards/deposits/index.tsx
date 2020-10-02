@@ -18,7 +18,7 @@ export const DepositsCard = () => {
     return (
         <Card>
             <CardHead>Last Deposits</CardHead>
-            <CardList>
+            <CardList style={{minHeight: 700}}>
                 <Placeholder wide visible={deposits.length === 0}>
                     loading
                 </Placeholder>

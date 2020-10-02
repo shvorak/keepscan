@@ -19,7 +19,7 @@ export const RedeemsCard = () => {
     return (
         <Card>
             <CardHead>Last Redeems</CardHead>
-            <CardList className={styles.list}>
+            <CardList style={{minHeight: 700}}>
                 <Placeholder wide visible={redeems.length === 0}>
                     loading
                 </Placeholder>
