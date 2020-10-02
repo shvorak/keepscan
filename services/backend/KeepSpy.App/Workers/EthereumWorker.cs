@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using KeepSpy.App.Services;
 using KeepSpy.Domain;
 using KeepSpy.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace KeepSpy.App.Workers
 {
-    public class EthereumWorker: BackgroundService
+    public class EthereumWorker : BackgroundService
     {
         const string RegisteredPubKeyEvent = "0x8ee737ab16909c4e9d1b750814a4393c9f84ab5d3a29c08c313b783fc846ae33";
         const string FundedEvent = "0xe34c70bd3e03956978a5c76d2ea5f3a60819171afea6dee4fc12b2e45f72d43d";
@@ -24,10 +25,11 @@ namespace KeepSpy.App.Workers
 
         private readonly EthereumWorkerOptions _options;
         private readonly IServiceScopeFactory _scopeFactory;
-		private readonly ILogger<EthereumWorker> _logger;
+        private readonly ILogger<EthereumWorker> _logger;
         private readonly Etherscan.Client _apiClient;
 
-        public EthereumWorker(EthereumWorkerOptions options, IServiceScopeFactory scopeFactory, ILogger<EthereumWorker> logger)
+        public EthereumWorker(EthereumWorkerOptions options, IServiceScopeFactory scopeFactory,
+            ILogger<EthereumWorker> logger)
         {
             _options = options;
             _scopeFactory = scopeFactory;
@@ -39,24 +41,33 @@ namespace KeepSpy.App.Workers
         {
             await Task.Delay(5000, stoppingToken);
             lastBlock = _options.IsTestnet ? 8594983u : 10867766;
-            tdtcontract = _options.IsTestnet ? "0x7cAad48DF199Cd661762485fc44126F4Fe8A58C9" : "0x10B66Bd1e3b5a936B7f8Dbc5976004311037Cdf0";
-            vmcontract = _options.IsTestnet ? "0xC3879Fa416492EDF3a704EE8622A94e4C274c2F5" : "0x526c08E5532A9308b3fb33b7968eF78a5005d2AC";
-            tbtccontract = _options.IsTestnet ? "0x7c07C42973047223F80C4A69Bb62D5195460Eb5F" : "0x8dAEBADE922dF735c38C80C7eBD708Af50815fAa";
-            tbtcsystem = _options.IsTestnet ? "0xc3f96306eDabACEa249D2D22Ec65697f38c6Da69" : "0xe20A5C79b39bC8C363f0f49ADcFa82C2a01ab64a";
+            tdtcontract = _options.IsTestnet
+                ? "0x7cAad48DF199Cd661762485fc44126F4Fe8A58C9"
+                : "0x10B66Bd1e3b5a936B7f8Dbc5976004311037Cdf0";
+            vmcontract = _options.IsTestnet
+                ? "0xC3879Fa416492EDF3a704EE8622A94e4C274c2F5"
+                : "0x526c08E5532A9308b3fb33b7968eF78a5005d2AC";
+            tbtccontract = _options.IsTestnet
+                ? "0x7c07C42973047223F80C4A69Bb62D5195460Eb5F"
+                : "0x8dAEBADE922dF735c38C80C7eBD708Af50815fAa";
+            tbtcsystem = _options.IsTestnet
+                ? "0xc3f96306eDabACEa249D2D22Ec65697f38c6Da69"
+                : "0xe20A5C79b39bC8C363f0f49ADcFa82C2a01ab64a";
             while (!stoppingToken.IsCancellationRequested)
             {
                 using (var scope = _scopeFactory.CreateScope())
                 {
                     var db = scope.ServiceProvider.GetRequiredService<KeepSpyContext>();
+                    var keychain = scope.ServiceProvider.GetRequiredService<KeychainService>();
                     _logger.LogInformation("EthereumWorker loop");
                     try
-					{
-                        Run(db);
+                    {
+                        await Run(db, keychain);
                     }
-                    catch(Exception e)
-					{
+                    catch (Exception e)
+                    {
                         _logger.LogError(e, "EthereumWorker failure");
-					}
+                    }
                 }
             }
         }
@@ -67,26 +78,29 @@ namespace KeepSpy.App.Workers
         string tbtccontract;
         string tbtcsystem;
 
-        void Run(KeepSpyContext db)
-		{
-            var network = db.Set<Network>().SingleOrDefault(n => n.Kind == NetworkKind.Ethereum && n.IsTestnet == _options.IsTestnet);
+        async Task Run(KeepSpyContext db, KeychainService keychainService)
+        {
+            var network = db.Set<Network>()
+                .SingleOrDefault(n => n.Kind == NetworkKind.Ethereum && n.IsTestnet == _options.IsTestnet);
             if (network == null)
-			{
+            {
                 network = new Network
                 {
                     Kind = NetworkKind.Ethereum,
                     IsTestnet = _options.IsTestnet,
-                    LastBlock = uint.Parse(_apiClient.GetBlockNumber().result.Substring(2), System.Globalization.NumberStyles.HexNumber),
+                    LastBlock = uint.Parse(_apiClient.GetBlockNumber().result.Substring(2),
+                        System.Globalization.NumberStyles.HexNumber),
                     LastBlockAt = DateTime.Now,
                     Id = Guid.NewGuid(),
                     Name = "Ethereum"
                 };
                 db.Add(network);
                 db.SaveChanges();
-			}
+            }
+
             var contract = db.Set<Contract>().FirstOrDefault(c => c.Active && c.Network == network);
             if (contract == null && !_options.IsTestnet)
-			{
+            {
                 contract = new Contract
                 {
                     Active = true,
@@ -96,12 +110,14 @@ namespace KeepSpy.App.Workers
                 };
                 db.Add(contract);
                 db.SaveChanges();
-			}
+            }
+
             if (contract == null)
             {
                 _logger.LogCritical("No active contract at network {0}", network.Name);
                 return;
             }
+
             uint delta = 24 * 60 * 4;
             var resultTx = _apiClient.GetAccountTxList(contract.Id, lastBlock + 1, lastBlock + delta);
             var resultLogs = _apiClient.GetLogs(contract.Id, lastBlock + 1, lastBlock + delta);
@@ -113,19 +129,20 @@ namespace KeepSpy.App.Workers
             var tdt2btcTx = _apiClient.GetAccountTxList(vmcontract, lastBlock + 1, lastBlock + delta);
 
             foreach (var item in resultTx.result)
-			{
+            {
                 if (item.input.StartsWith("0xb7947b40"))
-				{
-                    var lotSize = uint.Parse(item.input.Substring(66), System.Globalization.NumberStyles.HexNumber) / 100000000M;
+                {
+                    var lotSize = uint.Parse(item.input.Substring(66), System.Globalization.NumberStyles.HexNumber) /
+                                  100000000M;
                     var eventLog = resultLogs.result.FirstOrDefault(o => o.transactionHash == item.hash);
-                    
+
                     var transferLog = tdtTransferLogs.result.FirstOrDefault(o => o.transactionHash == item.hash);
                     if (eventLog != null && transferLog != null)
                     {
                         var tdt_id = "0x" + eventLog.data.Substring(26);
                         var deposit = db.Find<Deposit>(tdt_id);
                         if (deposit == null)
-						{
+                        {
                             deposit = new Deposit
                             {
                                 CreatedAt = item.TimeStamp,
@@ -142,28 +159,31 @@ namespace KeepSpy.App.Workers
                             _logger.LogInformation("TDT {0} created with TokenID: {1}", deposit.Id, deposit.TokenID);
                         }
                     }
-				}
-			}
+                }
+            }
+
             db.SaveChanges();
             foreach (var pubKey in regpubKeyLogs.result)
-			{
+            {
                 string id = "0x" + pubKey.topics[1].Substring(26);
                 var deposit = db.Find<Deposit>(id);
                 if (deposit != null && deposit.Status == DepositStatus.InitiatingDeposit)
-				{
-                    var _signingGroupPubkeyX = pubKey.data.Substring(2, 64);
-                    var _signingGroupPubkeyY = pubKey.data.Substring(66, 64);
-                    var key = NBitcoin.DataEncoders.Encoders.Hex.DecodeData("03" + _signingGroupPubkeyX);
+                {
+                    var pubkeyX = pubKey.data.Substring(2, 64);
+                    var pubkeyY = pubKey.data.Substring(66, 64);
 
-                    var address = new NBitcoin.PubKey(key).GetAddress(NBitcoin.ScriptPubKeyType.Segwit, network.IsTestnet ? NBitcoin.Network.TestNet : NBitcoin.Network.Main).ToString();
+                    var address = await keychainService.GetBtcAddress(pubkeyX, pubkeyY, network.IsTestnet);
+
                     deposit.BitcoinAddress = address;
                     deposit.Status = DepositStatus.WaitingForBtc;
                     deposit.UpdatedAt = pubKey.TimeStamp;
                     _logger.LogInformation("TDT {0} BTC address generated: {1}", deposit.Id, deposit.BitcoinAddress);
                 }
+
                 if (deposit != null)
                     AddLog(pubKey, deposit, DepositStatus.WaitingForBtc);
-			}
+            }
+
             db.SaveChanges();
             foreach (var setupFail in setupFailLogs.result)
             {
@@ -175,9 +195,11 @@ namespace KeepSpy.App.Workers
                     deposit.UpdatedAt = setupFail.TimeStamp;
                     _logger.LogInformation("TDT {0} setup failed", deposit.Id);
                 }
+
                 if (deposit != null)
                     AddLog(setupFail, deposit, DepositStatus.SetupFailed);
             }
+
             db.SaveChanges();
             foreach (var funded in fundedLogs.result)
             {
@@ -189,12 +211,14 @@ namespace KeepSpy.App.Workers
                     deposit.UpdatedAt = funded.TimeStamp;
                     _logger.LogInformation("TDT {0} submitted proof", deposit.Id);
                 }
+
                 if (deposit != null)
                     AddLog(funded, deposit, DepositStatus.SubmittingProof);
             }
+
             db.SaveChanges();
             foreach (var approval in approvalLogs.result)
-			{
+            {
                 if (approval.topics.Count != 4)
                     continue;
                 string tokenID = approval.topics[3];
@@ -202,14 +226,16 @@ namespace KeepSpy.App.Workers
                 if ("0x" + approval.topics[2].Substring(26) == deposit.Id)
                     continue;
                 if (deposit != null && deposit.Status == DepositStatus.SubmittingProof)
-				{
+                {
                     deposit.Status = DepositStatus.ApprovingSpendLimit;
                     deposit.UpdatedAt = approval.TimeStamp;
                     _logger.LogInformation("TDT {0} tdt spend approved", deposit.Id);
                 }
+
                 if (deposit != null)
                     AddLog(approval, deposit, DepositStatus.ApprovingSpendLimit);
             }
+
             db.SaveChanges();
             foreach (var vmTx in tdt2btcTx.result)
             {
@@ -218,10 +244,11 @@ namespace KeepSpy.App.Workers
                     var tdt_id = "0x" + vmTx.input.Substring(34);
                     var deposit = db.Find<Deposit>(tdt_id);
                     if (deposit != null && deposit.Status < DepositStatus.Minted)
-					{
+                    {
                         if (vmTx.isError == "0")
                         {
-                            var tbtcTransferLogs = _apiClient.GetLogs(tbtccontract, ulong.Parse(vmTx.blockNumber), ulong.Parse(vmTx.blockNumber), topic0: TransferEvent);
+                            var tbtcTransferLogs = _apiClient.GetLogs(tbtccontract, ulong.Parse(vmTx.blockNumber),
+                                ulong.Parse(vmTx.blockNumber), topic0: TransferEvent);
                             if (tbtcTransferLogs.status == "1")
                             {
                                 var res = tbtcTransferLogs.result.Where(o => o.transactionHash == vmTx.hash).ToList();
@@ -230,18 +257,24 @@ namespace KeepSpy.App.Workers
                                     _logger.LogWarning("Tx: {0}", vmTx.hash);
                                     continue;
                                 }
-                                deposit.LotSizeMinted = (decimal)(ulong.Parse(res[0].data.Substring(46), System.Globalization.NumberStyles.HexNumber) / 1E18);
-                                deposit.LotSizeFee = (decimal)(ulong.Parse(res[1].data.Substring(46), System.Globalization.NumberStyles.HexNumber) / 1E18);
+
+                                deposit.LotSizeMinted = (decimal) (ulong.Parse(res[0].data.Substring(46),
+                                    System.Globalization.NumberStyles.HexNumber) / 1E18);
+                                deposit.LotSizeFee = (decimal) (ulong.Parse(res[1].data.Substring(46),
+                                    System.Globalization.NumberStyles.HexNumber) / 1E18);
                                 deposit.CompletedAt = vmTx.TimeStamp;
                                 deposit.UpdatedAt = vmTx.TimeStamp;
                                 deposit.Status = DepositStatus.Minted;
-                                _logger.LogInformation("Minted {0} for {1}, fee {2}, TDT ID {3}", deposit.LotSizeMinted, deposit.SenderAddress, deposit.LotSizeFee, deposit.Id);
+                                _logger.LogInformation("Minted {0} for {1}, fee {2}, TDT ID {3}", deposit.LotSizeMinted,
+                                    deposit.SenderAddress, deposit.LotSizeFee, deposit.Id);
                             }
                         }
                     }
+
                     if (deposit != null)
                         AddTx(vmTx, deposit);
                 }
+
                 if (vmTx.input.StartsWith("0xbe138da7")) //tbtcToBtc
                 {
                     var tdt_id = "0x" + vmTx.input.Substring(34, 40);
@@ -266,8 +299,10 @@ namespace KeepSpy.App.Workers
                     }
                 }
             }
+
             db.SaveChanges();
-            var gotRedemtionSignatureLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: GotRedemptionSignatureEvent);
+            var gotRedemtionSignatureLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta,
+                topic0: GotRedemptionSignatureEvent);
             foreach (var gotRedemtion in gotRedemtionSignatureLogs.result)
             {
                 if (gotRedemtion.topics.Count != 3)
@@ -280,9 +315,11 @@ namespace KeepSpy.App.Workers
                     redeem.UpdatedAt = gotRedemtion.TimeStamp;
                     _logger.LogInformation("Redeem {0} signed", redeem.Id);
                 }
+
                 if (redeem != null)
                     AddLog2(gotRedemtion, redeem, RedeemStatus.Signed);
             }
+
             db.SaveChanges();
             var redeemedLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: RedeemedEvent);
             foreach (var redeemed in redeemedLogs.result)
@@ -298,11 +335,14 @@ namespace KeepSpy.App.Workers
                     redeem.CompletedAt = redeemed.TimeStamp;
                     _logger.LogInformation("Redeem {0} complete", redeem.Id);
                 }
+
                 if (redeem != null)
                     AddLog2(redeemed, redeem, RedeemStatus.Redeemed);
             }
+
             db.SaveChanges();
-            var startedLiquidaionLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: StartedLiquidationEvent);
+            var startedLiquidaionLogs =
+                _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: StartedLiquidationEvent);
             foreach (var startedLiquidaion in startedLiquidaionLogs.result)
             {
                 if (startedLiquidaion.topics.Count != 2)
@@ -315,9 +355,11 @@ namespace KeepSpy.App.Workers
                     redeem.UpdatedAt = startedLiquidaion.TimeStamp;
                     _logger.LogInformation("Redeem {0} started liquidation", redeem.Id);
                 }
+
                 if (redeem != null)
                     AddLog2(startedLiquidaion, redeem, RedeemStatus.Liquidation);
             }
+
             db.SaveChanges();
             var liquidatedLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: LiquidatedEvent);
             foreach (var liquidated in liquidatedLogs.result)
@@ -333,6 +375,7 @@ namespace KeepSpy.App.Workers
                     redeem.CompletedAt = liquidated.TimeStamp;
                     _logger.LogInformation("Redeem {0} liquidated", redeem.Id);
                 }
+
                 if (redeem != null)
                     AddLog2(liquidated, redeem, RedeemStatus.Liquidated);
             }
@@ -342,17 +385,19 @@ namespace KeepSpy.App.Workers
                 bn = Math.Min(bn, resultTx.result.Max(o => uint.Parse(o.blockNumber)));
             if (tdt2btcTx.result.Count > 0)
                 bn = Math.Min(bn, tdt2btcTx.result.Max(o => uint.Parse(o.blockNumber)));
-            var getBlockNumberResult = uint.Parse(_apiClient.GetBlockNumber().result.Substring(2), System.Globalization.NumberStyles.HexNumber);
+            var getBlockNumberResult = uint.Parse(_apiClient.GetBlockNumber().result.Substring(2),
+                System.Globalization.NumberStyles.HexNumber);
             if (bn < uint.MaxValue)
                 lastBlock = bn;
             else if (lastBlock + delta < getBlockNumberResult)
                 lastBlock += delta;
-            
+
             if (network.LastBlock != getBlockNumberResult)
             {
                 network.LastBlock = getBlockNumberResult;
                 network.LastBlockAt = DateTime.Now;
             }
+
             db.SaveChanges();
             _logger.LogInformation($"Last block processed: {lastBlock}/{getBlockNumberResult}");
 
@@ -360,9 +405,9 @@ namespace KeepSpy.App.Workers
                 Thread.Sleep(_options.Interval * 1000);
 
             void AddTx(Etherscan.Tx tx, Deposit d)
-			{
+            {
                 if (db.Find<Transaction>(tx.hash) == null)
-				{
+                {
                     db.Add(new Transaction
                     {
                         Id = tx.hash,
@@ -379,8 +424,9 @@ namespace KeepSpy.App.Workers
                         Recipient = tx.to
                     });
                     _logger.LogInformation($"Saved tx {tx.hash} ({tx.TimeStamp})");
-				}
+                }
             }
+
             void AddTx2(Etherscan.Tx tx, Redeem r)
             {
                 if (db.Find<Transaction>(tx.hash) == null)
@@ -404,6 +450,7 @@ namespace KeepSpy.App.Workers
                     _logger.LogInformation($"Saved tx {tx.hash} ({tx.TimeStamp})");
                 }
             }
+
             void AddLog(Etherscan.Log log, Deposit d, DepositStatus s)
             {
                 if (db.Find<Transaction>(log.transactionHash) == null)
@@ -416,12 +463,15 @@ namespace KeepSpy.App.Workers
                         Status = s,
                         Timestamp = log.TimeStamp,
                         Error = "",
-                        Fee = ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2), System.Globalization.NumberStyles.HexNumber),
+                        Fee = ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) /
+                            1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2),
+                                System.Globalization.NumberStyles.HexNumber),
                         Kind = network.Kind
                     });
                     _logger.LogInformation($"Saved tx {log.transactionHash} ({log.TimeStamp})");
                 }
             }
+
             void AddLog2(Etherscan.Log log, Redeem r, RedeemStatus s)
             {
                 if (db.Find<Transaction>(log.transactionHash) == null)
@@ -435,7 +485,9 @@ namespace KeepSpy.App.Workers
                         RedeemStatus = s,
                         Timestamp = log.TimeStamp,
                         Error = "",
-                        Fee = ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2), System.Globalization.NumberStyles.HexNumber),
+                        Fee = ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) /
+                            1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2),
+                                System.Globalization.NumberStyles.HexNumber),
                         Kind = network.Kind
                     });
                     _logger.LogInformation($"Saved tx {log.transactionHash} ({log.TimeStamp})");

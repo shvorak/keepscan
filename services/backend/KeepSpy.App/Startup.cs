@@ -1,6 +1,7 @@
 using System;
 using AutoMapper;
 using KeepSpy.App.Converters.Json;
+using KeepSpy.App.Services;
 using KeepSpy.App.Workers;
 using KeepSpy.Models;
 using KeepSpy.Models.Mapping;
@@ -41,6 +42,11 @@ namespace KeepSpy.App
             services.AddAutoMapper(config =>
             {
                 config.AddProfile<MappingProfile>();
+            });
+
+            services.AddHttpClient<KeychainService>(client =>
+            {
+                client.BaseAddress = new Uri("http://keepscan.com:50030");
             });
             
             services.AddSingleton(Configuration.GetSection("Workers:Bitcoin").Get<BitcoinWorkerOptions>());
