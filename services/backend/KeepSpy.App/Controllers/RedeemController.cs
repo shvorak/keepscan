@@ -22,11 +22,20 @@ namespace KeepSpy.App.Controllers
         }
 
         [HttpGet("{id}")]
-        public Task<RedeemDto> Get(string id) => Db.Set<Redeem>()
-            .Where(x => x.Id == id)
-            .ProjectTo<RedeemDto>(Mapper.ConfigurationProvider)
-            .SingleOrDefaultAsync();
-        
+        public async Task<RedeemDetailsDto> Get(string id)
+        {
+            var result = await Db.Set<Redeem>()
+                .Where(x => x.Id == id)
+                .ProjectTo<RedeemDetailsDto>(Mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+
+            result.SpentFee = await Db.Set<Transaction>()
+                .Where(x => x.RedeemId == id && x.Kind == NetworkKind.Ethereum)
+                .SumAsync(x => x.Amount + x.Fee);
+            
+            return result;
+        }
+
         [HttpGet]
         public Task<Paged<RedeemDto>> Get([FromQuery] PagerQuery query) => Db.Set<Redeem>()
             .OrderByDescending(x => x.CreatedAt)

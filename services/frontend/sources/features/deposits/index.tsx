@@ -4,10 +4,11 @@ import { Card, CardHead, CardList } from 'uikit/layout/card'
 import { Placeholder } from '~/uikit/display/placeholder'
 import { useSelector } from 'react-redux'
 import { useAction } from 'shared/hooks/redux'
-import { depositNextPage, depositPageLoad } from 'features/deposits/actions'
+import { depositNextPage } from 'features/deposits/actions'
 import { getDepositsList, getDepositsPager } from 'features/deposits/queries'
 import { DepositItem } from 'components/deposit/list-item'
 import { Scroller } from 'components/scroller'
+import { Flex } from 'uikit/layout'
 
 export const DepositList = () => {
     const nextPage = useAction(depositNextPage)

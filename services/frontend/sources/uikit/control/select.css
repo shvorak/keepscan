@@ -1,0 +1,11 @@
+.field {
+    position: relative;
+    display: block;
+}
+
+.field select {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 3px;
+    border: 1px solid #a1a1a1;
+}

@@ -24,6 +24,9 @@ const Schema = [
         label: 'Lot size fee',
         render: amount,
     }),
+    field('spentFee', {
+        label: 'ETH spent',
+    }),
     field('lotSizeMinted', {
         label: 'Lot size minted',
         render: amount,

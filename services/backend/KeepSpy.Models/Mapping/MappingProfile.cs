@@ -8,11 +8,17 @@ namespace KeepSpy.Models.Mapping
         public MappingProfile()
         {
             CreateMap<Deposit, DepositDto>();
-            CreateMap<Transaction, DepositTxDto>();
+            CreateMap<Deposit, DepositDetailsDto>()
+                .ForMember(x => x.SpentFee, opt => opt.Ignore());
 
             CreateMap<Redeem, RedeemDto>()
                 .ForMember(x => x.LotSize, opt => opt.MapFrom(x => x.Deposit.LotSize));
-
+            
+            CreateMap<Redeem, RedeemDetailsDto>()
+                .IncludeBase<Redeem, RedeemDto>()
+                .ForMember(x => x.SpentFee, opt => opt.Ignore());
+            
+            CreateMap<Transaction, DepositTxDto>();
             CreateMap<Transaction, RedeemTxDto>()
                 .ForMember(x => x.Status, opt => opt.MapFrom(x => x.RedeemStatus));
         }

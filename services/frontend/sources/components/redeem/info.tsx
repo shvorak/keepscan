@@ -20,6 +20,9 @@ const Schema = [
         label: 'Lot size',
         render: amount,
     }),
+    field('spentFee', {
+        label: 'ETH spent',
+    }),
     field('bitcoinAddress', {
         label: 'Bitcoin recipient address',
         render: address,

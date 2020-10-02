@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using KeepSpy.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -29,5 +30,11 @@ namespace KeepSpy.Shared.Extensions
                 }
             };
         }
+
+        public static IQueryable<T> WhereIf<T>(this IQueryable<T> query, bool condition,
+            Expression<Func<T, bool>> predicate)
+        {
+            return condition ? query.Where(predicate) : query;
+        } 
     }
 }
