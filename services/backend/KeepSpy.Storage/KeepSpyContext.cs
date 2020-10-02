@@ -1,4 +1,5 @@
-﻿using KeepSpy.Storage.Extensions;
+﻿using KeepSpy.Domain;
+using KeepSpy.Storage.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace KeepSpy.Storage
@@ -13,6 +14,9 @@ namespace KeepSpy.Storage
         {
             modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
             modelBuilder.ApplyPostgresConventions();
+            modelBuilder.Entity<Transaction>()
+               .Property(b => b.Kind)
+               .HasDefaultValue(NetworkKind.Ethereum);
         }
     }
 }

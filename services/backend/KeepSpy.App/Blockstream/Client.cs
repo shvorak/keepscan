@@ -20,6 +20,7 @@ namespace KeepSpy.App.Blockstream
 		{
 			string requestUrl = _baseUrl + path;
 			string httpApiResult = wc.DownloadString(requestUrl);
+			System.Threading.Thread.Sleep(100);
 			return JsonSerializer.Deserialize<T>(httpApiResult);
 		}
 
@@ -42,6 +43,10 @@ namespace KeepSpy.App.Blockstream
 		public Address GetAddress(string addr)
 		{
 			return GetResult<Address>($"/address/{addr}");
+		}
+		public Tx[] GetTxs(string addr)
+		{
+			return GetResult<Tx[]>($"/address/{addr}/txs");
 		}
 	}
 }

@@ -34,6 +34,7 @@ namespace KeepSpy.App.Workers
                 {
                     var db = scope.ServiceProvider.GetRequiredService<KeepSpyContext>();
 
+                    _logger.LogInformation("Loop");
                     try
                     {
                         Run(db);
@@ -76,12 +77,55 @@ namespace KeepSpy.App.Workers
                     if (deposit.Status == DepositStatus.WaitingForBtc)
                         deposit.Status = DepositStatus.BtcReceived;
                     deposit.BitcoinFundedBlock = utxo.Where(o => o.status.confirmed).Max(o => o.status.block_height);
-                    _logger.LogInformation("TDT {0} funded with {1} BTC", deposit.Id, utxo.Where(o => o.status.confirmed).Sum(o => o.value) / 100000000M);
+                    _logger.LogInformation("TDT {0} funded with {1} BTC", deposit.Id, utxo.Where(o => o.status.confirmed).Sum(o => o.value) / 100000000M);                    
+                }
+            }
+            foreach (var deposit in db.Set<Deposit>().Where(o => o.BitcoinAddress != null && o.Contract.Network.IsTestnet == _options.IsTestnet).ToList())
+            {
+                if (db.Set<Transaction>().Any(t => t.RedeemStatus == RedeemStatus.BtcTransferred && t.RedeemId == deposit.Id))
+                    continue;
+                foreach(var tx in _apiClient.GetTxs(deposit.BitcoinAddress))
+				{
+                    if (db.Find<Transaction>(tx.txid) == null)
+                    {
+                        var sender = tx.vin.Count == 1 ? tx.vin[0].prevout.scriptpubkey_address : null;
+                        var recipient = tx.vout.Count == 1 ? tx.vout[0].scriptpubkey_address : null;
+                        var redeem = db.Find<Redeem>(deposit.Id);
+                        if (sender == deposit.BitcoinAddress && redeem == null)
+                            continue;
+                        var t = new Transaction
+                        {
+                            Id = tx.txid,
+                            Redeem = sender == deposit.BitcoinAddress ? redeem : null,
+                            Deposit = sender == deposit.BitcoinAddress ? null : deposit,
+                            Block = tx.status.block_height,
+                            Status = sender == deposit.BitcoinAddress ? DepositStatus.Closed : DepositStatus.BtcReceived,
+                            RedeemStatus = sender == deposit.BitcoinAddress ? RedeemStatus.BtcTransferred : (RedeemStatus?)null,
+                            IsError = false,
+                            Error = "",
+                            Timestamp = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(tx.status.block_time),
+                            Amount = (sender == deposit.BitcoinAddress ? tx.vout[0].value / 100000000M : tx.vout.Where(o => o.scriptpubkey_address == deposit.BitcoinAddress).Sum(v => v.value/ 100000000M)) ,
+                            Fee = tx.fee / 100000000M,
+                            Kind = network.Kind,
+                            Sender = sender,
+                            Recipient = recipient
+                        };
+                        db.Add(t);
+                        _logger.LogInformation($"Saved tx {t.Id} ({t.Timestamp})");
+                        if (redeem != null && sender == deposit.BitcoinAddress)
+						{
+                            redeem.BitcoinAddress = recipient;
+                            redeem.BitcoinRedeemedBlock = tx.status.block_height;
+                            redeem.BtcRedeemed = t.Amount;
+                            redeem.BtcFee = t.Fee;
+                        }
+                    }
                 }
             }
             var currentBlock = _apiClient.GetBlocks()[0];
             network.LastBlock = currentBlock.height;
             network.LastBlockAt = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(currentBlock.timestamp);
+            _logger.LogInformation($"Last block processed: {network.LastBlock} ({network.LastBlockAt})");
             db.SaveChanges();
         }
     }

@@ -6,6 +6,7 @@
 		Signed,
 		Redeemed,
 		Liquidation,
-		Liquidated
+		Liquidated,
+		BtcTransferred
 	}
 }

@@ -11,13 +11,13 @@ namespace KeepSpy.App.Blockstream
         public string scriptpubkey_asm { get; set; }
         public string scriptpubkey_type { get; set; }
         public string scriptpubkey_address { get; set; }
-        public int value { get; set; }
+        public ulong value { get; set; }
     }
 
     public class Vin
     {
         public string txid { get; set; }
-        public int vout { get; set; }
+        public ulong vout { get; set; }
         public Prevout prevout { get; set; }
         public string scriptsig { get; set; }
         public string scriptsig_asm { get; set; }
@@ -34,7 +34,7 @@ namespace KeepSpy.App.Blockstream
         public string scriptpubkey_asm { get; set; }
         public string scriptpubkey_type { get; set; }
         public string scriptpubkey_address { get; set; }
-        public int value { get; set; }
+        public ulong value { get; set; }
     }
 
     public class Status
@@ -42,7 +42,7 @@ namespace KeepSpy.App.Blockstream
         public bool confirmed { get; set; }
         public uint block_height { get; set; }
         public string block_hash { get; set; }
-        public int block_time { get; set; }
+        public uint block_time { get; set; }
     }
 
     public class Tx
@@ -54,7 +54,7 @@ namespace KeepSpy.App.Blockstream
         public IList<Vout> vout { get; set; }
         public int size { get; set; }
         public int weight { get; set; }
-        public int fee { get; set; }
+        public ulong fee { get; set; }
         public Status status { get; set; }
     }
 }

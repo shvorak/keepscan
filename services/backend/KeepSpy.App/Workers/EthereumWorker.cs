@@ -199,6 +199,8 @@ namespace KeepSpy.App.Workers
                     continue;
                 string tokenID = approval.topics[3];
                 var deposit = db.Set<Deposit>().SingleOrDefault(o => o.TokenID == tokenID);
+                if ("0x" + approval.topics[2].Substring(26) == deposit.Id)
+                    continue;
                 if (deposit != null && deposit.Status == DepositStatus.SubmittingProof)
 				{
                     deposit.Status = DepositStatus.ApprovingSpendLimit;
@@ -371,7 +373,10 @@ namespace KeepSpy.App.Workers
                         Error = tx.txreceipt_status,
                         Timestamp = tx.TimeStamp,
                         Amount = decimal.Parse(tx.value) / 1000000000000000000,
-                        Fee = decimal.Parse(tx.gasPrice) / 1000000000000000000 * decimal.Parse(tx.gasUsed)
+                        Fee = decimal.Parse(tx.gasPrice) / 1000000000000000000 * decimal.Parse(tx.gasUsed),
+                        Kind = network.Kind,
+                        Sender = tx.from,
+                        Recipient = tx.to
                     });
                     _logger.LogInformation($"Saved tx {tx.hash} ({tx.TimeStamp})");
 				}
@@ -391,7 +396,10 @@ namespace KeepSpy.App.Workers
                         Error = tx.txreceipt_status,
                         Timestamp = tx.TimeStamp,
                         Amount = decimal.Parse(tx.value) / 1000000000000000000,
-                        Fee = decimal.Parse(tx.gasPrice) / 1000000000000000000 * decimal.Parse(tx.gasUsed)
+                        Fee = decimal.Parse(tx.gasPrice) / 1000000000000000000 * decimal.Parse(tx.gasUsed),
+                        Kind = network.Kind,
+                        Sender = tx.from,
+                        Recipient = tx.to
                     });
                     _logger.LogInformation($"Saved tx {tx.hash} ({tx.TimeStamp})");
                 }
@@ -408,7 +416,8 @@ namespace KeepSpy.App.Workers
                         Status = s,
                         Timestamp = log.TimeStamp,
                         Error = "",
-                        Fee = ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2), System.Globalization.NumberStyles.HexNumber)
+                        Fee = ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2), System.Globalization.NumberStyles.HexNumber),
+                        Kind = network.Kind
                     });
                     _logger.LogInformation($"Saved tx {log.transactionHash} ({log.TimeStamp})");
                 }
@@ -426,7 +435,8 @@ namespace KeepSpy.App.Workers
                         RedeemStatus = s,
                         Timestamp = log.TimeStamp,
                         Error = "",
-                        Fee = ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2), System.Globalization.NumberStyles.HexNumber)
+                        Fee = ulong.Parse(log.gasPrice.Substring(2), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M * ulong.Parse(log.gasUsed.Substring(2), System.Globalization.NumberStyles.HexNumber),
+                        Kind = network.Kind
                     });
                     _logger.LogInformation($"Saved tx {log.transactionHash} ({log.TimeStamp})");
                 }
