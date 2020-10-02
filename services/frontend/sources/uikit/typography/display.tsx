@@ -34,7 +34,7 @@ export const DisplayLink: FC<DisplayLinkProps> = ({ children, to, ...props }) =>
 
     const rules = useMemo(() => {
         return {
-            target: isExternal && '__blank',
+            target: isExternal && '_blank',
             rel: isExternal && 'noreferer noopener',
         }
     }, [to])
