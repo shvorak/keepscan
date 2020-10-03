@@ -42,7 +42,7 @@ export const DepositLog: FC<DepositLogProps> = ({ deposit }) => {
 export const DepositLogRecord = ({ status, deposit, tx = null }) => {
     const lastBlock = useSelector(getNetworkLastBlock(tx && tx.kind))
 
-    const timestamp = tx && tx.kind === 1 && <Timestamp value={tx.timestamp} />
+    const timestamp = tx && <Timestamp value={tx.timestamp} />
     const transaction = tx && <Transaction tx={tx} lastBlock={lastBlock} />
     const respawn = status === deposit.status && <Respawn deposit={deposit} />
 

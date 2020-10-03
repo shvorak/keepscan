@@ -84,7 +84,7 @@ namespace KeepSpy.App.Workers
             {
                 if (db.Set<Transaction>().Any(t => t.RedeemStatus == RedeemStatus.BtcTransferred && t.RedeemId == deposit.Id))
                     continue;
-                foreach(var tx in _apiClient.GetTxs(deposit.BitcoinAddress))
+                foreach(var tx in _apiClient.GetTxs(deposit.BitcoinAddress).Where(x => x.status.confirmed))
 				{
                     if (db.Find<Transaction>(tx.txid) == null)
                     {
