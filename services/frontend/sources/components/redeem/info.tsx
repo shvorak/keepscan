@@ -1,6 +1,6 @@
 import React from 'react'
 import { field } from 'shared/schema'
-import { address, amount, datetime } from 'components/deposit/info.fields'
+import { address, amount, datetime, number } from 'components/deposit/info.fields'
 import { Info } from 'uikit/display/info'
 
 const Schema = [
@@ -22,6 +22,7 @@ const Schema = [
     }),
     field('spentFee', {
         label: 'ETH spent',
+        render: number
     }),
     field('bitcoinAddress', {
         label: 'Bitcoin recipient address',

@@ -21,7 +21,7 @@ export const Transaction = ({ tx, lastBlock }) => {
     return (
         <>
             <Address value={tx.id} copy={false} kind="tx" className={styles.transaction} />
-            <Confirmations block={tx.block} lastBlock={lastBlock} />
+            {tx.kind === 1 && <Confirmations block={tx.block} lastBlock={lastBlock} />}
         </>
     )
 }
