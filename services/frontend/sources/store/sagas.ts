@@ -1,6 +1,6 @@
 import { call, delay, fork, put, takeLatest } from 'redux-saga/effects'
-import { fetchDepositPage, fetchLatestDeposits } from 'entities/Deposit/requests'
-import { depositFetched, depositPageFetch } from 'entities/Deposit/actions'
+import { fetchDepositPage } from 'entities/Deposit/requests'
+import { depositPageFetch } from 'entities/Deposit/actions'
 import { fetchNetworks } from 'entities/Network/requests'
 import { networksFetched } from 'entities/Network/actions'
 import { fetchStatistic } from 'entities/Statistic/requests'
@@ -12,7 +12,6 @@ import { startupRedeemSaga } from 'features/redeems/sagas'
 
 export default function* startupSaga() {
     yield fork(startupNetworks)
-    yield fork(startupDeposits)
     yield fork(startupStatistic)
 
     yield fork(dashboardSaga)
@@ -33,13 +32,6 @@ function* startupNetworks() {
 function* networksFetch() {
     const networks = yield call(fetchNetworks)
     yield put(networksFetched(networks.data))
-}
-
-// TODO: Move this into dashboard saga
-function* startupDeposits() {
-    const deposits = yield call(fetchLatestDeposits)
-    // yield delay(5000)
-    yield put(depositFetched(deposits.data))
 }
 
 function* startupStatistic() {

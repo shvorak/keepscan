@@ -1,5 +1,5 @@
 import React from 'react'
-import { address, amount, datetime } from 'components/deposit/info.fields'
+import { address, amount, datetime, number } from 'components/deposit/info.fields'
 import { field } from 'shared/schema'
 import { Info } from 'uikit/display/info'
 
@@ -20,16 +20,17 @@ const Schema = [
         label: 'Lot size',
         render: amount,
     }),
+    field('lotSizeMinted', {
+        label: 'Lot size minted',
+        render: amount,
+    }),
     field('lotSizeFee', {
         label: 'Lot size fee',
         render: amount,
     }),
     field('spentFee', {
         label: 'ETH spent',
-    }),
-    field('lotSizeMinted', {
-        label: 'Lot size minted',
-        render: amount,
+        render: number,
     }),
     field('bitcoinAddress', {
         label: 'Bitcoin deposit address',
