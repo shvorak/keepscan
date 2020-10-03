@@ -14,7 +14,7 @@ export const RedeemStatusNames = {
     [RedeemStatus.Redeemed]: 'Redeemed',
     [RedeemStatus.Liquidation]: 'Liquidation',
     [RedeemStatus.Liquidated]: 'Liquidated',
-    [RedeemStatus.BtcTransferred]: 'BTC Transferred',
+    [RedeemStatus.BtcTransferred]: 'BTC transferred',
 }
 
 export const RedeemFailureStatuses = [
