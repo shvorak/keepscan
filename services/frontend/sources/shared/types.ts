@@ -23,6 +23,13 @@ export type Pager = {
     total: number
     pages: number
     current: number
+    // TODO: Bad typing trick, refactor this
+    loading?: boolean
 }
 
 export type Query = Record<string, string | string[] | number | number[]>
+export type PagedState = {
+    items: any[]
+    pager: Pager
+    query: Query
+}

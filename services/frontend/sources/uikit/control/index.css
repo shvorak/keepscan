@@ -10,6 +10,7 @@
     border: 1px solid #a1a1a1;
     font-size: 1em;
     outline: none;
+    white-space: nowrap;
     text-overflow: ellipsis;
 }
 .field input[readonly] {
@@ -22,6 +23,11 @@
     transition: .15s;
     font-size: .8em;
     pointer-events: none;
+    max-width: 100%;
+    padding-right: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     position: absolute;
     color: #a1a1a1;
     left: 8px;

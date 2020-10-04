@@ -1,5 +1,5 @@
 import './reset.css'
-import './theme.css'
+import './theme.less'
 
 import React from 'react'
 import ReactDOM from 'react-dom'

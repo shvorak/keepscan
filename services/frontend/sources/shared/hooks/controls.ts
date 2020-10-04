@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
+import { equals } from 'ramda'
 
 export const useInput = (defaultValue: any = null) => {
     const [value, setValue] = useState(defaultValue)
@@ -45,7 +46,13 @@ export const useModel = (defaultValue: any = {}) => {
     }, [])
 
     const onChange = useCallback((field, value) => {
-        setValue(model => ({...model, [field]: value}))
+        setValue((model) => {
+            const updated = { ...model, [field]: value }
+            if (false === equals(model, updated)) {
+                return updated
+            }
+            return model
+        })
     }, [])
 
     const onClear = useCallback(() => {

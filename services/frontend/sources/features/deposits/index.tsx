@@ -9,6 +9,8 @@ import { getDepositsList, getDepositsPager, getDepositsQuery } from 'features/de
 import { DepositItem } from 'components/deposit/list-item'
 import { Scroller } from 'components/scroller'
 import { DepositFilter } from 'features/deposits/components/filter'
+import { isEmpty } from 'ramda'
+import { Empty } from 'uikit/display/empty'
 
 export const DepositList = () => {
     const nextPage = useAction(depositNextPage)
@@ -30,6 +32,8 @@ export const DepositList = () => {
         return <DepositItem key={deposit.id} deposit={deposit} />
     })
 
+    const filtered = false === isEmpty(query)
+
     const loading = (
         <Placeholder wide className={styles.loader}>
             loading
@@ -38,9 +42,17 @@ export const DepositList = () => {
 
     const loadable = items.length > 0 && pager && pager.pages > pager.current
 
+    const content = !pager.loading && filtered && pager.total === 0 ? (
+        <Empty />
+    ) : (
+        <Scroller visible={loadable} loader={loading} onLoading={onNextPage}>
+            {list}
+        </Scroller>
+    )
+
     return (
         <Card>
-            <CardHead size={3}>
+            <CardHead size={2}>
                 Deposits
                 <CardHeadSuffix>{pager.total}</CardHeadSuffix>
             </CardHead>
@@ -48,9 +60,7 @@ export const DepositList = () => {
                 <DepositFilter query={query} onChange={onQueryChange} />
             </CardFilter>
             <CardList className={styles.body}>
-                <Scroller visible={loadable} loader={loading} onLoading={onNextPage}>
-                    {list}
-                </Scroller>
+                {content}
             </CardList>
         </Card>
     )

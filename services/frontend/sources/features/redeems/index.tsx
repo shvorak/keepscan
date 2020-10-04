@@ -9,6 +9,8 @@ import { getRedeemsList, getRedeemsPager, getRedeemsQuery } from 'features/redee
 import { Scroller } from 'components/scroller'
 import { RedeemItem } from 'components/redeem/list-item'
 import { RedeemFilter } from 'features/redeems/components/filter'
+import { isEmpty } from 'ramda'
+import { Empty } from 'uikit/display/empty'
 
 export { RedeemDetails } from './components/details'
 
@@ -38,11 +40,21 @@ export const RedeemList = () => {
         </Placeholder>
     )
 
+    const filtered = false === isEmpty(query)
+
     const loadable = items.length > 0 && pager && pager.pages > pager.current
+
+    const content = !pager.loading && filtered && pager.total === 0 ? (
+        <Empty />
+    ) : (
+        <Scroller visible={loadable} loader={loading} onLoading={onNextPage}>
+            {list}
+        </Scroller>
+    )
 
     return (
         <Card>
-            <CardHead size={3}>
+            <CardHead size={2}>
                 Redeems
                 <CardHeadSuffix>{pager.total}</CardHeadSuffix>
             </CardHead>
@@ -50,9 +62,7 @@ export const RedeemList = () => {
                 <RedeemFilter query={query} onChange={onQueryChange} />
             </CardFilter>
             <CardList className={styles.body}>
-                <Scroller visible={loadable} loader={loading} onLoading={onNextPage}>
-                    {list}
-                </Scroller>
+                {content}
             </CardList>
         </Card>
     )
