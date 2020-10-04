@@ -16,6 +16,7 @@ namespace KeepSpy.Models.Mapping
             
             CreateMap<Redeem, RedeemDetailsDto>()
                 .IncludeBase<Redeem, RedeemDto>()
+                .ForMember(x => x.BitcoinWithdrawalAddress, opt => opt.MapFrom(x => x.Deposit.BitcoinAddress))
                 .ForMember(x => x.SpentFee, opt => opt.Ignore());
             
             CreateMap<Transaction, DepositTxDto>();

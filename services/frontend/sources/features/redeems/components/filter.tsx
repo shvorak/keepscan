@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react'
 import styles from './filter.less'
 import { Search, Select } from 'uikit/control'
-import { DepositStatus, DepositStatusNames } from 'entities/Deposit/constants'
 import { LOT_SIZES } from '~/application/env'
 import { Amount } from 'uikit/crypto/amount'
 import { useModel } from 'shared/hooks/controls'
+import { RedeemStatus, RedeemStatusNames } from 'entities/Redeem/constants'
 
-const OPTIONS = Object.values(DepositStatus).map((status) => {
+const OPTIONS = Object.values(RedeemStatus).map((status) => {
     return {
         value: status,
-        label: DepositStatusNames[status],
+        label: RedeemStatusNames[status],
     }
 })
 
@@ -18,7 +18,7 @@ const LOT_SIZES_OPTIONS = LOT_SIZES.map((size) => ({
     label: <Amount value={size} />,
 }))
 
-export const DepositFilter = ({ query, onChange }) => {
+export const RedeemFilter = ({ query, onChange }) => {
     const [values, { onChangeField }] = useModel(query || {})
 
     useEffect(() => {

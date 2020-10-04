@@ -24,6 +24,13 @@ const Schema = [
         label: 'ETH spent',
         render: number
     }),
+    field('bitcoinWithdrawalAddress', {
+        label: 'Bitcoin withdrawal address',
+        render: address,
+        payload: {
+            color: 'brass',
+        },
+    }),
     field('bitcoinAddress', {
         label: 'Bitcoin recipient address',
         render: address,

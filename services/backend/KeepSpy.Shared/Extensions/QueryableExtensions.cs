@@ -36,5 +36,6 @@ namespace KeepSpy.Shared.Extensions
         {
             return condition ? query.Where(predicate) : query;
         } 
+        
     }
 }

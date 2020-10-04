@@ -1,10 +1,10 @@
 export const RedeemStatus = {
     Requested: 0,
     Signed: 1,
+    BtcTransferred: 5,
     Redeemed: 2,
     Liquidation: 3,
-    Liquidated: 4,
-    BtcTransferred: 5
+    Liquidated: 4
 }
 
 
