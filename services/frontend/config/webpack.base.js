@@ -10,10 +10,12 @@ const plugins = {
     Html: require('html-webpack-plugin'),
     Copy: require('copy-webpack-plugin'),
     Define: require('webpack').DefinePlugin,
+    Terser: require('terser-webpack-plugin')
 }
 
 module.exports = (options) => {
     const isDevelopment = options.mode === 'development'
+    const isProduction = options.mode === 'production'
     return {
         entry: {
             index: './sources/index.tsx',
@@ -45,7 +47,7 @@ module.exports = (options) => {
                             },
                         },
                         'less-loader',
-                    ],
+                    ].filter(Boolean),
                 },
                 {
                     test: /\.(svg)/,
@@ -82,5 +84,17 @@ module.exports = (options) => {
                 patterns: [{ from: 'sources/static/favicons/', to: paths.bundle }],
             }),
         ],
+        optimization: {
+            minimizer: isProduction && [
+                new plugins.Terser({
+                    cache: true,
+                    parallel: true,
+                    sourceMap: true, // Must be set to true if using source-maps in production
+                    terserOptions: {
+                        // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+                    }
+                }),
+            ],
+        },
     }
 }
