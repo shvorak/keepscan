@@ -5,17 +5,28 @@ import { isEmpty } from 'uikit/control/helpers'
 
 type InputProps = ComponentProps<'input'> & {
     label: string
+    action?: 'arrow' | 'reset'
+    onAction?: () => any
 }
 
-export const Input: FC<InputProps> = ({ value, label, ...props }) => {
+export const Input: FC<InputProps> = ({ value, label, action, onAction, ...props }) => {
     const empty = isEmpty(value)
 
     const className = useClasses(styles, 'field', {...props, empty})
+
+    const actionNode = action && <InputAction type={action} onClick={onAction} />
 
     return (
         <div className={className}>
             <input width={300} value={value == null ? '' : value} {...props} />
             <label>{label}</label>
+            {actionNode}
         </div>
     )
+}
+
+
+export const InputAction = ({onClick, ...props}) => {
+    const className = useClasses(styles, 'action', props)
+    return <div className={className} onClick={onClick} />
 }

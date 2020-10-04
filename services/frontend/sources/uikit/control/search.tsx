@@ -25,11 +25,16 @@ export const Search: FC<SearchProps> = ({ value, onChange, debounce, minLength, 
         [dirty, onChange]
     )
 
+    const onReset = useCallback(() => {
+        setDirty(null)
+        onChange(null)
+    }, [])
+
     const onChangeDirty = useCallback((event) => {
         setDirty(extractValue(event))
     }, [])
 
-    return <Input onChange={onChangeDirty} value={dirty} {...props} />
+    return <Input onChange={onChangeDirty} value={dirty} action="reset" onAction={onReset} {...props} />
 }
 
 Search.defaultProps = {

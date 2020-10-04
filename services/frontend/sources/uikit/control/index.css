@@ -54,16 +54,24 @@
     top: 0;
 }
 
-.symbol {
+.symbol,
+.action {
     position: absolute;
     height: 1em;
     width: 1em;
     right: 12px;
     top: 16px;
-    pointer-events: none;
     background-size: 100%;
 }
 
 .symbol.arrow {
+    pointer-events: none;
     background-image: url("static/icons/caret-down-fill.svg");
+}
+
+.field:not(.empty) .action.type__reset {
+    cursor: pointer;
+    background-image: url("static/icons/reset.svg");
+    background-size: 150%;
+    background-position: center;
 }
