@@ -10,6 +10,7 @@ type CardHeadProps = ComponentProps<'div'> & {
     size?: 1 | 2 | 3 | 4 | 5
     stroked?: boolean
 }
+type CardHeadSuffixProps = ComponentProps<'div'> & {}
 
 type CardBodyProps = ComponentProps<'div'> & {}
 
@@ -57,4 +58,15 @@ export const CardList: FC<CardListProps> = ({ children, ...props }) => {
 export const CardMore: FC<CardMoreProps> = ({children, ...props}) => {
     const className = useClasses(styles, 'more', props)
     return <button className={className} {...props}>{children}</button>
+}
+
+export const CardHeadSuffix: FC<CardHeadSuffixProps> = ({children, ...props}) => {
+    const className = useClasses(styles, 'suffix', props)
+    return <div className={className} {...props}>{children}</div>
+}
+
+export const CardFilter = ({children}) => {
+    return (
+        <div className={styles.filter}>{children}</div>
+    )
 }

@@ -1,0 +1,56 @@
+.field {
+    position: relative;
+    display: block;
+}
+
+.field input {
+    width: 100%;
+    padding: 18px 8px 7px;
+    border-radius: 3px;
+    border: 1px solid #a1a1a1;
+    font-size: 1em;
+    outline: none;
+    text-overflow: ellipsis;
+}
+.field input[readonly] {
+    cursor: pointer;
+}
+
+.field label ~ input:focus,
+.field input:focus ~ label,
+.field label {
+    transition: .15s;
+    font-size: .8em;
+    pointer-events: none;
+    position: absolute;
+    color: #a1a1a1;
+    left: 8px;
+    top: 5px;
+}
+
+
+.field.empty label {
+    font-size: 1em;
+    left: 12px;
+    top: 13px;
+}
+
+.field input.focus,
+.field input:focus {
+    border-color: var(--castle-black);
+    box-shadow: 0 0 0 1px var(--castle-black);
+}
+
+.symbol {
+    position: absolute;
+    height: 1em;
+    width: 1em;
+    right: 12px;
+    top: 16px;
+    pointer-events: none;
+    background-size: 100%;
+}
+
+.symbol.arrow {
+    background-image: url("static/icons/caret-down-fill.svg");
+}

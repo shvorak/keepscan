@@ -9,10 +9,7 @@ import { Placeholder } from 'uikit/display/placeholder'
 import { Display } from 'uikit/typography/display'
 import { fetchTdt } from 'features/get-tdt/actions'
 import { getTdtAddress, getTdtFailure, getTdtLoading } from 'features/get-tdt/queries'
-import { HOST_ENV } from '~/application/env'
-
-// TODO: Replace with real lot sizes based on network and contract
-const LOT_SIZES = HOST_ENV === 'testNet' ? [0.001, 0.01, 0.1, 0.2, 0.5, 1] : [0.01, 0.1, 0.2, 0.5, 1, 5, 10]
+import { LOT_SIZES } from '~/application/env'
 
 export const GetTdt = () => {
     const [selected, setSelected] = useState(null)
@@ -45,9 +42,7 @@ export const GetTdt = () => {
             <Heading className={styles.heading}>Select lot size</Heading>
             <LotSizeList variants={LOT_SIZES} selected={selected} onSelect={onClick} />
 
-            <div className={styles.content}>
-                {content}
-            </div>
+            <div className={styles.content}>{content}</div>
         </>
     )
 }

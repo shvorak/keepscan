@@ -36,3 +36,26 @@
     cursor: pointer;
     background-color: #f9f9f9;
 }
+
+
+.filter {
+    padding: 10px 15px;
+    display: flex;
+    background: var(--dry-stone);
+}
+.filter > * {
+    margin-left: 15px;
+}
+.filter > *:first-child {
+    margin-left: 0;
+}
+
+.suffix {
+    color: #a1a1a1;
+    font-weight: normal;
+    display: inline-block;
+}
+.suffix:before {
+    content: "・";
+    display: inline-block;
+}

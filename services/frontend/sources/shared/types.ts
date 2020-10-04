@@ -24,3 +24,5 @@ export type Pager = {
     pages: number
     current: number
 }
+
+export type Query = Record<string, string | string[] | number | number[]>
