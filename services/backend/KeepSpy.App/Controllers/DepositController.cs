@@ -27,8 +27,8 @@ namespace KeepSpy.App.Controllers
             => Db.Set<Deposit>()
                 .OrderByDescending(x => x.CreatedAt)
                 .WhereIf(filter.Search.HasValue(),
-                    x => x.Id == filter.Search || x.BitcoinAddress == filter.Search || x.ContractId == filter.Search ||
-                         x.SenderAddress == filter.Search)
+                    x => x.Id.StartsWith(filter.Search) || x.BitcoinAddress.StartsWith(filter.Search) ||
+                         x.SenderAddress.StartsWith(filter.Search))
                 .WhereIf(filter.LotSize.HasValue, x => x.LotSize == filter.LotSize)
                 .WhereIf(filter.Status.HasValue, x => x.Status == filter.Status)
                 .ProjectTo<DepositDto>(Mapper.ConfigurationProvider)

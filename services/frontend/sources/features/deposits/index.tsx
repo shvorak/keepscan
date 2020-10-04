@@ -1,30 +1,14 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import styles from './index.css'
 import { Card, CardFilter, CardHead, CardHeadSuffix, CardList } from 'uikit/layout/card'
 import { Placeholder } from '~/uikit/display/placeholder'
 import { useSelector } from 'react-redux'
 import { useAction } from 'shared/hooks/redux'
 import { depositNextPage, depositQueryChanged } from 'features/deposits/actions'
-import { getDepositsList, getDepositsPager } from 'features/deposits/queries'
+import { getDepositsList, getDepositsPager, getDepositsQuery } from 'features/deposits/queries'
 import { DepositItem } from 'components/deposit/list-item'
 import { Scroller } from 'components/scroller'
-import { Input, Select } from 'uikit/control'
-import { useInput, useModel } from 'shared/hooks/controls'
-import { DepositStatus, DepositStatusNames } from 'entities/Deposit/constants'
-import { LOT_SIZES } from '~/application/env'
-import { Amount } from 'uikit/crypto/amount'
-
-const OPTIONS = Object.values(DepositStatus).map((status) => {
-    return {
-        value: status,
-        label: DepositStatusNames[status],
-    }
-})
-
-const LOT_SIZES_OPTIONS = LOT_SIZES.map(size => ({
-    value: size,
-    label: <Amount value={size} />
-}))
+import { DepositFilter } from 'features/deposits/components/filter'
 
 export const DepositList = () => {
     const nextPage = useAction(depositNextPage)
@@ -32,15 +16,14 @@ export const DepositList = () => {
 
     const items = useSelector(getDepositsList)
     const pager = useSelector(getDepositsPager)
-
-    const [query, { onChange }] = useModel({})
-
-    useEffect(() => {
-        changeFilter(query)
-    }, [query])
+    const query = useSelector(getDepositsQuery)
 
     const onNextPage = useCallback(() => {
         nextPage()
+    }, [])
+
+    const onQueryChange = useCallback((query) => {
+        changeFilter(query)
     }, [])
 
     const list = items.map((deposit) => {
@@ -62,9 +45,7 @@ export const DepositList = () => {
                 <CardHeadSuffix>{pager.total}</CardHeadSuffix>
             </CardHead>
             <CardFilter>
-                <Input label="Search" value={query.search} onChange={onChange('search')} />
-                <Select label="Deposit status" value={query.status} onChange={onChange('status')} options={OPTIONS} />
-                <Select label="Lot size" value={query.lotSize} onChange={onChange('lotSize')} options={LOT_SIZES_OPTIONS} />
+                <DepositFilter query={query} onChange={onQueryChange} />
             </CardFilter>
             <CardList className={styles.body}>
                 <Scroller visible={loadable} loader={loading} onLoading={onNextPage}>

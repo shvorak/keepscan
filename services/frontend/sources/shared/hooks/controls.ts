@@ -55,7 +55,7 @@ export const useModel = (defaultValue: any = {}) => {
     return [
         value,
         {
-            onChange: callbacksFactory,
+            onChangeField: callbacksFactory,
             onClear
         }
     ]

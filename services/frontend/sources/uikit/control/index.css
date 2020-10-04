@@ -41,6 +41,19 @@
     box-shadow: 0 0 0 1px var(--castle-black);
 }
 
+.field .values {
+    position: absolute;
+    pointer-events: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding: 18px 30px 7px 8px;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+}
+
 .symbol {
     position: absolute;
     height: 1em;
