@@ -5,7 +5,7 @@
 
 .field input {
     width: 100%;
-    padding: 18px 8px 7px;
+    padding: 22px 8px 4px;
     border-radius: 3px;
     border: 1px solid #a1a1a1;
     font-size: 1em;
@@ -31,7 +31,7 @@
     position: absolute;
     color: #a1a1a1;
     left: 8px;
-    top: 5px;
+    top: 6px;
 }
 
 
@@ -53,7 +53,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    padding: 18px 30px 7px 8px;
+    padding: 22px 30px 4px 8px;
     height: 100%;
     width: 100%;
     left: 0;

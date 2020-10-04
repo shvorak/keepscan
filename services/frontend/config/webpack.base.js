@@ -85,8 +85,8 @@ module.exports = (options) => {
             }),
         ],
         optimization: {
-            minimizer: isProduction && [
-                new plugins.Terser({
+            minimizer: [
+                isProduction && new plugins.Terser({
                     cache: true,
                     parallel: true,
                     sourceMap: true, // Must be set to true if using source-maps in production
@@ -94,7 +94,7 @@ module.exports = (options) => {
                         // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
                     }
                 }),
-            ],
+            ].filter(Boolean),
         },
     }
 }
