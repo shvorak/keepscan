@@ -48,13 +48,13 @@ export const TransactionData: FC<TransactionDataProps> = ({ tx }) => {
 
     const items = [
         tx.amount && (
-            <div className={styles.item}>
+            <div key="amount" className={styles.item}>
                 <Display className={styles.label}>Value:</Display>
                 <Number className={styles.value} value={tx.amount} precision={6} suffix={suffix} />
             </div>
         ),
         tx.fee && (
-            <div className={styles.item}>
+            <div key="fee" className={styles.item}>
                 <Display className={styles.label}>Fee:</Display>
                 <Number className={styles.value} value={tx.fee} precision={6} suffix={suffix} />
             </div>

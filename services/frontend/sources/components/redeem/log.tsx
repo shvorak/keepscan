@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useMemo } from 'react'
 import { TimelineEvent } from 'uikit/display/timeline'
 import { RedeemStatus } from 'entities/Redeem/constants'
 import { formatStatus } from 'entities/Redeem/format'
@@ -13,12 +13,10 @@ import { Redeem } from 'entities/Redeem/types'
 
 const SuccessOrder = [RedeemStatus.Requested, RedeemStatus.Signed, RedeemStatus.BtcTransferred, RedeemStatus.Redeemed]
 
-const FailureOrder = [RedeemStatus.Requested, RedeemStatus.Liquidation, RedeemStatus.Liquidated]
+const FailureOrder = [RedeemStatus.Liquidation, RedeemStatus.Liquidated]
 
-const isStateComplete = (seekingStatus, currentStatus) => {
-    return isErrorStatus(currentStatus)
-        ? FailureOrder.indexOf(currentStatus) >= FailureOrder.indexOf(seekingStatus)
-        : SuccessOrder.indexOf(currentStatus) >= SuccessOrder.indexOf(seekingStatus)
+const isStateBefore = (seekingStatus, currentStatus) => {
+    return SuccessOrder.indexOf(currentStatus) >= SuccessOrder.indexOf(seekingStatus)
 }
 
 type RedeemLogProps = {
@@ -27,32 +25,51 @@ type RedeemLogProps = {
 
 const workflowFactory = (redeem: Redeem) => {
     const transactions = sortBy(prop('timestamp'), redeem.transactions || [])
+
+    // Find liquidation tx
     const liquidation = find(byStatus(RedeemStatus.Liquidation), transactions)
 
+    // When liquidation tx not found return "success way" status list
+    if (null == liquidation) {
+        return SuccessOrder
+    }
 
+    // Find last success step
+    const lastSuccess = transactions.reduce((greatest, current) => {
+        if (isErrorStatus(current.status)) {
+            return greatest
+        }
+        return greatest === null || isStateBefore(greatest.status, current.status) ? current : greatest
+    }, null)
+
+    // We know what success tx already exists
+    const lastSuccessIdx = SuccessOrder.indexOf(lastSuccess.status)
+
+    // Slice "success way" list including last success tx
+    return SuccessOrder.slice(0, lastSuccessIdx + 1).concat(FailureOrder)
 }
 
 export const RedeemLog: FC<RedeemLogProps> = ({ redeem }) => {
-    const failure = redeem.transactions.some((tx) => tx.status === RedeemStatus.Liquidation)
-    const branch = failure ? FailureOrder : SuccessOrder
+    const items = useMemo(() => {
+        const workflow = workflowFactory(redeem)
+        const transactions = redeem.transactions || []
 
-    const transactions = sortBy(prop('timestamp'), redeem.transactions || [])
+        return workflow.map((status) => {
+            const statusTransactions = filter(byStatus(status), transactions)
+            return statusTransactions.length > 0 ? (
+                statusTransactions.map((tx) => <RedeemLogEvent key={tx.id} status={status} redeem={redeem} tx={tx} />)
+            ) : (
+                <RedeemLogEvent key={status} status={status} redeem={redeem} />
+            )
+        })
+    }, [redeem])
 
-    const events = branch.map((status) => {
-        const statusTransactions = filter(byStatus(status), transactions)
-        return statusTransactions.length > 0 ? (
-            statusTransactions.map((tx) => <RedeemLogEvent key={tx.id} status={status} redeem={redeem} tx={tx} />)
-        ) : (
-            <RedeemLogEvent key={status} status={status} redeem={redeem} />
-        )
-    })
-
-    return <div>{events}</div>
+    return <div>{items}</div>
 }
 
 const RedeemLogEvent = ({ status, redeem, tx = null }) => {
     let icon
-    let state = isStateComplete(status, redeem.status) ? 'complete' : 'feature'
+    let state = isStateBefore(status, redeem.status) ? 'complete' : 'feature'
     if (tx) {
         state = isErrorStatus(status) ? 'failure' : 'complete'
         if (false === tx.isError) {
