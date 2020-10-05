@@ -7,12 +7,19 @@ import { byStatus } from 'entities/Deposit/helpers'
 import { isErrorStatus } from 'entities/Redeem/specs'
 import { Status, Timestamp, Transaction } from 'components/timeline'
 import { useSelector } from 'react-redux'
-import { getEthereumLastBlock, getNetworkLastBlock } from 'entities/Network/queries'
+import { getNetworkLastBlock } from 'entities/Network/queries'
 import { RedeemRespawn } from 'components/redeem/respawn'
 
 const SuccessOrder = [RedeemStatus.Requested, RedeemStatus.Signed, RedeemStatus.BtcTransferred, RedeemStatus.Redeemed]
 
 const FailureOrder = [RedeemStatus.Requested, RedeemStatus.Liquidation, RedeemStatus.Liquidated]
+
+
+const isStateComplete = (seekingStatus, currentStatus) => {
+    return SuccessOrder.indexOf(currentStatus) >= 0
+        ? SuccessOrder.indexOf(currentStatus) >= SuccessOrder.indexOf(seekingStatus)
+        : FailureOrder.indexOf(currentStatus) >= SuccessOrder.indexOf(seekingStatus)
+}
 
 export const RedeemLog = ({ redeem }) => {
     const failure = redeem.transactions.some((tx) => tx.status === RedeemStatus.Liquidation)
@@ -29,7 +36,7 @@ export const RedeemLog = ({ redeem }) => {
 }
 
 const RedeemLogEvent = ({ status, redeem, tx }) => {
-    let state = status <= redeem.status ? 'complete' : 'feature'
+    let state = isStateComplete(redeem.status, status) ? 'complete' : 'feature'
     if (tx) {
         state = isErrorStatus(status) ? 'failure' : 'complete'
     }
