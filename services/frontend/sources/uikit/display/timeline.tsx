@@ -3,6 +3,7 @@ import styles from './timeline.css'
 import { useClasses } from 'shared/hooks/styles'
 
 type TimelineEventProps = ComponentProps<'div'> & {
+    icon?: 'check' | 'block'
     state?: 'complete' | 'failure' | 'feature'
     style?: 'violet'
 }

@@ -36,18 +36,26 @@ export const RedeemLog = ({ redeem }) => {
 }
 
 const RedeemLogEvent = ({ status, redeem, tx }) => {
+    let icon
     let state = isStateComplete(status, redeem.status) ? 'complete' : 'feature'
     if (tx) {
         state = isErrorStatus(status) ? 'failure' : 'complete'
+        if (false === tx.isError) {
+            icon = 'check'
+        }
     }
 
+
+
     const lastBlock = useSelector(getNetworkLastBlock(tx && tx.kind))
+
+
 
     const timestamp = tx && <Timestamp value={tx.timestamp} />
     const transaction = tx && <Transaction tx={tx} lastBlock={lastBlock} />
     return (
         // TODO: Fix `state` compiler error
-        <TimelineEvent state={state as any} style="violet" key={status}>
+        <TimelineEvent icon={icon} state={state as any} style="violet" key={status}>
             <div>
                 <Status size={4}>{formatStatus(status)}</Status>
                 {timestamp}

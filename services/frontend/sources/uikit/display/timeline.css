@@ -36,6 +36,7 @@
     background: var(--electric-green);
     border-color: var(--electric-green);
 }
+.item.item.icon__check:after,
 .item.state__complete:after {
     content: "";
     background-image: url("static/icons/check.svg");
@@ -54,6 +55,7 @@
     border-color: var(--simply-red);
 }
 
+.item.item.icon__block:after,
 .item.state__failure:after {
     content: "";
     background-image: url("static/icons/block.svg");
