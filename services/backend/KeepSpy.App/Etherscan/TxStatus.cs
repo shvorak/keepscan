@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace KeepSpy.App.Etherscan
 {
-	public class Response<T>
+	public class TxStatus
 	{
-		public string status { get; set; }
-		public string message { get; set; }
-		public T result { get; set; }
-    }
+		public string isError { get; set; }
+		public string errDescription { get; set; }
+	}
 }

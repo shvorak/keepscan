@@ -80,6 +80,12 @@ namespace KeepSpy.App.Workers
 
         void Run(KeepSpyContext db, KeychainService keychainService)
         {
+            foreach (var t in db.Set<Transaction>().Where(o => o.IsError && o.Error.Length <= 1))
+            {
+                t.Error = _apiClient.GetTxStatus(t.Id).result.errDescription;
+                _logger.LogInformation($"Tx {t.Id} error description: {t.Error}");
+            }
+            db.SaveChanges();
             var network = db.Set<Network>()
                 .SingleOrDefault(n => n.Kind == NetworkKind.Ethereum && n.IsTestnet == _options.IsTestnet);
             if (network == null)
@@ -408,6 +414,9 @@ namespace KeepSpy.App.Workers
             {
                 if (db.Find<Transaction>(tx.hash) == null)
                 {
+                    string tx_error = "";
+                    if (tx.isError == "1")
+                        tx_error = _apiClient.GetTxStatus(tx.hash).result.errDescription;
                     db.Add(new Transaction
                     {
                         Id = tx.hash,
@@ -415,7 +424,7 @@ namespace KeepSpy.App.Workers
                         Block = uint.Parse(tx.blockNumber),
                         Status = d.Status,
                         IsError = tx.isError == "1",
-                        Error = tx.txreceipt_status,
+                        Error = tx_error,
                         Timestamp = tx.TimeStamp,
                         Amount = decimal.Parse(tx.value) / 1000000000000000000,
                         Fee = decimal.Parse(tx.gasPrice) / 1000000000000000000 * decimal.Parse(tx.gasUsed),
@@ -431,6 +440,9 @@ namespace KeepSpy.App.Workers
             {
                 if (db.Find<Transaction>(tx.hash) == null)
                 {
+                    string tx_error = "";
+                    if (tx.isError == "1")
+                        tx_error = _apiClient.GetTxStatus(tx.hash).result.errDescription;
                     db.Add(new Transaction
                     {
                         Id = tx.hash,
@@ -439,7 +451,7 @@ namespace KeepSpy.App.Workers
                         Status = DepositStatus.Closed,
                         RedeemStatus = r.Status,
                         IsError = tx.isError == "1",
-                        Error = tx.txreceipt_status,
+                        Error = tx_error,
                         Timestamp = tx.TimeStamp,
                         Amount = decimal.Parse(tx.value) / 1000000000000000000,
                         Fee = decimal.Parse(tx.gasPrice) / 1000000000000000000 * decimal.Parse(tx.gasUsed),

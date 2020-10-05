@@ -24,7 +24,7 @@ namespace KeepSpy.App.Etherscan
 			return JsonSerializer.Deserialize<Response<T>>(httpApiResult);
 		}
 
-		public Response<Tx> GetAccountTxList(string address, ulong fromBlock, ulong? toBlock = null, string sort = "asc", int? page = 1, int? limit = 5000)
+		public Response<IList<Tx>> GetAccountTxList(string address, ulong fromBlock, ulong? toBlock = null, string sort = "asc", int? page = 1, int? limit = 5000)
 		{
 			var parameters = new Dictionary<string, object>()
 			{
@@ -37,9 +37,9 @@ namespace KeepSpy.App.Etherscan
 				{"page", page },
 				{"offset",limit }
 			};
-			return GetResult<Tx>(parameters);
+			return GetResult<IList<Tx>>(parameters);
 		}
-		public Response<Log> GetLogs(string address, ulong fromBlock, ulong? toBlock = null, int? page = 1, int? limit = 5000, string topic0 = null)
+		public Response<IList<Log>> GetLogs(string address, ulong fromBlock, ulong? toBlock = null, int? page = 1, int? limit = 5000, string topic0 = null)
 		{
 			var parameters = new Dictionary<string, object>()
 			{
@@ -52,7 +52,7 @@ namespace KeepSpy.App.Etherscan
 				{"offset", limit },
 				{"topic0", topic0 }
 			};
-			return GetResult<Log>(parameters);
+			return GetResult<IList<Log>>(parameters);
 		}
 
 		public BlockNumber GetBlockNumber()
@@ -60,6 +60,17 @@ namespace KeepSpy.App.Etherscan
 			string requestUrl = _baseUrl + "&module=proxy&action=eth_blockNumber";
 			string httpApiResult = wc.DownloadString(requestUrl);
 			return JsonSerializer.Deserialize<BlockNumber>(httpApiResult);
+		}
+
+		public Response<TxStatus> GetTxStatus(string hash)
+		{
+			var parameters = new Dictionary<string, object>()
+			{
+				{"module", "transaction" },
+				{"action", "getstatus" },
+				{"txhash", hash }
+			};
+			return GetResult<TxStatus>(parameters);
 		}
 	}
 
