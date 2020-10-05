@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useMemo } from 'react'
 import styles from './list-item.css'
 import { Redeem } from 'entities/Redeem/types'
 import { useLink } from 'shared/hooks/router'
@@ -12,6 +12,7 @@ import { Workflow, WorkflowStep } from 'uikit/display/workflow'
 import { Amount } from 'uikit/crypto/amount'
 import { RedeemStatus } from 'entities/Redeem/constants'
 import { isErrorStatus } from 'entities/Redeem/specs'
+import { workflowFactory } from 'entities/Redeem/helpers'
 
 type RedeemRowProps = {
     redeem: Redeem
@@ -50,27 +51,24 @@ export const RedeemItem: FC<RedeemRowProps> = ({ redeem }) => {
 
 
 const RedeemWorkflow = ({redeem}) => {
+
+    const states = useMemo(() => {
+        return workflowFactory(redeem)
+    }, [redeem])
+
+    const stages = useMemo(() => {
+        return states.map(status => (
+            <WorkflowStep key={status} completed={states.indexOf(redeem.status) >= states.indexOf(status)} />
+        ))
+    }, [redeem, states])
+
     const state = isErrorStatus(redeem.status)
         ? 'warning'
         : 'success'
 
-    const steps = isErrorStatus(redeem.status) ? (
-        <>
-            <WorkflowStep completed={redeem.status >= 3} />
-            <WorkflowStep completed={redeem.status >= 4} />
-        </>
-    ) : (
-        <>
-            <WorkflowStep completed={redeem.status >= 1} />
-            <WorkflowStep completed={redeem.status === 2 || redeem.status === 5} />
-            <WorkflowStep completed={redeem.status === 2} />
-        </>
-    )
-
     return (
         <Workflow state={state} variant="redeem">
-            <WorkflowStep completed={redeem.status >= 0} />
-            {steps}
+            {stages}
         </Workflow>
     )
 }
