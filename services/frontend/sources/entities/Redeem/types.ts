@@ -17,4 +17,16 @@ export type Redeem = {
     createdAt: string
     updatedAt: string
     completedAt: string
+
+    transactions: RedeemTx[]
+}
+
+export interface RedeemTx
+{
+    id: string
+    block: number
+    status: number
+    timestamp: number
+    isError: boolean
+    error: string
 }

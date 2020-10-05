@@ -2,10 +2,10 @@ import React, { FC, useMemo } from 'react'
 import styles from './log.css'
 import { formatStatus } from 'entities/Deposit/format'
 import { DepositStatus } from 'entities/Deposit/constants'
-import { filter, find, prop, sortBy } from 'ramda'
+import { filter, prop, sortBy } from 'ramda'
 import { Deposit } from 'entities/Deposit/types'
 import { useSelector } from 'react-redux'
-import { getEthereumLastBlock, getNetworkLastBlock } from 'entities/Network/queries'
+import { getNetworkLastBlock } from 'entities/Network/queries'
 import { isErrorStatus } from 'entities/Deposit/specs'
 import { buildStatuses, byStatus } from 'entities/Deposit/helpers'
 import { Respawn } from 'components/deposit/respawn'
@@ -33,9 +33,13 @@ export const DepositLog: FC<DepositLogProps> = ({ deposit }) => {
         return buildStatuses(DepositStatusOrder, transactions).map((status) => {
             const statusTransactions = filter(byStatus(status), transactions)
 
-            return statusTransactions.map((tx, i) => {
-                return <DepositLogRecord key={status + '-' + i} status={status} deposit={deposit} tx={tx} />
-            })
+            return statusTransactions.length ? (
+                statusTransactions.map(tx => {
+                    return <DepositLogRecord key={tx.id} status={status} deposit={deposit} tx={tx} />
+                })
+            ) : (
+                <DepositLogRecord key={status} status={status} deposit={deposit} />
+            )
         })
     }, [deposit])
 
