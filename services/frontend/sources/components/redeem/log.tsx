@@ -36,7 +36,7 @@ export const RedeemLog = ({ redeem }) => {
 }
 
 const RedeemLogEvent = ({ status, redeem, tx }) => {
-    let state = isStateComplete(redeem.status, status) ? 'complete' : 'feature'
+    let state = isStateComplete(status, redeem.status) ? 'complete' : 'feature'
     if (tx) {
         state = isErrorStatus(status) ? 'failure' : 'complete'
     }
