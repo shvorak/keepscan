@@ -2,7 +2,7 @@
 
 namespace KeepSpy.Storage.Migrations
 {
-    public partial class UpdateRedeemStatus : Migration
+    public partial class UpdateRedeemStatus2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -334,7 +334,7 @@ namespace KeepSpy.App.Workers
                     continue;
                 string id = "0x" + redeemed.topics[1].Substring(26);
                 var redeem = db.Find<Redeem>(id);
-                if (redeem != null && redeem.Status == RedeemStatus.Signed)
+                if (redeem != null && redeem.Status != RedeemStatus.Redeemed)
                 {
                     redeem.Status = RedeemStatus.Redeemed;
                     redeem.UpdatedAt = redeemed.TimeStamp;
@@ -355,7 +355,7 @@ namespace KeepSpy.App.Workers
                     continue;
                 string id = "0x" + startedLiquidaion.topics[1].Substring(26);
                 var redeem = db.Find<Redeem>(id);
-                if (redeem != null && redeem.Status == RedeemStatus.Requested)
+                if (redeem != null && redeem.Status != RedeemStatus.Liquidation)
                 {
                     redeem.Status = RedeemStatus.Liquidation;
                     redeem.UpdatedAt = startedLiquidaion.TimeStamp;
@@ -374,7 +374,7 @@ namespace KeepSpy.App.Workers
                     continue;
                 string id = "0x" + liquidated.topics[1].Substring(26);
                 var redeem = db.Find<Redeem>(id);
-                if (redeem != null && redeem.Status == RedeemStatus.Requested)
+                if (redeem != null && redeem.Status != RedeemStatus.Liquidated)
                 {
                     redeem.Status = RedeemStatus.Liquidated;
                     redeem.UpdatedAt = liquidated.TimeStamp;
