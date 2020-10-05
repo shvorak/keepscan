@@ -7,6 +7,7 @@ import { DAPP } from '~/application/env'
 const RespawnActions = {
     [RedeemStatus.Requested]: 'deposit/{0}/redemption',
     [RedeemStatus.Signed]: 'deposit/{0}/redemption/signing',
+    [RedeemStatus.BtcTransferred]: 'redeem/{0}/redemption/confirming',
 }
 
 export const RedeemRespawn = ({ status, redeem }) => {

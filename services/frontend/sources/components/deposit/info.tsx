@@ -21,12 +21,12 @@ const Schema = [
         render: amount,
     }),
     field('lotSizeMinted', {
-        label: 'Lot size minted',
-        render: amount,
+        label: 'tBTC received',
+        render: number,
     }),
     field('lotSizeFee', {
-        label: 'Lot size fee',
-        render: amount,
+        label: 'tBTC fee',
+        render: number,
     }),
     field('spentFee', {
         label: 'ETH spent',
