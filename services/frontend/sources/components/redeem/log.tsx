@@ -16,6 +16,7 @@ const SuccessOrder = [RedeemStatus.Requested, RedeemStatus.Signed, RedeemStatus.
 const FailureOrder = [RedeemStatus.Liquidation, RedeemStatus.Liquidated]
 
 const isStateBefore = (seekingStatus, currentStatus) => {
+    isErrorStatus(currentStatus)
     return SuccessOrder.indexOf(currentStatus) >= SuccessOrder.indexOf(seekingStatus)
 }
 
@@ -55,26 +56,34 @@ export const RedeemLog: FC<RedeemLogProps> = ({ redeem }) => {
         const transactions = redeem.transactions || []
 
         return workflow.map((status) => {
-            const statusTransactions = filter(byStatus(status), transactions)
-            return statusTransactions.length > 0 ? (
-                statusTransactions.map((tx) => <RedeemLogEvent key={tx.id} status={status} redeem={redeem} tx={tx} />)
-            ) : (
-                <RedeemLogEvent key={status} status={status} redeem={redeem} />
+            const state =
+                workflow.indexOf(redeem.status) >= workflow.indexOf(status)
+                    ? isErrorStatus(status)
+                        ? 'failure'
+                        : 'complete'
+                    : 'feature'
+
+            const render = (tx = null) => (
+                <RedeemLogEvent key={tx ? tx.id : status} state={state} status={status} redeem={redeem} tx={tx} />
             )
+
+            const statusTransactions = filter(byStatus(status), transactions)
+
+            // prettier-ignore
+            return statusTransactions.length > 0
+                ? statusTransactions.map(render)
+                : render()
         })
     }, [redeem])
 
     return <div>{items}</div>
 }
 
-const RedeemLogEvent = ({ status, redeem, tx = null }) => {
+const RedeemLogEvent = ({ state, status, redeem, tx = null }) => {
     let icon
-    let state = isStateBefore(status, redeem.status) ? 'complete' : 'feature'
-    if (tx) {
-        state = isErrorStatus(status) ? 'failure' : 'complete'
-        if (false === tx.isError) {
-            icon = 'check'
-        }
+    if (tx && false === tx.isError) {
+        // Special keys for liquidation flow
+        icon = 'check'
     }
 
     const lastBlock = useSelector(getNetworkLastBlock(tx && tx.kind))
