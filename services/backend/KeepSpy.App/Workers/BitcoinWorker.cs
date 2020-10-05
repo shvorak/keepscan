@@ -118,7 +118,13 @@ namespace KeepSpy.App.Workers
                             redeem.BitcoinRedeemedBlock = tx.status.block_height;
                             redeem.BtcRedeemed = t.Amount;
                             redeem.BtcFee = t.Fee;
+                            if (redeem.Status != RedeemStatus.Liquidated && redeem.Status != RedeemStatus.Redeemed)
+                            {
+                                redeem.Status = RedeemStatus.BtcTransferred;
+                                redeem.UpdatedAt = t.Timestamp;
+                            }
                         }
+                        db.SaveChanges();
                     }
                 }
             }
