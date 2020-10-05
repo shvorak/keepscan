@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { TimelineEvent } from 'uikit/display/timeline'
 import { RedeemStatus } from 'entities/Redeem/constants'
 import { formatStatus } from 'entities/Redeem/format'
-import { filter, find, prop, sortBy } from 'ramda'
+import { filter, prop, sortBy } from 'ramda'
 import { byStatus } from 'entities/Deposit/helpers'
 import { isErrorStatus } from 'entities/Redeem/specs'
 import { Status, Timestamp, Transaction } from 'components/timeline'
@@ -16,9 +16,9 @@ const SuccessOrder = [RedeemStatus.Requested, RedeemStatus.Signed, RedeemStatus.
 const FailureOrder = [RedeemStatus.Requested, RedeemStatus.Liquidation, RedeemStatus.Liquidated]
 
 const isStateComplete = (seekingStatus, currentStatus) => {
-    return SuccessOrder.indexOf(currentStatus) >= 0
-        ? SuccessOrder.indexOf(currentStatus) >= SuccessOrder.indexOf(seekingStatus)
-        : FailureOrder.indexOf(currentStatus) >= SuccessOrder.indexOf(seekingStatus)
+    return isErrorStatus(currentStatus)
+        ? FailureOrder.indexOf(currentStatus) >= FailureOrder.indexOf(seekingStatus)
+        : SuccessOrder.indexOf(currentStatus) >= SuccessOrder.indexOf(seekingStatus)
 }
 
 type RedeemLogProps = {
