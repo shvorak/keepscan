@@ -1,9 +1,17 @@
-import React from 'react'
-import styles from 'components/deposit/log.css'
+import React, { FC } from 'react'
+import styles from 'components/deposit/log.less'
 import { Address } from 'uikit/crypto/address'
 import { DateTime } from 'uikit/display/datetime'
 import { Heading } from 'uikit/typography'
 import { Display } from 'uikit/typography/display'
+import { Number } from 'uikit/display/number'
+import { DepositTx } from 'entities/Deposit/types'
+import { RedeemTx } from 'entities/Redeem/types'
+import { CURRENCY_CODES } from 'entities/Network/constants'
+
+type TransactionDataProps = {
+    tx: DepositTx | RedeemTx
+}
 
 export const Status = ({ children, ...props }) => (
     <Heading size={4} className={styles.status} {...props}>
@@ -35,9 +43,32 @@ export const Transaction = ({ tx, lastBlock }) => {
     )
 }
 
+export const TransactionData: FC<TransactionDataProps> = ({ tx }) => {
+    const suffix = ' ' + CURRENCY_CODES[tx.kind]
+
+    const items = [
+        tx.amount && (
+            <div className={styles.item}>
+                <Display className={styles.label}>Amount:</Display>
+                <Number className={styles.value} value={tx.amount} precision={5} suffix={suffix} />
+            </div>
+        ),
+        tx.fee && (
+            <div className={styles.item}>
+                <Display className={styles.label}>Fee:</Display>
+                <Number className={styles.value} value={tx.fee} precision={5} suffix={suffix} />
+            </div>
+        ),
+    ].filter(Boolean)
+
+    return <div className={styles.details}>{items}</div>
+}
+
 const Message = ({ message }) => (
     <>
-        <Display size={14} inline secondary>&nbsp;-&nbsp;</Display>
+        <Display size={14} inline secondary>
+            &nbsp;-&nbsp;
+        </Display>
         <Display error inline>
             {message}
         </Display>

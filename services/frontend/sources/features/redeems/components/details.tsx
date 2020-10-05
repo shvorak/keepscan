@@ -94,7 +94,7 @@ const Content = ({ redeem }) => {
 
             <Card className={styles.panel}>
                 <CardHead>Operation Log</CardHead>
-                <CardBody>
+                <CardBody className={styles.panelBody}>
                     <RedeemLog redeem={redeem} />
                 </CardBody>
             </Card>

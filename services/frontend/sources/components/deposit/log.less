@@ -36,3 +36,22 @@
     margin-left: 3px;
     background: url("static/icons/external-link.svg");
 }
+
+.details {
+    font-size: 14px;
+    height: 0; // For better timeline event legend alignment
+    color: var(--simply-grey);
+    .item {
+        display: inline-block;
+        padding-right: 10px;
+
+        .label {
+            display: inline-block;
+        }
+        .value {
+            display: inline-block;
+            font-weight: 500;
+            margin-left: 5px;
+        }
+    }
+}

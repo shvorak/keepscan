@@ -42,6 +42,9 @@
     margin-top: 20px;
     position: relative;
 }
+.panelBody {
+    padding-bottom: 30px;
+}
 
 .placeholder {
     padding: 50px 30px;

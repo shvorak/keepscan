@@ -24,7 +24,10 @@ export type Redeem = {
 export interface RedeemTx
 {
     id: string
+    fee: number
+    kind: number
     block: number
+    amount: number
     status: number
     timestamp: number
     isError: boolean

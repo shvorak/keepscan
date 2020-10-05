@@ -5,7 +5,7 @@ import { formatStatus } from 'entities/Redeem/format'
 import { filter, prop, sortBy } from 'ramda'
 import { byStatus } from 'entities/Deposit/helpers'
 import { isErrorStatus } from 'entities/Redeem/specs'
-import { Status, Timestamp, Transaction } from 'components/timeline'
+import { Status, Timestamp, Transaction, TransactionData } from 'components/timeline'
 import { useSelector } from 'react-redux'
 import { getNetworkLastBlock } from 'entities/Network/queries'
 import { RedeemRespawn } from 'components/redeem/respawn'
@@ -57,6 +57,8 @@ const RedeemLogEvent = ({ status, redeem, tx = null }) => {
 
     const timestamp = tx && <Timestamp value={tx.timestamp} />
     const transaction = tx && <Transaction tx={tx} lastBlock={lastBlock} />
+    const transactionData = tx && <TransactionData tx={tx} />
+
     return (
         // TODO: Fix `state` compiler error
         <TimelineEvent icon={icon} state={state as any} style="violet" key={status}>
@@ -66,6 +68,7 @@ const RedeemLogEvent = ({ status, redeem, tx = null }) => {
                 <RedeemRespawn status={status} redeem={redeem} />
             </div>
             <div>{transaction}</div>
+            {transactionData}
         </TimelineEvent>
     )
 }

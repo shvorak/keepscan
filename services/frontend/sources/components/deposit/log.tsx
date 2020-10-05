@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react'
-import styles from './log.css'
+import styles from './log.less'
 import { formatStatus } from 'entities/Deposit/format'
 import { DepositStatus } from 'entities/Deposit/constants'
 import { filter, prop, sortBy } from 'ramda'
@@ -11,7 +11,7 @@ import { buildStatuses, byStatus } from 'entities/Deposit/helpers'
 import { Respawn } from 'components/deposit/respawn'
 import { TimelineEvent } from 'uikit/display/timeline'
 import { DisplayLink } from 'uikit/typography/display'
-import { Status, Timestamp, Transaction } from 'components/timeline'
+import { Status, Timestamp, Transaction, TransactionData } from 'components/timeline'
 
 type DepositLogProps = {
     deposit: Deposit
@@ -51,6 +51,7 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
 
     const timestamp = tx && <Timestamp value={tx.timestamp} />
     const transaction = tx && <Transaction tx={tx} lastBlock={lastBlock} />
+    const transactionData = tx && <TransactionData tx={tx} />
     const respawn = status === deposit.status && <Respawn deposit={deposit} />
 
     const redeem = status === deposit.status && status === DepositStatus.Redeemed && (
@@ -73,6 +74,8 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
                 {transaction}
                 {redeem}
             </div>
+            {transactionData}
         </TimelineEvent>
     )
 }
+

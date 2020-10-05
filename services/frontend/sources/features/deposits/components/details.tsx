@@ -102,7 +102,7 @@ const Content = ({ deposit }) => (
 
         <Card className={styles.panel}>
             <CardHead>Operation Log</CardHead>
-            <CardBody className={styles.body}>
+            <CardBody className={styles.panelBody}>
                 <DepositLog deposit={deposit} />
             </CardBody>
         </Card>

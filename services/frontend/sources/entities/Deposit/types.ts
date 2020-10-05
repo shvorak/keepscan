@@ -20,7 +20,10 @@ export interface Deposit
 export interface DepositTx
 {
     id: string
+    fee: number
+    kind: number
     block: number
+    amount: number
     status: number
     timestamp: number
     isError: boolean
