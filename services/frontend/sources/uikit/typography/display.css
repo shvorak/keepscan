@@ -1,11 +1,15 @@
 .display {
     line-height: normal;
 }
-
+.display.inline {
+    display: inline-block;
+}
 .display.secondary {
     color: #ababab;
 }
-
+.display.error {
+    color: var(--simply-red);
+}
 .display-link {
     color: var(--castle-black);
     text-decoration: none;

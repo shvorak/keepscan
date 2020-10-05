@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react'
 import styles from './log.css'
 import { formatStatus } from 'entities/Deposit/format'
 import { DepositStatus } from 'entities/Deposit/constants'
-import { find, prop, sortBy } from 'ramda'
+import { filter, find, prop, sortBy } from 'ramda'
 import { Deposit } from 'entities/Deposit/types'
 import { useSelector } from 'react-redux'
 import { getEthereumLastBlock, getNetworkLastBlock } from 'entities/Network/queries'
@@ -31,8 +31,11 @@ export const DepositLog: FC<DepositLogProps> = ({ deposit }) => {
     const statuses = useMemo(() => {
         const transactions = sortBy(prop('timestamp'), deposit.transactions || [])
         return buildStatuses(DepositStatusOrder, transactions).map((status) => {
-            const tx = find(byStatus(status), transactions)
-            return <DepositLogRecord key={status} status={status} deposit={deposit} tx={tx} />
+            const statusTransactions = filter(byStatus(status), transactions)
+
+            return statusTransactions.map((tx, i) => {
+                return <DepositLogRecord key={status + '-' + i} status={status} deposit={deposit} tx={tx} />
+            })
         })
     }, [deposit])
 
@@ -52,7 +55,8 @@ export const DepositLogRecord = ({ status, deposit, tx = null }) => {
         </DisplayLink>
     )
 
-    const state = status <= deposit.status ? (isErrorStatus(status) ? 'failure' : 'complete') : 'feature'
+    const state =
+        status <= deposit.status ? (isErrorStatus(status) || (tx && tx.isError) ? 'failure' : 'complete') : 'feature'
 
     return (
         <TimelineEvent state={state}>

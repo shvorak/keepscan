@@ -7,6 +7,8 @@ type DisplayProps = ComponentProps<'div'> & {
     // TODO: Allow react component
     as?: string
     size?: string | number
+    error?: boolean
+    inline?: boolean
     secondary?: boolean
 }
 
