@@ -49,14 +49,14 @@ export const TransactionData: FC<TransactionDataProps> = ({ tx }) => {
     const items = [
         tx.amount && (
             <div className={styles.item}>
-                <Display className={styles.label}>Amount:</Display>
-                <Number className={styles.value} value={tx.amount} precision={5} suffix={suffix} />
+                <Display className={styles.label}>Value:</Display>
+                <Number className={styles.value} value={tx.amount} precision={6} suffix={suffix} />
             </div>
         ),
         tx.fee && (
             <div className={styles.item}>
                 <Display className={styles.label}>Fee:</Display>
-                <Number className={styles.value} value={tx.fee} precision={5} suffix={suffix} />
+                <Number className={styles.value} value={tx.fee} precision={6} suffix={suffix} />
             </div>
         ),
     ].filter(Boolean)

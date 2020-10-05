@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { TimelineEvent } from 'uikit/display/timeline'
 import { RedeemStatus } from 'entities/Redeem/constants'
 import { formatStatus } from 'entities/Redeem/format'
-import { filter, prop, sortBy } from 'ramda'
+import { filter, find, prop, sortBy } from 'ramda'
 import { byStatus } from 'entities/Deposit/helpers'
 import { isErrorStatus } from 'entities/Redeem/specs'
 import { Status, Timestamp, Transaction, TransactionData } from 'components/timeline'
@@ -23,6 +23,13 @@ const isStateComplete = (seekingStatus, currentStatus) => {
 
 type RedeemLogProps = {
     redeem: Redeem
+}
+
+const workflowFactory = (redeem: Redeem) => {
+    const transactions = sortBy(prop('timestamp'), redeem.transactions || [])
+    const liquidation = find(byStatus(RedeemStatus.Liquidation), transactions)
+
+
 }
 
 export const RedeemLog: FC<RedeemLogProps> = ({ redeem }) => {
