@@ -62,8 +62,8 @@ const RedeemWorkflow = ({redeem}) => {
     ) : (
         <>
             <WorkflowStep completed={redeem.status >= 1} />
-            <WorkflowStep completed={redeem.status === 5 || redeem.status >= 2} />
-            <WorkflowStep completed={redeem.status >= 2} />
+            <WorkflowStep completed={redeem.status === 2 || redeem.status === 5} />
+            <WorkflowStep completed={redeem.status === 2} />
         </>
     )
 
