@@ -1,14 +1,4 @@
-/**
- * InitiatingDeposit,
- WaitingForBtc,
- BtcReceived,
- SubmittingProof,
- ApprovingSpendLimit,
- Minted,
- Redeemed,
- SetupFailed,
- Liquidated
- */
+
 export const DepositStatus = {
     InitiatingDeposit: 0,
     WaitingForBtc: 1,
@@ -17,8 +7,7 @@ export const DepositStatus = {
     ApprovingTdtSpendLimit: 4,
     Minted: 5,
     Redeemed: 6,
-    SetupFailed: 7,
-    Liquidated: 8,
+    SetupFailed: 7
 }
 
 export const DepositStatusNames = {
@@ -29,8 +18,7 @@ export const DepositStatusNames = {
     [DepositStatus.ApprovingTdtSpendLimit]: 'Approving spend limit',
     [DepositStatus.Minted]: 'Minted',
     [DepositStatus.Redeemed]: 'Redeemed',
-    [DepositStatus.SetupFailed]: 'Setup failed',
-    [DepositStatus.Liquidated]: 'Liquidated',
+    [DepositStatus.SetupFailed]: 'Setup failed'
 }
 
 export const DepositSuccessStatuses = [
@@ -43,4 +31,4 @@ export const DepositSuccessStatuses = [
     DepositStatus.Redeemed,
 ]
 
-export const DepositFailureStatuses = [DepositStatus.SetupFailed, DepositStatus.Liquidated]
+export const DepositFailureStatuses = [DepositStatus.SetupFailed]

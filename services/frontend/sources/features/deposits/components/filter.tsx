@@ -6,12 +6,13 @@ import { LOT_SIZES } from '~/application/env'
 import { Amount } from 'uikit/crypto/amount'
 import { useModel } from 'shared/hooks/controls'
 
-const OPTIONS = Object.values(DepositStatus).map((status) => {
-    return {
-        value: status,
-        label: DepositStatusNames[status],
-    }
-})
+const OPTIONS = Object.values(DepositStatus)
+    .map((status) => {
+        return {
+            value: status,
+            label: DepositStatusNames[status],
+        }
+    })
 
 const LOT_SIZES_OPTIONS = LOT_SIZES.map((size) => ({
     value: size,
