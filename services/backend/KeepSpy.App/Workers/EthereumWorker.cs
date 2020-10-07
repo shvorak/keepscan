@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using KeepSpy.App.Services;
@@ -22,6 +23,7 @@ namespace KeepSpy.App.Workers
         const string StartedLiquidationEvent = "0xbef11c059eefba82a15aea8a3a89c86fd08d7711c88fa7daea2632a55488510c";
         const string LiquidatedEvent = "0xa5ee7a2b0254fce91deed604506790ed7fa072d0b14cba4859c3bc8955b9caac";
         const string SetupFailedEvent = "0x8fd2cfb62a35fccc1ecef829f83a6c2f840b73dad49d3eaaa402909752086d4b";
+        const string BondedECDSAKeepCreatedEvent = "0x7c030f3f8c902fa5a59193f1e3c08ae7245fc0e3b7ab290b6a9548a57a46ac60";
 
         private readonly EthereumWorkerOptions _options;
         private readonly IServiceScopeFactory _scopeFactory;
@@ -53,6 +55,9 @@ namespace KeepSpy.App.Workers
             tbtcsystem = _options.IsTestnet
                 ? "0xc3f96306eDabACEa249D2D22Ec65697f38c6Da69"
                 : "0xe20A5C79b39bC8C363f0f49ADcFa82C2a01ab64a";
+            bondedECDSAKeepFactory = _options.IsTestnet
+                ? "0x9eccf03dfbda6a5e50d7aba14e0c60c2f6c575e6"
+                : "0xA7d9E842EFB252389d613dA88EDa3731512e40bD";
             while (!stoppingToken.IsCancellationRequested)
             {
                 using (var scope = _scopeFactory.CreateScope())
@@ -77,6 +82,7 @@ namespace KeepSpy.App.Workers
         string vmcontract;
         string tbtccontract;
         string tbtcsystem;
+        string bondedECDSAKeepFactory;
 
         void Run(KeepSpyContext db, KeychainService keychainService)
         {
@@ -294,14 +300,19 @@ namespace KeepSpy.App.Workers
                             Id = tdt_id,
                             SenderAddress = vmTx.from,
                             Deposit = deposit,
-                            Status = RedeemStatus.Requested,
+                            Status = vmTx.isError == "1" ? RedeemStatus.OperationFailed : RedeemStatus.Requested,
                             UpdatedAt = vmTx.TimeStamp
                         };
                         db.Add(redeem);
-                        deposit.Status = DepositStatus.Closed;
-                        deposit.UpdatedAt = vmTx.TimeStamp;
+                        if (vmTx.isError != "1")
+                        {
+                            deposit.Status = DepositStatus.Closed;
+                            deposit.UpdatedAt = vmTx.TimeStamp;
+                            _logger.LogInformation("Redeem request failed TDT ID {0}", deposit.Id);
+                        }
+                        else
+                            _logger.LogInformation("Redeem requested TDT ID {0}", deposit.Id);
                         AddTx2(vmTx, redeem);
-                        _logger.LogInformation("Redeem requested TDT ID {0}", deposit.Id);
                     }
                 }
             }
@@ -344,6 +355,33 @@ namespace KeepSpy.App.Workers
 
                 if (redeem != null)
                     AddLog2(redeemed, redeem, RedeemStatus.Redeemed);
+            }
+            var keepCreatedLogs = _apiClient.GetLogs(bondedECDSAKeepFactory, lastBlock, lastBlock + delta, topic0: BondedECDSAKeepCreatedEvent);
+            foreach(var keep in keepCreatedLogs.result)
+			{
+                if (keep.topics.Count != 4)
+                    continue;
+
+                string id = "0x" + keep.topics[2].Substring(26);
+                var deposit = db.Find<Deposit>(id);
+                if (deposit.KeepAddress == null)
+                {
+                    deposit.KeepAddress = "0x" + keep.topics[1].Substring(26);
+                    var data = Regex.Match(keep.data, "0x([0-9A-Fa-f]{64})*");
+                    deposit.HonestThreshold = (int)ulong.Parse(data.Groups[1].Captures[1].Value, System.Globalization.NumberStyles.HexNumber);
+                    for (int i = 3; i < data.Groups[1].Captures.Count; i++)
+                    {
+                        var signerId = "0x" + data.Groups[1].Captures[i].Value.Substring(24);
+                        var signer = db.Find<Signer>(signerId);
+                        if (signer == null)
+						{
+                            signer = new Signer { Id = signerId };
+                            db.Add(signer);
+						}
+                        db.Add(new DepositSigner { Deposit = deposit, Signer = signer });
+                        _logger.LogInformation("Deposit {0} signer: {1}", deposit.Id, signerId);
+                    }
+                }
             }
 
             db.SaveChanges();

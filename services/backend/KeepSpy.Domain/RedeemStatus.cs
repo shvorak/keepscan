@@ -7,6 +7,7 @@
 		Redeemed,
 		Liquidation,
 		Liquidated,
-		BtcTransferred
+		BtcTransferred,
+		OperationFailed
 	}
 }
