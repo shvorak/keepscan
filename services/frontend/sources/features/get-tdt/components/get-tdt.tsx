@@ -36,10 +36,10 @@ export const GetTdt = () => {
     ) : failure ? (
         <Failure selected={selected} />
     ) : address ? (
-        <>
+        <div className={styles.reveal}>
             <Heading className={styles.heading}>Your random TDT ID for {selected} lot size</Heading>
             <TdtAddress address={address} />
-        </>
+        </div>
     ) : null
 
     return (
