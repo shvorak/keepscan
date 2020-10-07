@@ -2,7 +2,10 @@ import React, { ComponentProps, FC, useCallback } from 'react'
 import styles from './tdt-address.css'
 import { useClipboard } from 'use-clipboard-copy'
 import { useClasses } from 'shared/hooks/styles'
-import { CopySymbol } from 'uikit/symbol'
+import { CopySymbol, DAppSymbol } from 'uikit/symbol'
+import { DisplayLink } from 'uikit/typography/display'
+import { Tooltip } from 'uikit/overlay/tooltip'
+import { DAPP } from '~/application/env'
 
 type TdtAddressProps = ComponentProps<'div'> & {
     address: string
@@ -11,6 +14,8 @@ type TdtAddressProps = ComponentProps<'div'> & {
 export const TdtAddress: FC<TdtAddressProps> = ({ address, ...props }) => {
     const className = useClasses(styles, 'area', props)
     const clipboard = useClipboard()
+
+    const redeemUrl = `${DAPP}/deposit/${address}/redeem`
 
     const onCopy = useCallback(() => {
         clipboard.copy(address)
@@ -21,6 +26,13 @@ export const TdtAddress: FC<TdtAddressProps> = ({ address, ...props }) => {
             <div className={styles.body}>{address}</div>
             <div className={styles.copy} onClick={onCopy}>
                 <CopySymbol />
+            </div>
+            <div className={styles.dapp}>
+                <DisplayLink to={redeemUrl}>
+                    <Tooltip content="Open in DApp">
+                        <DAppSymbol />
+                    </Tooltip>
+                </DisplayLink>
             </div>
         </div>
     )

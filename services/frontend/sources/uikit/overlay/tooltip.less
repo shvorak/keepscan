@@ -1,0 +1,44 @@
+.tooltip {
+  padding: 5px 10px;
+  border-radius: 3px;
+  color: white;
+  font-size: .8em;
+  background: var(--castle-black);
+}
+.arrow {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  z-index: -1;
+
+  &::before {
+    content: "";
+    position: absolute;
+    transform: rotate(45deg);
+    background: #000;
+    width: 10px;
+    height: 10px;
+
+    top: 0;
+    left: 0;
+  }
+
+  &.placement {
+    &__top {
+      bottom: -4px;
+    }
+    &__left {
+      right: -4px;
+    }
+    &__right {
+      left: -4px;
+    }
+    &__bottom {
+      top: -4px;
+    }
+  }
+}
+
+.wrapper {
+  display: inline-block;
+}

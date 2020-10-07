@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 export const useReference = (fn) => {
     const ref = useRef(fn)
@@ -24,4 +24,17 @@ export const useRefEvent = (ref, event, handler, deps = []) => {
 
         return () => ref.current.removeEventListener(event, handler)
     }, deps)
+}
+
+export const useRefFocus = (ref, delay = 0, deps = []) => {
+    const [focused, setFocused] = useState(false)
+
+    useRefEvent(ref, 'mouseenter', event => {
+        setFocused(true)
+    })
+    useRefEvent(ref, 'mouseleave', event => {
+        setFocused(false)
+    })
+
+    return focused
 }
