@@ -7,21 +7,28 @@ import { useAction } from 'shared/hooks/redux'
 import { useSelector } from 'react-redux'
 import { Placeholder } from 'uikit/display/placeholder'
 import { Display } from 'uikit/typography/display'
-import { fetchTdt } from 'features/get-tdt/actions'
+import { fetchTdt, clearTdt } from 'features/get-tdt/actions'
 import { getTdtAddress, getTdtFailure, getTdtLoading } from 'features/get-tdt/queries'
 import { LOT_SIZES } from '~/application/env'
+import { useMount } from 'shared/hooks/lifecycle'
 
 export const GetTdt = () => {
     const [selected, setSelected] = useState(null)
 
-    const getTdt = useAction(fetchTdt)
+    const getTdtAction = useAction(fetchTdt)
+    const clearTdtAction = useAction(clearTdt)
+
     const loading = useSelector(getTdtLoading)
     const address = useSelector(getTdtAddress)
     const failure = useSelector(getTdtFailure)
 
+    useMount(() => {
+        clearTdtAction()
+    })
+
     const onClick = useCallback((size) => {
         setSelected(size)
-        getTdt(size)
+        getTdtAction(size)
     }, [])
 
     const content = loading ? (

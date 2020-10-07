@@ -1,5 +1,5 @@
 import { createReducer, withProducer } from 'shared/reducers'
-import { fetchTdt, fetchTdtFailure, fetchTdtSuccess } from 'features/get-tdt/actions'
+import { clearTdt, fetchTdt, fetchTdtFailure, fetchTdtSuccess } from 'features/get-tdt/actions'
 
 export const initialState = {
     tdt: null,
@@ -9,8 +9,12 @@ export const initialState = {
 
 export default createReducer<typeof initialState>(initialState, withProducer)
     .on(fetchTdt, (state) => {
+        state.tdt = null
         state.tdt_error = null
         state.tdt_loading = true
+    })
+    .on(clearTdt, (state) => {
+        state.tdt = null
     })
     .on(fetchTdtSuccess, (state, { payload }) => {
         state.tdt = payload
