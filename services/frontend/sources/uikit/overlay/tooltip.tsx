@@ -1,10 +1,18 @@
-import React, { forwardRef, useRef } from 'react'
+import React, { FC, forwardRef, useRef } from 'react'
 import styles from './tooltip.less'
 import { Overlay } from 'react-overlays'
 import { useRefFocus } from 'shared/hooks/common'
 import { useClasses } from 'shared/hooks/styles'
+import { Placement } from 'react-overlays/usePopper'
 
-export const Tooltip = ({ show, content, children, placement }) => {
+type TooltipProps = {
+    show?: boolean
+    content: any
+    children: any
+    placement?: Placement
+}
+
+export const Tooltip: FC<TooltipProps> = ({ show, content, children, placement }) => {
     const targetRef = useRef()
     const wrapperRef = useRef()
 

@@ -14,17 +14,15 @@ import { LOT_SIZES } from '~/application/env'
 export const GetTdt = () => {
     const [selected, setSelected] = useState(null)
 
+    const getTdt = useAction(fetchTdt)
     const loading = useSelector(getTdtLoading)
     const address = useSelector(getTdtAddress)
     const failure = useSelector(getTdtFailure)
 
-    const onClick = useCallback((size) => setSelected(size), [])
-
-    const getTdt = useAction(fetchTdt)
-
-    useEffect(() => {
-        selected && getTdt(selected)
-    }, [selected])
+    const onClick = useCallback((size) => {
+        setSelected(size)
+        getTdt(size)
+    }, [])
 
     const content = loading ? (
         <Loading />
