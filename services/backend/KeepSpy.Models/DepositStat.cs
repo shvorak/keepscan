@@ -2,6 +2,7 @@
 
 namespace KeepSpy.Models
 {
+	[Obsolete]
 	public class DepositStat
 	{
 

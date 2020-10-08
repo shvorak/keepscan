@@ -1,20 +1,20 @@
 import { call, delay, fork, put } from 'redux-saga/effects'
 import {
-    depositsStatLoaded,
     latestDepositsLoaded,
     latestRedeemsLoaded,
-    redeemsStatLoaded,
+    operationsStatLoaded,
+    supplyStatLoaded
 } from 'features/dashboard/actions'
 
-import { fetchDepositsStat, fetchRedeemsStat } from 'features/dashboard/requests'
+import { fetchOperationsStat, fetchSupplyStat } from 'features/dashboard/requests'
 import { fetchLatestRedeems } from 'entities/Redeem/requests'
 import { fetchLatestDeposits } from 'entities/Deposit/requests'
 
 export function* dashboardSaga() {
-    yield fork(loadRedeemsStat)
-    yield fork(loadDepositsStat)
+    yield fork(loadSupplyStat)
     yield fork(loadLatestRedeems)
     yield fork(loadLatestDeposits)
+    yield fork(loadOperationsStat)
 }
 
 const DELAY = 20000
@@ -35,18 +35,19 @@ function* loadLatestDeposits() {
     }
 }
 
-function* loadRedeemsStat() {
+function* loadSupplyStat() {
     while (true) {
-        const result = yield call(fetchRedeemsStat)
-        yield put(redeemsStatLoaded(result.data))
+        const result = yield call(fetchSupplyStat)
+        yield put(supplyStatLoaded(result.data))
         yield delay(DELAY)
     }
 }
 
-function* loadDepositsStat() {
+function* loadOperationsStat() {
     while (true) {
-        const result = yield call(fetchDepositsStat)
-        yield put(depositsStatLoaded(result.data))
+        const result = yield call(fetchOperationsStat)
+        yield put(operationsStatLoaded(result.data))
         yield delay(DELAY)
     }
 }
+

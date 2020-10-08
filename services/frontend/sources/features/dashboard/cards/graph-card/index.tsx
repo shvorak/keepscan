@@ -2,38 +2,41 @@ import React from 'react'
 import styles from './index.css'
 import { useSelector } from 'react-redux'
 import { Card, CardBody, CardHead } from 'uikit/layout/card'
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import { getDepositsStat, getRedeemsStat } from 'features/dashboard/queries'
+import { Area, AreaChart, Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { getOperationsStat, getSupplyStat } from 'features/dashboard/queries'
 import DefaultTooltipContent from 'recharts/lib/component/DefaultTooltipContent'
 
-export const GraphCard = ({ title, children = null }) => {
-    const data = useSelector(getRedeemsStat)
+export const SupplyChangeCard = ({ title, children = null }) => {
+    const data = useSelector(getSupplyStat)
     return (
         <Card className={styles.card}>
-            <CardHead stroked={false}>{title}</CardHead>
+            <CardHead stroked={false} className={styles.head}>
+                {title}
+            </CardHead>
             <CardBody className={styles.body}>
-                <ResponsiveContainer width="100%" height={135}>
-                    <BarChart width={200} height={200} data={data}>
-                        <Tooltip content={CustomTooltip}  />
-                        <Bar dataKey="volume" fill="#7850cd" />
+                <ResponsiveContainer width="100%" height={170}>
+                    <AreaChart width={200} height={200} data={data}>
+                        <Tooltip />
+                        <Area type="monotone" dataKey="volume" name="Supply" stroke="#48dbb4" strokeWidth={2} fill="#e6e6e6" dot />
                         <XAxis dataKey="label" />
-                    </BarChart>
+                    </AreaChart>
                 </ResponsiveContainer>
             </CardBody>
         </Card>
     )
 }
 
-export const DepositGraph = ({title}) => {
-    const data = useSelector(getDepositsStat)
+export const OperationsGraph = ({ title }) => {
+    const data = useSelector(getOperationsStat)
     return (
         <Card className={styles.card}>
-            <CardHead stroked={false}>{title}</CardHead>
+            <CardHead stroked={false} className={styles.head}>{title}</CardHead>
             <CardBody className={styles.body}>
-                <ResponsiveContainer width="100%" height={135}>
+                <ResponsiveContainer width="100%" height={170}>
                     <BarChart width={200} height={200} data={data}>
                         <Tooltip content={CustomTooltip} />
-                        <Bar dataKey="volume" fill="#48dbb4" />
+                        <Bar dataKey="depositsVolume" name="Deposits volume" fill="#48dbb4" />
+                        <Bar dataKey="redeemsVolume" name="Redeems volume" fill="#7850cd" />
                         <XAxis dataKey="label" />
                     </BarChart>
                 </ResponsiveContainer>
@@ -42,23 +45,26 @@ export const DepositGraph = ({title}) => {
     )
 }
 
-
 const CustomTooltip = (props) => {
-    if (!props.active) {
+    if (!props.active || !props.payload) {
         return null
     }
 
-    const color = props.payload && props.payload.find(x => x.color).color
+    const payload = props.payload.reduce((params, param) => {
+        const name = param.name.replace('volume', 'count')
+        const dataKey = param.dataKey.replace('Volume', 'Count')
 
-    const payload = [
-        {
-            fill: color,
-            color: color,
-            value: props.payload && props.payload[0].payload.count,
-            name: 'count',
-        },
-        ...props.payload || [],
-    ]
+        return [
+            ...params,
+            {
+                fill: param.color,
+                color: param.color,
+                value: param.payload[dataKey],
+                name: name,
+            },
+            param,
+        ]
+    }, [])
 
     return <DefaultTooltipContent {...props} payload={payload} />
-};
+}

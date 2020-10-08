@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './index.css'
 import { DepositsCard } from 'features/dashboard/cards/deposits'
 import { RedeemsCard } from 'features/dashboard/cards/redeems'
-import { DepositGraph, GraphCard } from 'features/dashboard/cards/graph-card'
+import { OperationsGraph, SupplyChangeCard } from 'features/dashboard/cards/graph-card'
 import { StatCard } from 'features/dashboard/cards/stat-card'
 import { useSelector } from 'react-redux'
 import { getStatistic } from 'entities/Statistic/queries'
@@ -14,8 +14,8 @@ export const Dashboard = () => {
     return (
         <>
             <div className={styles.graphs_grid}>
-                <DepositGraph title="tBTC Deposits" />
-                <GraphCard title="tBTC Redeems" />
+                <OperationsGraph title="tBTC Deposits & Redeems" />
+                <SupplyChangeCard title="Supply change" />
                 <MarketData title="Market Data" />
             </div>
 

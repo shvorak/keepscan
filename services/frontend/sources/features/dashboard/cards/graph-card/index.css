@@ -4,4 +4,9 @@
 .body {
     /* TODO: For demo only */
     padding-bottom: 50px;
+    padding-top: 5px;
+}
+
+.head {
+    padding-bottom: 0;
 }
