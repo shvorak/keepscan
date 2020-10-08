@@ -2,6 +2,8 @@ import React from 'react'
 import { address, amount, datetime, number } from 'components/deposit/info.fields'
 import { field } from 'shared/schema'
 import { Info } from 'uikit/display/info'
+import { Address } from 'uikit/crypto/address'
+import { Token } from 'uikit/crypto/token'
 
 const Schema = [
     field('senderAddress', {
@@ -9,7 +11,7 @@ const Schema = [
         render: address,
     }),
     field('id', {
-        label: 'TDT',
+        label: 'Deposit contract',
         render: address,
     }),
     // field('contractId', {
@@ -41,6 +43,12 @@ const Schema = [
     }),
     field('bitcoinFundedBlock', {
         label: 'Bitcoin funded block',
+    }),
+    field('tokenId', {
+        label: 'Token ID',
+        render: ({value, object}) => (
+            <Token tokenId={value} contractId={object.depositTokenContract}/>
+        )
     }),
     field('createdAt', {
         label: 'Initiated',

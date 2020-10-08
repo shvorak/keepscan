@@ -3,28 +3,20 @@ import styles from './address.css'
 import { useClasses } from 'shared/hooks/styles'
 import { ellipsis } from 'shared/string'
 import { DisplayLink } from 'uikit/typography/display'
-import { INDEXERS } from '~/application/env'
 import { useClipboard } from 'use-clipboard-copy'
+import { getNetworkLink } from 'uikit/crypto/utils'
 
 type AddressProps = ComponentProps<'a'> & {
     full?: boolean
     copy?: boolean
-    kind?: 'address' | 'tx'
+    kind?: 'address' | 'token' | 'tx'
     link?: boolean
     value: string
     color?: 'green' | 'brass' | 'violet'
+    params?: Record<string, any>
 }
 
-const getNetworkName = (address: string) => address && address.match(/^0x/) ? 'ethereum' : 'bitcoin'
-
-const getNetworkLink = (address: string, kind: 'address' | 'tx' = 'address') => {
-    const network = getNetworkName(address)
-    const baseUrl = INDEXERS[network]
-
-    return `${baseUrl}/${kind}/${address}`
-}
-
-export const Address: FC<AddressProps> = ({ value, copy, link, kind, full, ...props }) => {
+export const Address: FC<AddressProps> = ({ value, copy, link, kind, full, params, ...props }) => {
     const address = useMemo(() => {
         return value && (full ? value : ellipsis(6, 4, value))
     }, [value])
@@ -45,7 +37,7 @@ export const Address: FC<AddressProps> = ({ value, copy, link, kind, full, ...pr
         return null
     }
 
-    const indexerLink = link && getNetworkLink(value, kind)
+    const indexerLink = link && getNetworkLink(value, kind, params || {})
 
     return (
         <DisplayLink to={indexerLink} className={className}>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { FieldConfig, FieldRender } from 'shared/schema/types'
+import type { FieldConfig, FieldRender } from 'shared/schema/types'
 
 export const getLabel = (field: FieldConfig): string => {
     return field.options.label ?? field.name

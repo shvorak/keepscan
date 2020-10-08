@@ -1,0 +1,14 @@
+import React, { FC } from 'react'
+{{#if includeStyle}}
+import styles from './{{dashCase name}}.less'
+{{/if}}
+
+type {{name}}Props = {
+
+}
+
+export const {{name}}: FC<{{name}}Props> = ({children, ...props}) => {
+    return (
+        <div className={styles.root} {...props}>{children}</div>
+    )
+}

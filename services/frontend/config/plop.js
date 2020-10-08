@@ -1,8 +1,11 @@
 const path = require('path')
+const inquirer = require('inquirer')
+
+inquirer.registerPrompt('path', require('inquirer-fuzzy-path'))
 
 const paths = {
+  root: path.resolve(__dirname, '../'),
   source: path.resolve(__dirname, '../sources'),
-
   template: name => path.resolve(__dirname, 'plop', name)
 }
 
@@ -58,4 +61,46 @@ module.exports = function (plop) {
       }
     ]
   });
+
+  plop.setGenerator('component', {
+    description: 'Generate component',
+    prompts: [
+      {
+        type: 'input',
+        name: 'name',
+        message: 'Component name'
+      },
+      {
+        type: 'path',
+        name: 'path',
+        message: 'Where need to place',
+        default: 'components/',
+        itemType: 'directory',
+        rootPath: 'sources',
+        depthLimit: 5,
+        excludeFilter: nodePath => nodePath.startsWith('.'),
+      },
+      {
+        type: 'confirm',
+        name: 'includeStyle',
+        message: 'Include style file?',
+        default: true
+      }
+    ],
+    actions: data => {
+      return [
+        {
+          type: 'add',
+          path: path.join(paths.root, '{{path}}/{{dashCase name}}.tsx'),
+          skipIfExists: true,
+          templateFile: paths.template('component.hbs')
+        },
+        data.includeStyle && {
+          type: 'add',
+          path: path.join(paths.root, '{{path}}/{{dashCase name}}.less'),
+        }
+      ].filter(Boolean)
+    }
+  })
+
 };

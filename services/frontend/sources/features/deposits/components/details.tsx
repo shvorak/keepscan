@@ -19,6 +19,7 @@ import { DepositLog } from 'components/deposit/log'
 import { DepositStatus } from 'entities/Deposit/constants'
 import { DAPP } from '~/application/env'
 import { OperationCard, OperationCards } from 'components/details'
+import { KeepInfo } from 'components/deposit/keep-info'
 
 export const DepositDetails = ({ id }) => {
     const [failed, setFailed] = useState(false)
@@ -92,13 +93,24 @@ const Content = ({ deposit }) => (
             </OperationCard>
         </OperationCards>
 
-        <Card className={styles.panel}>
-            <CardHead>Operation Info</CardHead>
-            <CardBody className={styles.body}>
-                <DepositInfo deposit={deposit} />
-                <Redeem deposit={deposit} />
-            </CardBody>
-        </Card>
+        <div className={styles.infoCards}>
+            <Card>
+                <CardHead>Operation Info</CardHead>
+                <CardBody className={styles.body}>
+                    <DepositInfo deposit={deposit} />
+                    <Redeem deposit={deposit} />
+                </CardBody>
+            </Card>
+
+            <Card>
+                <CardHead>Keep</CardHead>
+                <CardBody className={styles.body}>
+                    <KeepInfo deposit={deposit} />
+                </CardBody>
+            </Card>
+        </div>
+
+
 
         <Card className={styles.panel}>
             <CardHead>Operation Log</CardHead>

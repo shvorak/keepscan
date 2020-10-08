@@ -51,6 +51,12 @@
     text-align: center;
 }
 
+.infoCards {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr 300px;
+}
+
 .redeem {
     border: 3px solid var(--castle-black);
     background-color: transparent;
