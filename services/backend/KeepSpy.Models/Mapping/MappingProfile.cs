@@ -21,7 +21,12 @@ namespace KeepSpy.Models.Mapping
             CreateMap<Redeem, RedeemDetailsDto>()
                 .IncludeBase<Redeem, RedeemDto>()
                 .ForMember(x => x.BitcoinWithdrawalAddress, opt => opt.MapFrom(x => x.Deposit.BitcoinAddress))
-                .ForMember(x => x.SpentFee, opt => opt.Ignore());
+                .ForMember(x => x.HonestThreshold, opt => opt.MapFrom(x => x.Deposit.HonestThreshold))
+                .ForMember(x => x.SpentFee, opt => opt.Ignore())
+                .ForMember(x => x.TokenId, opt => opt.MapFrom(x => x.Deposit.TokenID))
+                .ForMember(x => x.Signers, opt => opt.MapFrom(x => x.Deposit.Signers.Select(s => s.SignerId)))
+                .ForMember(x => x.DepositTokenContract,
+                    opt => opt.MapFrom(x => "0x10b66bd1e3b5a936b7f8dbc5976004311037cdf0"));
 
             CreateMap<Transaction, DepositTxDto>();
             CreateMap<Transaction, RedeemTxDto>()
