@@ -30,6 +30,7 @@ namespace KeepSpy.Domain
         public decimal? BtcFunded { get; set; }
         public string? KeepAddress { get; set; }
         public int? HonestThreshold { get; set; }
+        public DateTime? EndOfTerm { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<DepositSigner> Signers { get; set; }

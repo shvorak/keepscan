@@ -91,7 +91,9 @@ namespace KeepSpy.App.Workers
                 t.Error = _apiClient.GetTxStatus(t.Id).result.errDescription;
                 _logger.LogInformation($"Tx {t.Id} error description: {t.Error}");
             }
-            db.SaveChanges();
+			foreach (var d in db.Set<Deposit>().Where(o => o.TokenID.StartsWith("0x")))
+				d.TokenID = System.Numerics.BigInteger.Parse(d.TokenID.Substring(2), System.Globalization.NumberStyles.HexNumber).ToString();
+			db.SaveChanges();
             var network = db.Set<Network>()
                 .SingleOrDefault(n => n.Kind == NetworkKind.Ethereum && n.IsTestnet == _options.IsTestnet);
             if (network == null)
@@ -164,7 +166,7 @@ namespace KeepSpy.App.Workers
                                 SenderAddress = item.from,
                                 Contract = contract,
                                 Status = DepositStatus.InitiatingDeposit,
-                                TokenID = transferLog.topics[3]
+                                TokenID = System.Numerics.BigInteger.Parse(transferLog.topics[3].Substring(2), System.Globalization.NumberStyles.HexNumber).ToString()
                             };
                             db.Add(deposit);
                             AddTx(item, deposit);
@@ -221,6 +223,7 @@ namespace KeepSpy.App.Workers
                 {
                     deposit.Status = DepositStatus.SubmittingProof;
                     deposit.UpdatedAt = funded.TimeStamp;
+                    deposit.EndOfTerm = funded.TimeStamp.AddMonths(6);
                     _logger.LogInformation("TDT {0} submitted proof", deposit.Id);
                 }
 
@@ -233,7 +236,7 @@ namespace KeepSpy.App.Workers
             {
                 if (approval.topics.Count != 4)
                     continue;
-                string tokenID = approval.topics[3];
+                string tokenID = System.Numerics.BigInteger.Parse(approval.topics[3].Substring(2), System.Globalization.NumberStyles.HexNumber).ToString();
                 var deposit = db.Set<Deposit>().SingleOrDefault(o => o.TokenID == tokenID);
                 if ("0x" + approval.topics[2].Substring(26) == deposit.Id)
                     continue;
