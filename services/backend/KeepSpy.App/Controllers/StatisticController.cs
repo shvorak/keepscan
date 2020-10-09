@@ -84,10 +84,17 @@ namespace KeepSpy.App.Controllers
                 var stat = new SupplyStat
                 {
                     Date = date,
-                    Volume = await Db.Set<Deposit>()
+                    Supply = await Db.Set<Deposit>()
                         .Where(x => x.Status == DepositStatus.Minted && x.LotSize != null)
                         .Where(x => x.CreatedAt.Date <= date)
-                        .SumAsync(x => x.LotSize!.Value)
+                        .SumAsync(x => x.LotSize!.Value),
+                    Minted = await Db.Set<Deposit>()
+                        // TODO: Add status redeemed
+                        .Where(x => (x.Status == DepositStatus.Minted || x.Status == DepositStatus.Closed) &&
+                                    x.LotSize != null)
+                        .Where(x => x.CreatedAt.Date <= date)
+                        .Select(x => x.LotSize!.Value)
+                        .SumAsync()
                 };
                 
                 items.Add(stat);

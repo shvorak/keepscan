@@ -6,6 +6,8 @@ namespace KeepSpy.Models
     {
         public DateTime Date { get; set; }
 
-        public decimal Volume { get; set; }
+        public decimal Supply { get; set; }
+        
+        public decimal Minted { get; set; }
     }
 }

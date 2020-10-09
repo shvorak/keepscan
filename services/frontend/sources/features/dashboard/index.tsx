@@ -14,8 +14,8 @@ export const Dashboard = () => {
     return (
         <>
             <div className={styles.graphs_grid}>
-                <OperationsGraph title="tBTC Deposits & Redeems" />
-                <SupplyChangeCard title="Supply change" />
+                <OperationsGraph title="Deposits & Redeems" />
+                <SupplyChangeCard title="Minted & Supply" />
                 <MarketData title="Market Data" />
             </div>
 

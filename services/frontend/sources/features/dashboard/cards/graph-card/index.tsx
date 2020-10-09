@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './index.css'
 import { useSelector } from 'react-redux'
 import { Card, CardBody, CardHead } from 'uikit/layout/card'
-import { Area, AreaChart, Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { Area, AreaChart, Bar, BarChart, Line, LineChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import { getOperationsStat, getSupplyStat } from 'features/dashboard/queries'
 import DefaultTooltipContent from 'recharts/lib/component/DefaultTooltipContent'
 
@@ -15,11 +15,12 @@ export const SupplyChangeCard = ({ title, children = null }) => {
             </CardHead>
             <CardBody className={styles.body}>
                 <ResponsiveContainer width="100%" height={170}>
-                    <AreaChart width={200} height={200} data={data}>
+                    <LineChart width={200} height={200} data={data}>
                         <Tooltip />
-                        <Area type="monotone" dataKey="volume" name="Supply" stroke="#48dbb4" strokeWidth={2} fill="#e6e6e6" dot />
+                        <Line type="monotone" dataKey="minted" name="Minted" stroke="#48dbb4" strokeWidth={2} />
+                        <Line type="monotone" dataKey="supply" name="Supply" stroke="#7850cd" strokeWidth={2} />
                         <XAxis dataKey="label" />
-                    </AreaChart>
+                    </LineChart>
                 </ResponsiveContainer>
             </CardBody>
         </Card>
