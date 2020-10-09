@@ -10,7 +10,7 @@ type StatCard = {
     suffix?: string
 }
 
-export const StatCard: FC<StatCard> = ({ name, value, suffix = 'tBTC' }) => {
+export const StatCard: FC<StatCard> = ({ name, value, suffix = 'TBTC' }) => {
     return (
         <Card className={styles.card}>
             <CardBody className={styles.body}>

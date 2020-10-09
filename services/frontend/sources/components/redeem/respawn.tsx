@@ -19,5 +19,5 @@ export const RedeemRespawn = ({ status, redeem }) => {
 
     const link = `${DAPP}/${action.replace('{0}', redeem.id)}`
 
-    return <DisplayLink to={link} title="Open in tBTC DApp" className={styles.link} />
+    return <DisplayLink to={link} title="Open in TBTC DApp" className={styles.link} />
 }

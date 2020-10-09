@@ -14,7 +14,7 @@ const Schema = [
         render: address,
     }),
     field('contractId', {
-        label: 'tBTC contract',
+        label: 'TBTC contract',
         render: address,
     }),
     field('lotSize', {

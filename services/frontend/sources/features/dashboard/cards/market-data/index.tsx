@@ -8,7 +8,7 @@ export const MarketData = ({ title }) => {
         <Card className={styles.card}>
             <CardHead stroked={false}>{title}</CardHead>
             <CardBody className={styles.body}>
-                <Heading>1 tBTC = 1 BTC</Heading>
+                <Heading>1 TBTC = 1 BTC</Heading>
             </CardBody>
         </Card>
     )
