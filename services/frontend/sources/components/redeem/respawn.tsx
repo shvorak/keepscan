@@ -3,6 +3,7 @@ import styles from '../deposit/respawn.css'
 import { RedeemStatus } from 'entities/Redeem/constants'
 import { DisplayLink } from 'uikit/typography/display'
 import { DAPP } from '~/application/env'
+import { Tooltip } from 'uikit/overlay/tooltip'
 
 const RespawnActions = {
     [RedeemStatus.Requested]: 'deposit/{0}/redemption',
@@ -19,5 +20,9 @@ export const RedeemRespawn = ({ status, redeem }) => {
 
     const link = `${DAPP}/${action.replace('{0}', redeem.id)}`
 
-    return <DisplayLink to={link} title="Open in TBTC DApp" className={styles.link} />
+    return (
+        <Tooltip content="Open in tBTC DApp">
+            <DisplayLink to={link} title="Open in TBTC DApp" className={styles.link} />
+        </Tooltip>
+    )
 }

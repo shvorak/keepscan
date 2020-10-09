@@ -2,6 +2,7 @@ import React, { useCallback } from 'react'
 import styles from './respawn.css'
 import { DAPP } from '~/application/env'
 import { DepositStatus } from 'entities/Deposit/constants'
+import { Tooltip } from 'uikit/overlay/tooltip'
 
 const RedeemActionConfig = {
     [DepositStatus.InitiatingDeposit]: '/deposit/{0}/get-address',
@@ -10,7 +11,6 @@ const RedeemActionConfig = {
     [DepositStatus.SubmittingProof]: '/deposit/{0}/prove',
     [DepositStatus.ApprovingTdtSpendLimit]: '/deposit/{0}/prove',
 }
-
 
 export const Respawn = ({ deposit }) => {
     const action = RedeemActionConfig[deposit.status]
@@ -23,5 +23,9 @@ export const Respawn = ({ deposit }) => {
         return null
     }
 
-    return <div onClick={open} title="Open in TBTC DApp" className={styles.link} />
+    return (
+        <Tooltip content="Open in tBTC DApp">
+            <div onClick={open} className={styles.link} />
+        </Tooltip>
+    )
 }

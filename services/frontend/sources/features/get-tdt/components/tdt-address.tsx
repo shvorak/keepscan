@@ -25,11 +25,13 @@ export const TdtAddress: FC<TdtAddressProps> = ({ address, ...props }) => {
         <div className={className} {...props}>
             <div className={styles.body}>{address}</div>
             <div className={styles.copy} onClick={onCopy}>
-                <CopySymbol />
+                <Tooltip content="Copy">
+                    <CopySymbol />
+                </Tooltip>
             </div>
             <div className={styles.dapp}>
                 <DisplayLink to={redeemUrl}>
-                    <Tooltip content="Open in DApp">
+                    <Tooltip content="Open in tBTC DApp">
                         <DAppSymbol />
                     </Tooltip>
                 </DisplayLink>
