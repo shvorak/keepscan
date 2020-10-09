@@ -1,9 +1,11 @@
 import React from 'react'
-import { address, amount, datetime, number } from 'components/deposit/info.fields'
+import { address, amount, datetime, datetimeDistance, number } from 'components/deposit/info.fields'
 import { field } from 'shared/schema'
 import { Info } from 'uikit/display/info'
 import { Address } from 'uikit/crypto/address'
 import { Token } from 'uikit/crypto/token'
+import { DateTime, DateTimeDistance } from 'uikit/display/datetime'
+import { Display } from 'uikit/typography/display'
 
 const Schema = [
     field('senderAddress', {
@@ -46,9 +48,7 @@ const Schema = [
     }),
     field('tokenId', {
         label: 'Token ID',
-        render: ({value, object}) => (
-            <Token tokenId={value} contractId={object.depositTokenContract}/>
-        )
+        render: ({ value, object }) => <Token tokenId={value} contractId={object.depositTokenContract} />,
     }),
     field('createdAt', {
         label: 'Initiated',
@@ -61,6 +61,18 @@ const Schema = [
     field('completedAt', {
         label: 'Completed',
         render: datetime,
+    }),
+    field('endOfTerm', {
+        label: 'End of term',
+        render: ({ value }) => (
+            <>
+                <DateTime inline value={value} />{' '}
+                <Display  secondary>
+
+                    <DateTimeDistance inline value={value} withSuffix={false} /> left
+                </Display>
+            </>
+        ),
     }),
 ]
 

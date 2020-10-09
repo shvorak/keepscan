@@ -1,3 +1,5 @@
+using System;
+
 namespace KeepSpy.Models
 {
     public class DepositDetailsDto : DepositDto
@@ -11,5 +13,7 @@ namespace KeepSpy.Models
         public string DepositTokenContract { get; set; }
 
         public int? HonestThreshold { get; set; }
+
+        public DateTime? EndOfTerm { get; set; }
     }
 }

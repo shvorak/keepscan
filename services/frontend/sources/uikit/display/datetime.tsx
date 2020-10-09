@@ -24,7 +24,13 @@ type DateTimeDistanceProps = ComponentProps<typeof Display> & {
     withSeconds?: boolean
 }
 
-export const DateTimeDistance: FC<DateTimeDistanceProps> = ({ value, to = 'now', withSeconds = true, withSuffix = true, ...props }) => {
+export const DateTimeDistance: FC<DateTimeDistanceProps> = ({
+    value,
+    to = 'now',
+    withSeconds = true,
+    withSuffix = true,
+    ...props
+}) => {
     const formatted = useMemo(() => {
         const date = new Date(value)
         const target = to === 'now' ? Date.now() : new Date(value)

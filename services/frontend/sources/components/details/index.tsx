@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './index.css'
+import styles from './index.less'
 import { Card, CardBody, CardHead } from 'uikit/layout/card'
 
 export const OperationCards = ({children}) => (
