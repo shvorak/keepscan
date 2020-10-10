@@ -3,6 +3,7 @@ import { field } from 'shared/schema'
 import { address, amount, datetime, number } from 'components/deposit/info.fields'
 import { Info } from 'uikit/display/info'
 import { Token } from 'uikit/crypto/token'
+import { RedeemStatus } from 'entities/Redeem/constants'
 
 const Schema = [
     field('senderAddress', {
@@ -23,7 +24,7 @@ const Schema = [
     }),
     field('spentFee', {
         label: 'ETH spent',
-        render: number
+        render: number,
     }),
     field('bitcoinWithdrawalAddress', {
         label: 'Bitcoin withdrawal address',
@@ -44,9 +45,7 @@ const Schema = [
     }),
     field('tokenId', {
         label: 'Token ID',
-        render: ({value, object}) => (
-            <Token tokenId={value} contractId={object.depositTokenContract}/>
-        )
+        render: ({ value, object }) => <Token tokenId={value} contractId={object.depositTokenContract} />,
     }),
     field('createdAt', {
         label: 'Initiated',
@@ -55,6 +54,13 @@ const Schema = [
     field('updatedAt', {
         label: 'Updated',
         render: datetime,
+        hidden: (subject) => {
+            return (
+                subject.status === RedeemStatus.Redeemed ||
+                subject.updatedAt === subject.completedAt ||
+                subject.updatedAt === subject.createdAt
+            )
+        },
     }),
     field('completedAt', {
         label: 'Completed',

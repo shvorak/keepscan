@@ -16,7 +16,7 @@ export const isVisible = (field: FieldConfig, subject: any) => {
         throw new Error("Use one of `visible` or `hidden` functions")
     }
     if (hidden) {
-        return hidden(subject)
+        return !hidden(subject)
     }
     if (visible) {
         return visible(subject)

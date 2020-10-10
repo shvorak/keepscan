@@ -21,7 +21,6 @@ export const Address: FC<AddressProps> = ({ value, useCopy, useLink, kind, full,
     const minimalWide = useMedia('(min-width: 1280px)')
 
     const address = useMemo(() => {
-        console.log(minimalWide)
         return value && (full && minimalWide ? value : ellipsis(6, 4, value))
     }, [value, minimalWide])
 
