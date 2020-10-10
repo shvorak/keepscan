@@ -25,55 +25,6 @@
     z-index: -1;
 }
 
-.headline {
-    display: flex;
-    height: 80px;
-    align-items: center;
-    justify-items: center;
-}
-
-.headline .logo {
-    font-size: 1.6em;
-    color: white;
-    background: url("../static/keep-symbol.png") no-repeat;
-    background-size: 50px;
-    text-decoration: none;
-    padding: 10px 0 10px 55px;
-}
-.headline .net {
-    padding-left: 10px;
-    color: #787878;
-}
-.headline .net:hover {
-    color: white;
-}
-
-.headline .menu {
-    margin-left: auto;
-}
-.headline .menu a {
-    color: var(--wet-stone);
-    margin-left: 15px;
-    padding-bottom: 2px;
-    text-decoration: none;
-    position: relative;
-}
-
-.headline .menu a:global(.active) {
-    color: #fff;
-    border-bottom: 3px solid #ffffff;
-}
-.headline .menu a:global(.active):before {
-    content: '';
-    width: 4px;
-    height: 4px;
-    transform: rotate(45deg);
-    background: #ffffff;
-    position: absolute;
-    left: 50%;
-    margin-left: -2px;
-    bottom: -2px;
-}
 
 .section {
     width: 1280px;

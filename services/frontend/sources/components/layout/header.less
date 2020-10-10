@@ -1,0 +1,62 @@
+@import "../../theme";
+
+.headline {
+  display: flex;
+  height: 80px;
+  align-items: center;
+  justify-items: center;
+
+  & .logo {
+    font-size: 1.6em;
+    color: white;
+    background: url("../../static/keep-symbol.png") no-repeat;
+    background-size: 50px;
+    text-decoration: none;
+    padding: 10px 0 10px 55px;
+  }
+
+  & .net {
+    padding-left: 10px;
+    color: #787878;
+
+    &:hover {
+      color: white;
+    }
+  }
+
+  & .menu {
+    margin-left: auto;
+
+    & a {
+      color: var(--wet-stone);
+      margin-left: 15px;
+      padding-bottom: 2px;
+      text-decoration: none;
+      position: relative;
+
+      // TODO: Remove
+      @media (max-width: @tabletXL) {
+        & {
+          display: none;
+        }
+      }
+
+      &:global(.active) {
+        color: #fff;
+        border-bottom: 3px solid #ffffff;
+
+        &:before {
+          content: '';
+          width: 4px;
+          height: 4px;
+          transform: rotate(45deg);
+          background: #ffffff;
+          position: absolute;
+          left: 50%;
+          margin-left: -2px;
+          bottom: -2px;
+        }
+      }
+    }
+  }
+}

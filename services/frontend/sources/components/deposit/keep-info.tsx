@@ -15,7 +15,7 @@ const KeepInfoSchema = [
         label: 'Signers',
         render: ({ value }) => {
             return value.map(address => (
-                <Address className={styles.signer} key={address} copy={false} value={address} />
+                <Address className={styles.signer} key={address} useCopy={false} value={address} />
             ))
         },
     }),

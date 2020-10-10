@@ -21,7 +21,7 @@ export const RedeemItem: FC<RedeemRowProps> = ({ redeem }) => {
         <ListItem interactive>
             <DisplayLink className={styles.row} to={`/redeems/${redeem.id}`}>
                 <div className={styles.cell__id}>
-                    <Address link={false} copy={false} value={redeem.id} />
+                    <Address useLink={false} useCopy={false} value={redeem.id} />
                     <View paddingTop={8}>
                         <DateTimeDistance size={14} value={redeem.createdAt} secondary />
                     </View>
@@ -37,10 +37,10 @@ export const RedeemItem: FC<RedeemRowProps> = ({ redeem }) => {
                 </View>
                 <View className={styles.cell__address}>
                     <Display>
-                        <Address link={false} copy={false} color="green" value={redeem.senderAddress} />
+                        <Address useLink={false} useCopy={false} color="green" value={redeem.senderAddress} />
                     </Display>
                     <Display>
-                        <Address link={false} copy={false} color="brass" value={redeem.bitcoinAddress} />
+                        <Address useLink={false} useCopy={false} color="brass" value={redeem.bitcoinAddress} />
                     </Display>
                 </View></DisplayLink>
         </ListItem>

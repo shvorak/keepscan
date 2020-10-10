@@ -2,24 +2,28 @@ import React, { ComponentProps, FC, useCallback, useMemo } from 'react'
 import styles from './address.css'
 import { useClasses } from 'shared/hooks/styles'
 import { ellipsis } from 'shared/string'
-import { DisplayLink } from 'uikit/typography/display'
+import { Display, DisplayLink } from 'uikit/typography/display'
 import { useClipboard } from 'use-clipboard-copy'
 import { getNetworkLink } from 'uikit/crypto/utils'
+import { useMedia } from 'react-use'
 
 type AddressProps = ComponentProps<'a'> & {
     full?: boolean
-    copy?: boolean
     kind?: 'address' | 'token' | 'tx'
-    link?: boolean
     value: string
     color?: 'green' | 'brass' | 'violet'
+    useCopy?: boolean
+    useLink?: boolean
     params?: Record<string, any>
 }
 
-export const Address: FC<AddressProps> = ({ value, copy, link, kind, full, params, ...props }) => {
+export const Address: FC<AddressProps> = ({ value, useCopy, useLink, kind, full, params, ...props }) => {
+    const minimalWide = useMedia('(min-width: 1280px)')
+
     const address = useMemo(() => {
-        return value && (full ? value : ellipsis(6, 4, value))
-    }, [value])
+        console.log(minimalWide)
+        return value && (full && minimalWide ? value : ellipsis(6, 4, value))
+    }, [value, minimalWide])
 
     const clipboard = useClipboard({
         copiedTimeout: 800
@@ -37,21 +41,28 @@ export const Address: FC<AddressProps> = ({ value, copy, link, kind, full, param
         return null
     }
 
-    const indexerLink = link && getNetworkLink(value, kind, params || {})
+    if (useLink) {
+        const to = getNetworkLink(value, kind, params || {})
+        return (
+            <DisplayLink to={to} className={className}>
+                {address}
+                {useCopy && <div className={styles.clipboard} onClick={onCopy} />}
+            </DisplayLink>
+        )
+    }
 
     return (
-        <DisplayLink to={indexerLink} className={className}>
+        <Display className={className}>
             {address}
-
-            {copy && <div className={styles.clipboard} onClick={onCopy} />}
-        </DisplayLink>
+            {useCopy && <div className={styles.clipboard} onClick={onCopy} />}
+        </Display>
     )
 }
 
 Address.defaultProps = {
     full: false,
-    link: true,
-    copy: true,
+    useLink: true,
+    useCopy: true,
     kind: 'address',
     color: 'violet',
 }

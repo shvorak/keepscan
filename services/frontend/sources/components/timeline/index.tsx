@@ -37,7 +37,7 @@ export const Transaction = ({ tx, lastBlock }) => {
 
     return (
         <>
-            <Address value={tx.id} copy={false} kind="tx" className={styles.transaction} />
+            <Address value={tx.id} useCopy={false} kind="tx" className={styles.transaction} />
             {suffix}
         </>
     )

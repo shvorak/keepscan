@@ -11,24 +11,14 @@ import { DashboardPage } from './routes/dashboard'
 import { RedeemDetailsPage, RedeemListPage } from './routes/redeems'
 import { DepositListPage, DepositDetailsPage } from './routes/deposits'
 import { GithubLink } from 'components/github'
+import { Header } from 'components/layout/header'
 
 export const App = () => {
     return (
         <div className={styles.layout}>
                 <div className={styles.header}>
                     <Section>
-                        <div className={styles.headline}>
-                            <Logo />
-                            <Menu>
-                                <MenuItem to="/" exact>
-                                    Dashboard
-                                </MenuItem>
-                                <MenuItem to="/deposits">Deposits</MenuItem>
-                                <MenuItem to="/redeems">Redeems</MenuItem>
-                                <MenuItem to="/tdt">Get TDT</MenuItem>
-                                {/*<MenuItem to="/api">API</MenuItem>*/}
-                            </Menu>
-                        </div>
+                        <Header />
                     </Section>
                     <Section className={styles.content}>
                         <Switch>
@@ -51,28 +41,6 @@ export const App = () => {
     )
 }
 
-const Logo = () => {
-    const net = useMemo(() => ENV_CONFIG[location.hostname], [])
-
-    return (
-        <div>
-            <Link to="/" className={styles.logo}>
-                KeepScan
-            </Link>
-            <DisplayLink to={net.link} title={net.label} className={styles.net}>
-                {net.name}
-            </DisplayLink>
-        </div>
-    )
-}
-
-const Menu = ({ children }) => <div className={styles.menu}>{children}</div>
-
-const MenuItem = ({ to, exact = false, children }) => (
-    <NavLink to={to} exact={exact}>
-        {children}
-    </NavLink>
-)
 
 export const Section = ({ children, ...props }) => {
     const className = useClasses(styles, 'section', props)

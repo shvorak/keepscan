@@ -31,7 +31,7 @@ export const DepositItem: FC<DepositRowProps> = ({ deposit }) => {
         <ListItem interactive>
             <DisplayLink className={styles.row} to={`/deposits/${deposit.id}`}>
                 <div className={styles.cell__id}>
-                    <Address link={false} copy={false} value={deposit.id} />
+                    <Address useLink={false} useCopy={false} value={deposit.id} />
                     <View paddingTop={8}>
                         <DateTimeDistance size={14} value={deposit.createdAt} secondary />
                     </View>
@@ -47,10 +47,10 @@ export const DepositItem: FC<DepositRowProps> = ({ deposit }) => {
                 </View>
                 <View className={styles.cell__address}>
                     <Display>
-                        <Address link={false} copy={false} color="green" value={deposit.senderAddress} />
+                        <Address useLink={false} useCopy={false} color="green" value={deposit.senderAddress} />
                     </Display>
                     <Display>
-                        <Address link={false} copy={false} color="brass" value={deposit.bitcoinAddress} />
+                        <Address useLink={false} useCopy={false} color="brass" value={deposit.bitcoinAddress} />
                     </Display>
                 </View></DisplayLink>
         </ListItem>
