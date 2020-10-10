@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import styles from './details.css'
+import styles from './details.less'
 import { useSelector } from 'react-redux'
 import { useAction } from 'shared/hooks/redux'
 import { useMount } from 'shared/hooks/lifecycle'
@@ -17,6 +17,7 @@ import { OperationCard, OperationCards } from 'components/details'
 import { Amount } from 'uikit/crypto/amount'
 import { DateTimeDistance } from 'uikit/display/datetime'
 import { formatStatus } from 'entities/Redeem/format'
+import { KeepInfo } from 'components/deposit/keep-info'
 
 export const RedeemDetails = ({ id }) => {
     const [failed, setFailed] = useState(false)
@@ -85,12 +86,21 @@ const Content = ({ redeem }) => {
                 </OperationCard>
             </OperationCards>
 
-            <Card className={styles.panel}>
-                <CardHead>Operation Info</CardHead>
-                <CardBody>
-                    <RedeemInfo redeem={redeem} />
-                </CardBody>
-            </Card>
+            <div className={styles.infoCards}>
+                <Card>
+                    <CardHead>Operation Info</CardHead>
+                    <CardBody>
+                        <RedeemInfo redeem={redeem} />
+                    </CardBody>
+                </Card>
+
+                <Card>
+                    <CardHead>Keep</CardHead>
+                    <CardBody className={styles.body}>
+                        <KeepInfo deposit={redeem} />
+                    </CardBody>
+                </Card>
+            </div>
 
             <Card className={styles.panel}>
                 <CardHead>Operation Log</CardHead>

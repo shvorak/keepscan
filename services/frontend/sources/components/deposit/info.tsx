@@ -6,6 +6,7 @@ import { Address } from 'uikit/crypto/address'
 import { Token } from 'uikit/crypto/token'
 import { DateTime, DateTimeDistance } from 'uikit/display/datetime'
 import { Display } from 'uikit/typography/display'
+import { DepositStatus } from 'entities/Deposit/constants'
 
 const Schema = [
     field('senderAddress', {
@@ -57,6 +58,13 @@ const Schema = [
     field('updatedAt', {
         label: 'Updated',
         render: datetime,
+        hidden: (subject) => {
+            return (
+                subject.status === DepositStatus.Minted ||
+                subject.updatedAt === subject.completedAt ||
+                subject.updatedAt === subject.createdAt
+            )
+        },
     }),
     field('completedAt', {
         label: 'Completed',
@@ -67,12 +75,14 @@ const Schema = [
         render: ({ value }) => (
             <>
                 <DateTime inline value={value} />{' '}
-                <Display  secondary>
-
+                <Display secondary>
                     <DateTimeDistance inline value={value} withSuffix={false} /> left
                 </Display>
             </>
         ),
+        hidden: (subject) => {
+            return subject.status === DepositStatus.Redeemed
+        },
     }),
 ]
 

@@ -9,6 +9,7 @@ export type FieldOptions = {
     label?: string
     render?: FieldRender,
     payload?: any
+    hidden?: (subject: any) => boolean
     visible?: (subject: any) => boolean
 }
 

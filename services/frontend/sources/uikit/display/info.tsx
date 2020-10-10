@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react'
 import styles from './info.css'
 import classes from 'classnames'
-import { getRender } from 'shared/schema/utils'
+import { getRender, isVisible } from 'shared/schema/utils'
 
 type InfoProps = {
     schema: any
@@ -17,7 +17,8 @@ export const Info: FC<InfoProps> = ({ schema, object, itemClass, labelClass, val
         return schema
             .filter((field) => {
                 const value = object[field.name]
-                return value != null && value !== 0
+                const visible = isVisible(field, object)
+                return value != null && value !== 0 && visible
             })
             .map((field) => {
                 const value = object[field.name]
