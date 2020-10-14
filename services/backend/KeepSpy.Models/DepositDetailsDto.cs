@@ -12,6 +12,8 @@ namespace KeepSpy.Models
 
         public string TokenId { get; set; }
 
+        public decimal Bond { get; set; }
+        
         public string DepositTokenContract { get; set; }
 
         public int? HonestThreshold { get; set; }

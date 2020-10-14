@@ -11,9 +11,15 @@ type AmountProps = ComponentProps<typeof Display> & {
     precision?: number
 }
 
+const CURRENCY = {
+    btc: '฿',
+    eth: 'ETH'
+}
+
 export const Amount: FC<AmountProps> = ({value, currency, precision, ...props}) => {
     const className = useClasses(styles, 'amount', props)
-    return <Number value={value} precision={precision} suffix=" ฿" className={className} />
+    const suffix = ` ${CURRENCY[currency]}`
+    return <Number value={value} precision={precision} suffix={suffix} className={className} />
 }
 
 Amount.defaultProps = {

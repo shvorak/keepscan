@@ -13,7 +13,6 @@ namespace KeepSpy.Storage
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
-            modelBuilder.ApplyPostgresConventions();
             
             modelBuilder.Entity<DepositSigner>()
              .HasKey(t => new { t.DepositId, t.SignerId });
@@ -43,6 +42,9 @@ namespace KeepSpy.Storage
 
             modelBuilder.Entity<CurrencyRate>()
              .HasKey(t => new { t.Timestamp, t.TradePair, t.Source });
+            
+            // This line must be below of any other code
+            modelBuilder.ApplyPostgresConventions();
         }
     }
 }
