@@ -42,6 +42,16 @@ namespace KeepSpy.App.Controllers
                 .ProjectTo<DepositDetailsDto>(Mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
 
+            // Calc Collateralization percentage
+            var price = await Db.Set<CurrencyRate>()
+                .Where(c => c.Source == CurrencyRateSource.MedianETHBTC && c.TradePair == TradePair.ETHBTC)
+                .OrderByDescending(c => c.Timestamp)
+                .FirstOrDefaultAsync();
+
+            var bondValue = await Db.Set<Bond>().Where(b => b.DepositId == id).SumAsync(b => b.Amount);
+
+            result.Collateralization = bondValue / price.Value * result.LotSize.Value * 100M;
+
             result.SpentFee = await Db.Set<Transaction>()
                 .Where(x => x.DepositId == id && x.Kind == NetworkKind.Ethereum)
                 .SumAsync(x => x.Amount + x.Fee);

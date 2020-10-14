@@ -27,6 +27,22 @@ namespace KeepSpy.Storage
                 .HasOne(pt => pt.Signer)
                 .WithMany(t => t.Deposits)
                 .HasForeignKey(pt => pt.SignerId);
+
+            modelBuilder.Entity<Bond>()
+             .HasKey(t => new { t.DepositId, t.SignerId });
+
+            modelBuilder.Entity<Bond>()
+                .HasOne(pt => pt.Deposit)
+                .WithMany(p => p.Bonds)
+                .HasForeignKey(ds => ds.DepositId);
+
+            modelBuilder.Entity<Bond>()
+                .HasOne(pt => pt.Signer)
+                .WithMany(t => t.Bonds)
+                .HasForeignKey(pt => pt.SignerId);
+
+            modelBuilder.Entity<CurrencyRate>()
+             .HasKey(t => new { t.Timestamp, t.TradePair, t.Source });
         }
     }
 }

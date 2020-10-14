@@ -8,7 +8,6 @@ namespace KeepSpy.Storage.Configurations
     {
         public void Configure(EntityTypeBuilder<Deposit> builder)
         {
-            
         }
     }
 }

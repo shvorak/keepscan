@@ -34,5 +34,6 @@ namespace KeepSpy.Domain
 
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<DepositSigner> Signers { get; set; }
+        public ICollection<Bond> Bonds { get; set; }
     }
 }

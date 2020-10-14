@@ -7,5 +7,6 @@ namespace KeepSpy.Domain
 	public class Signer : HasId<string>
 	{
 		public ICollection<DepositSigner> Deposits { get; set; }
+		public ICollection<Bond> Bonds { get; set; }
 	}
 }

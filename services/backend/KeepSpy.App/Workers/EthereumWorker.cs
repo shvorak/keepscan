@@ -24,6 +24,8 @@ namespace KeepSpy.App.Workers
         const string LiquidatedEvent = "0xa5ee7a2b0254fce91deed604506790ed7fa072d0b14cba4859c3bc8955b9caac";
         const string SetupFailedEvent = "0x8fd2cfb62a35fccc1ecef829f83a6c2f840b73dad49d3eaaa402909752086d4b";
         const string BondedECDSAKeepCreatedEvent = "0x7c030f3f8c902fa5a59193f1e3c08ae7245fc0e3b7ab290b6a9548a57a46ac60";
+        const string LogMedianPriceEvent = "0xb78ebc573f1f889ca9e1e0fb62c843c836f3d3a2e1f43ef62940e9b894f4ea4c";
+        const string BondCreatedEvent = "0xa5543d8e139d9ab4342d5c4f6ec1bff5a97f9a52d71f7ffe9845b94f1449fc91";
 
         private readonly EthereumWorkerOptions _options;
         private readonly IServiceScopeFactory _scopeFactory;
@@ -58,6 +60,12 @@ namespace KeepSpy.App.Workers
             bondedECDSAKeepFactory = _options.IsTestnet
                 ? "0x9eccf03dfbda6a5e50d7aba14e0c60c2f6c575e6"
                 : "0xA7d9E842EFB252389d613dA88EDa3731512e40bD";
+            ethBtcContract = _options.IsTestnet
+                ? "0x80449a756D5aCe9b221E2f7f61d94941f876d18a"
+                : "0x81A679f98b63B3dDf2F17CB5619f4d6775b3c5ED";
+            keepBondingContract = _options.IsTestnet
+                ? "0x60535A59B4e71F908f3fEB0116F450703FB35eD8"
+                : "0x27321f84704a599aB740281E285cc4463d89A3D5";
             while (!stoppingToken.IsCancellationRequested)
             {
                 using (var scope = _scopeFactory.CreateScope())
@@ -83,6 +91,8 @@ namespace KeepSpy.App.Workers
         string tbtccontract;
         string tbtcsystem;
         string bondedECDSAKeepFactory;
+        string ethBtcContract;
+        string keepBondingContract;
 
         void Run(KeepSpyContext db, KeychainService keychainService)
         {
@@ -142,6 +152,13 @@ namespace KeepSpy.App.Workers
             var approvalLogs = _apiClient.GetLogs(tdtcontract, lastBlock, lastBlock + delta, topic0: ApprovalEvent);
             var tdt2btcTx = _apiClient.GetAccountTxList(vmcontract, lastBlock + 1, lastBlock + delta);
 
+            foreach(var item in _apiClient.GetLogs(ethBtcContract, lastBlock, lastBlock + delta, topic0: LogMedianPriceEvent).result)
+			{
+                var timeStamp = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(ulong.Parse(item.data.Substring(120), System.Globalization.NumberStyles.HexNumber));
+                if (db.Find<CurrencyRate>(timeStamp, TradePair.ETHBTC, CurrencyRateSource.MedianETHBTC) == null)
+                    db.Add(new CurrencyRate { Timestamp = timeStamp, TradePair = TradePair.ETHBTC, Source = CurrencyRateSource.MedianETHBTC, Value = (decimal)System.Numerics.BigInteger.Parse(item.data.Substring(34,32), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M });
+			}
+            db.SaveChanges();
             foreach (var item in resultTx.result)
             {
                 if (item.input.StartsWith("0xb7947b40"))
@@ -384,6 +401,19 @@ namespace KeepSpy.App.Workers
                         db.Add(new DepositSigner { Deposit = deposit, Signer = signer });
                         _logger.LogInformation("Deposit {0} signer: {1}", deposit.Id, signerId);
                     }
+                }
+            }
+            db.SaveChanges();
+            foreach (var item in _apiClient.GetLogs(keepBondingContract, lastBlock, lastBlock + delta, topic0: BondCreatedEvent).result)
+			{
+                var signer = "0x" + item.topics[1].Substring(26);
+                var keepAddress = "0x" + item.topics[2].Substring(26);
+                var amount = (decimal)System.Numerics.BigInteger.Parse(item.data.Substring(98, 32), System.Globalization.NumberStyles.HexNumber) / 1000000000000000000M;
+                if (!db.Set<Bond>().Any(b => b.Deposit.KeepAddress == keepAddress && b.SignerId == signer))
+                {
+                    var deposit = db.Set<Deposit>().Single(d => d.KeepAddress == keepAddress);
+                    db.Add(new Bond { Amount = amount, SignerId = signer, Deposit = deposit });
+                    _logger.LogInformation("Deposit {0}, Bond {1} ETH, signer {2}", deposit.Id, amount, signer);
                 }
             }
 
