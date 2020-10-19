@@ -34,7 +34,9 @@
     .graphs_grid {
         grid-template-columns: 1fr;
     }
-
+    .graphs_grid > *:nth-child(3) {
+        display: none;
+    }
     .lists_grid {
         grid-template-columns: repeat(1, 1fr);
     }
@@ -44,6 +46,9 @@
     .graphs_grid {
         gap: 10px;
         margin-bottom: 10px;
+    }
+    .graphs_grid > *:nth-child(3) {
+        display: none;
     }
 
     .lists_grid {

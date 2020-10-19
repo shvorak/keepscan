@@ -3,6 +3,7 @@ import styles from './index.css'
 import { Card, CardBody } from 'uikit/layout/card'
 import { Display } from 'uikit/typography/display'
 import { Heading } from 'uikit/typography'
+import { useMedia } from 'shared/hooks/adaptive'
 
 type StatCard = {
     name: string
@@ -11,6 +12,9 @@ type StatCard = {
 }
 
 export const StatCard: FC<StatCard> = ({ name, value, suffix = 'TBTC' }) => {
+
+    const isSmall = useMedia('mobile', 'tablet')
+
     return (
         <Card className={styles.card}>
             <CardBody className={styles.body}>
@@ -18,7 +22,7 @@ export const StatCard: FC<StatCard> = ({ name, value, suffix = 'TBTC' }) => {
                     {name}
                 </Heading>
                 <Display size={20}>
-                    {value} {suffix}
+                    {value} {!isSmall && suffix}
                 </Display>
             </CardBody>
         </Card>

@@ -1,5 +1,7 @@
 import { ReactElement } from 'react'
 
+export type FieldFunc<T> = <K = keyof T>(name: keyof T) => FieldConfig
+
 export type FieldConfig = {
     name: string
     options: FieldOptions
@@ -14,3 +16,6 @@ export type FieldOptions = {
 }
 
 export type FieldRender = (config: { value: any } & any) => ReactElement
+
+export type SchemaFunc = <T = any>(...builders: FieldFunc<T>[]) => FieldConfig[]
+

@@ -38,5 +38,6 @@ export const INDEXERS_CONFIG = {
 }
 
 export const INDEXERS = INDEXERS_CONFIG[HOST_ENV]
+
 // TODO: Replace with real lot sizes based on network and contract
 export const LOT_SIZES = HOST_ENV === 'testNet' ? [0.001, 0.01, 0.1, 0.2, 0.5, 1] : [0.01, 0.1, 0.2, 0.5, 1, 5, 10]

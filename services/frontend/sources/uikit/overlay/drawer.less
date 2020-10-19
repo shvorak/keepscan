@@ -1,0 +1,15 @@
+.root {
+  position: fixed;
+  transition: 200ms;
+  height: 100%;
+  z-index: 1024;
+
+  &.placement__right {
+    top: 0;
+    right: -100%;
+
+    &.opened {
+      right: 0;
+    }
+  }
+}

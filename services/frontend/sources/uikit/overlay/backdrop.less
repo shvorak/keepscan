@@ -1,0 +1,17 @@
+.root {
+  background: var(--castle-black);
+  transition: 100ms;
+  position: fixed;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+  height: 100vh;
+  width: 100vw;
+  left: 0;
+  top: 0;
+
+  &.visible {
+    pointer-events: all;
+    opacity: 0.5;
+  }
+}
