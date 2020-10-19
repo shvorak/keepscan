@@ -7,9 +7,11 @@ import { StatCard } from 'features/dashboard/cards/stat-card'
 import { useSelector } from 'react-redux'
 import { getStatistic } from 'entities/Statistic/queries'
 import { MarketData } from 'features/dashboard/cards/market-data'
+import { useMedia } from 'shared/hooks/adaptive'
 
 export const Dashboard = () => {
     const stats = useSelector(getStatistic)
+    const isSmall = useMedia('mobile', 'tablet')
 
     return (
         <>
@@ -20,8 +22,8 @@ export const Dashboard = () => {
             </div>
 
             <div className={styles.stats__grid}>
-                <StatCard name="Current Supply" value={stats.totalSupply} />
-                <StatCard name="Total Minted" value={stats.totalMinted} />
+                <StatCard name={isSmall ? 'Supply' : 'Current Supply'} value={stats.totalSupply} />
+                <StatCard name={isSmall ? 'Minted' : 'Total Minted'} value={stats.totalMinted} />
                 <StatCard name="Supply Cap" value={stats.supplyCap} />
             </div>
 
