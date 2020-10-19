@@ -1,3 +1,5 @@
+@import "../../../theme";
+
 .title {
     color: var(--dry-stone);
     align-items: center;
@@ -6,6 +8,10 @@
 .title .tdt {
     padding-top: 7px;
     display: block;
+
+    @media (max-width: @tablet) {
+        font-size: 14px;
+    }
 }
 
 .title .name {

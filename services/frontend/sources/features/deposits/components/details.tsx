@@ -53,7 +53,7 @@ export const DepositDetails = ({ id }) => {
                     </DisplayLink>
                 )}
 
-                <Display className={styles.tdt} size={20}>
+                <Display className={styles.tdt}>
                     {id}
                 </Display>
             </div>

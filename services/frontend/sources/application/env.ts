@@ -1,25 +1,30 @@
 export const ENV_CONFIG = {
     localhost: {
+        net: 'mainNet',
         name: 'Testnet Dev',
         link: 'https://keepscan.com',
         label: 'Click to switch into Mainnet',
     },
     'keepscan.com': {
+        net: 'mainNet',
         name: 'Mainnet',
         link: 'https://testnet.keepscan.com',
         label: 'Click to switch into Testnet',
     },
     'testnet.keepscan.com': {
+        net: 'testNet',
         name: 'Testnet',
         link: 'https://keepscan.com',
         label: 'Click to switch into Mainnet',
     },
     'testnet.staging.keepscan.com': {
+        net: 'testNet',
         name: 'Testnet Staging',
         link: 'https://mainnet.staging.keepscan.com',
         label: 'Click to switch into Mainnet Staging',
     },
     'mainnet.staging.keepscan.com': {
+        net: 'mainNet',
         name: 'Mainnet Staging',
         link: 'https://testnet.staging.keepscan.com',
         label: 'Click to switch into Testnet Staging',
@@ -27,7 +32,7 @@ export const ENV_CONFIG = {
 }
 
 
-export const HOST_ENV = location.hostname === 'keepscan.com' ? 'mainNet' : 'testNet'
+export const HOST_ENV = (ENV_CONFIG[location.hostname] || ENV_CONFIG.localhost).net
 
 export const DAPP_CONFIG = {
     mainNet: 'https://dapp.tbtc.network',

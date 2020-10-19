@@ -44,7 +44,7 @@ export const RedeemDetails = ({ id }) => {
                 <Heading className={styles.name}>Redeem</Heading>
                 <DisplayLink to={`/deposits/${id}`} className={styles.switch}>Deposit</DisplayLink>
 
-                <Display className={styles.tdt} size={20}>
+                <Display className={styles.tdt}>
                     {id}
                 </Display>
             </div>
