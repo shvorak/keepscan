@@ -46,6 +46,7 @@
     & .menu {
         margin-left: auto;
 
+
         & a {
             color: var(--wet-stone);
             margin-left: 15px;
@@ -71,31 +72,11 @@
             }
         }
 
+
+
         @media (max-width: @tabletXL) {
-            & a {
-                color: var(--simply-grey);
-                display: block;
-                padding: 8px 15px;
-                margin-bottom: 5px;
-                border-left: 3px solid var(--simply-grey);
-
-                &:global(.active) {
-                    color: #fff;
-                    border-left: 3px solid #ffffff;
-                    border-bottom: none;
-
-                    &:before {
-                        content: none;
-                        width: 4px;
-                        height: 4px;
-                        transform: rotate(45deg);
-                        background: #ffffff;
-                        position: absolute;
-                        left: 50%;
-                        margin-left: -2px;
-                        bottom: -2px;
-                    }
-                }
+            &__items {
+                display: none;
             }
 
             &__burger {
@@ -104,6 +85,7 @@
                 place-items: center;
                 cursor: pointer;
                 height: 22px;
+                margin-right: 10px;
                 width: 22px;
 
                 & > span,
@@ -123,40 +105,51 @@
                     bottom: -7px;
                 }
             }
+        }
+    }
 
-            &__closer {
 
-            }
+    .drawer {
+        width: 400px;
+        background: var(--dry-stone);
 
-            &__overlay {
-                background: black;
-                position: absolute;
-                padding: 50px 10px;
-                //height: 100vh;
-                width: 100vw;
-                display: none;
-                left: 0;
-                top: 0;
-                z-index: 1;
+        @media (max-width: @mobile) {
+            width: 200px;
+        }
+        @media (max-width: @tablet) {
+            width: 300px;
+        }
 
-                &.opened {
-                    display: block;
-                }
+        &__menu {
+            padding: 10px 15px;
+        }
+        &__closer {
+            font-size: 2em;
+            text-align: right;
+        }
 
-                & .content {
-                  @media (max-width: 1024px) {
-                    & {
-                      margin: 0 auto;
-                      width: 600px;
-                    }
-                  }
+        & a {
+            color: var(--castle-black);
+            display: block;
+            padding: 8px 10px;
+            margin-left: 0;
 
-                  @media (max-width: 600px) {
-                    & {
-                      margin: 0 auto;
-                      width: 360px;
-                    }
-                  }
+            &:global(.active) {
+                color: var(--castle-black);
+                border-left: 3px solid var(--castle-black);
+                border-bottom: none;
+                background: var(--wet-stone);
+
+                &:before {
+                    content: "";
+                    width: 4px;
+                    height: 4px;
+                    transform: rotate(45deg);
+                    background: var(--castle-black);
+                    position: absolute;
+                    top: 50%;
+                    margin-top: -2px;
+                    left: 0;
                 }
             }
         }

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React from 'react'
 import styles from './app.css'
 import { Route, Switch } from 'react-router-dom'
 import { useClasses } from 'shared/hooks/styles'
@@ -10,27 +10,14 @@ import { RedeemDetailsPage, RedeemListPage } from './routes/redeems'
 import { DepositDetailsPage, DepositListPage } from './routes/deposits'
 import { GithubLink } from 'components/github'
 import { Header } from 'components/layout/header'
-import { useScrollbarWidth } from 'react-use'
+import { ScrollArea } from 'uikit/scroll'
 
 export const App = () => {
-    const scrollWidth = useScrollbarWidth()
-
-    const [opened, setOpened] = useState<boolean>()
-
-    const onOpen = useCallback(() => {
-        setOpened(true)
-    }, [])
-
-    const layoutStyle = opened && {
-        paddingRight: scrollWidth,
-        overflow: 'hidden'
-    }
-
     return (
-        <div className={styles.layout}>
-            <div className={styles.header} style={layoutStyle}>
+        <ScrollArea className={styles.layout}>
+            <div className={styles.wrapper}>
                 <Section>
-                    <Header opened={opened} onOpen={onOpen} />
+                    <Header />
                 </Section>
                 <Section className={styles.content}>
                     <Switch>
@@ -49,7 +36,7 @@ export const App = () => {
                     <GithubLink to="https://github.com/emerido/keepscan" />
                 </Section>
             </Footer>
-        </div>
+        </ScrollArea>
     )
 }
 
