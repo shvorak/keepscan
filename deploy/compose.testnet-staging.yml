@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:12
+    volumes:
+      - app-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=keepscan
+      - POSTGRES_USER=keepscan
+      - POSTGRES_PASSWORD=L9cZA9npgWEr94QpqgwyaQ73
+  api:
+    image: registry.gitlab.com/emerido/keepscan/backend:latest
+    ports:
+      - 50015:80
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
+  web:
+    image: registry.gitlab.com/emerido/keepscan/frontend:latest
+    ports:
+      - 50016:80
+volumes:
+  bi-data:
+  app-data:

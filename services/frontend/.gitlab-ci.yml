@@ -1,7 +1,7 @@
 stages:
   - build
 
-frontend:build:
+build frontend:
   stage: build
   script:
     - cd services/frontend
