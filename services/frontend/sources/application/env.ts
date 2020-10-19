@@ -14,6 +14,16 @@ export const ENV_CONFIG = {
         link: 'https://keepscan.com',
         label: 'Click to switch into Mainnet',
     },
+    'testnet.staging.keepscan.com': {
+        name: 'Testnet Staging',
+        link: 'https://mainnet.staging.keepscan.com',
+        label: 'Click to switch into Mainnet Staging',
+    },
+    'mainnet.staging.keepscan.com': {
+        name: 'Mainnet Staging',
+        link: 'https://testnet.staging.keepscan.com',
+        label: 'Click to switch into Testnet Staging',
+    },
 }
 
 
