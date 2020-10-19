@@ -2,6 +2,7 @@
     /*width: 300px;*/
     display: none;
     min-width: 150px;
+    width: 100%;
     position: absolute;
     z-index: 1000;
     flex-direction: column;

@@ -58,23 +58,27 @@
 }
 
 .redeem {
-    border: 3px solid var(--castle-black);
-    background-color: transparent;
-    color: var(--castle-black);
-    transition: all .25s;
-    padding: 5px 12px;
-    font-size: 1.1em;
-    cursor: pointer;
-    font-weight: 500;
     position: absolute;
     top: 6px;
     right: 6px;
-}
-.redeem:hover {
-    color: white;
-    background-color: var(--castle-black);
-}
 
+    & button {
+        border: 3px solid var(--castle-black);
+        border-radius: 4px;
+        background-color: transparent;
+        color: var(--castle-black);
+        transition: all .25s;
+        padding: 5px 12px;
+        font-size: 1.1em;
+        cursor: pointer;
+        font-weight: 500;
+
+        &:hover {
+            color: white;
+            background-color: var(--castle-black);
+        }
+    }
+}
 
 @media screen and (max-width: 1024px) {
     .stat {

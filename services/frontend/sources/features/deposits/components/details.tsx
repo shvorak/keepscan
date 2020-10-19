@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import styles from './details.css'
+import styles from './details.less'
 import { Deposit } from 'entities/Deposit/types'
 import { useSelector } from 'react-redux'
 import { getDepositById } from 'entities/Deposit/queries'
@@ -20,6 +20,7 @@ import { DepositStatus } from 'entities/Deposit/constants'
 import { DAPP } from '~/application/env'
 import { OperationCard, OperationCards } from 'components/details'
 import { KeepInfo } from 'components/deposit/keep-info'
+import { Tooltip } from 'uikit/overlay/tooltip'
 
 export const DepositDetails = ({ id }) => {
     const [failed, setFailed] = useState(false)
@@ -73,7 +74,9 @@ const Failed = ({ id }) => (
 
 const Loading = () => (
     <Card>
-        <Placeholder wide className={styles.placeholder}>loading</Placeholder>
+        <Placeholder wide className={styles.placeholder}>
+            loading
+        </Placeholder>
     </Card>
 )
 
@@ -110,8 +113,6 @@ const Content = ({ deposit }) => (
             </Card>
         </div>
 
-
-
         <Card className={styles.panel}>
             <CardHead>Operation Log</CardHead>
             <CardBody className={styles.panelBody}>
@@ -130,8 +131,10 @@ const Redeem = ({ deposit }) => {
         return null
     }
     return (
-        <button onClick={onRedeem} className={styles.redeem}>
-            Redeem
-        </button>
+        <div className={styles.redeem}>
+            <Tooltip content="Open in tBTC DApp" placement="left">
+                <button onClick={onRedeem}>Redeem</button>
+            </Tooltip>
+        </div>
     )
 }
