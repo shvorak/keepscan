@@ -3,7 +3,7 @@
     box-sizing: border-box;
     background: #fff;
     border: 1px solid #e6eaf2;
-    box-shadow: 0 3px 4px rgba(63,96,118,.05);
+    box-shadow: 0 3px 4px rgba(63, 96, 118, 0.05);
     opacity: 1;
     border-radius: 3px;
     overflow: hidden;
@@ -30,14 +30,13 @@
     padding: 8px 0;
     color: #ababab;
     font-weight: 500;
-    font-size: .9em;
+    font-size: 0.9em;
     outline: none;
 }
 .more:hover {
     cursor: pointer;
     background-color: #f9f9f9;
 }
-
 
 .filter {
     padding: 10px 15px;
@@ -56,6 +55,6 @@
     display: inline-block;
 }
 .suffix:before {
-    content: "・";
+    content: '・';
     display: inline-block;
 }

@@ -1,37 +1,49 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useState } from 'react'
 import styles from './app.css'
-import { Link, NavLink, Route, Switch } from 'react-router-dom'
-import { DisplayLink } from 'uikit/typography/display'
+import { Route, Switch } from 'react-router-dom'
 import { useClasses } from 'shared/hooks/styles'
-import { ENV_CONFIG } from '~/application/env'
 
 import { ApiPage } from './routes/api'
 import { TdtPage } from './routes/tdt'
 import { DashboardPage } from './routes/dashboard'
 import { RedeemDetailsPage, RedeemListPage } from './routes/redeems'
-import { DepositListPage, DepositDetailsPage } from './routes/deposits'
+import { DepositDetailsPage, DepositListPage } from './routes/deposits'
 import { GithubLink } from 'components/github'
 import { Header } from 'components/layout/header'
+import { useScrollbarWidth } from 'react-use'
 
 export const App = () => {
+    const scrollWidth = useScrollbarWidth()
+
+    const [opened, setOpened] = useState<boolean>()
+
+    const onOpen = useCallback(() => {
+        setOpened(true)
+    }, [])
+
+    const layoutStyle = opened && {
+        paddingRight: scrollWidth,
+        overflow: 'hidden'
+    }
+
     return (
         <div className={styles.layout}>
-                <div className={styles.header}>
-                    <Section>
-                        <Header />
-                    </Section>
-                    <Section className={styles.content}>
-                        <Switch>
-                            <Route path="/" exact component={DashboardPage} />
-                            <Route path="/api" exact component={ApiPage} />
-                            <Route path="/tdt" exact component={TdtPage} />
-                            <Route path="/redeems" exact component={RedeemListPage} />
-                            <Route path="/redeems/:id" exact component={RedeemDetailsPage} />
-                            <Route path="/deposits" exact component={DepositListPage} />
-                            <Route path="/deposits/:id" exact component={DepositDetailsPage} />
-                        </Switch>
-                    </Section>
-                </div>
+            <div className={styles.header} style={layoutStyle}>
+                <Section>
+                    <Header opened={opened} onOpen={onOpen} />
+                </Section>
+                <Section className={styles.content}>
+                    <Switch>
+                        <Route path="/" exact component={DashboardPage} />
+                        <Route path="/api" exact component={ApiPage} />
+                        <Route path="/tdt" exact component={TdtPage} />
+                        <Route path="/redeems" exact component={RedeemListPage} />
+                        <Route path="/redeems/:id" exact component={RedeemDetailsPage} />
+                        <Route path="/deposits" exact component={DepositListPage} />
+                        <Route path="/deposits/:id" exact component={DepositDetailsPage} />
+                    </Switch>
+                </Section>
+            </div>
             <Footer>
                 <Section>
                     <GithubLink to="https://github.com/emerido/keepscan" />

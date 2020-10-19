@@ -1,6 +1,6 @@
 import type { FieldOptions } from 'shared/schema/types'
 
-export const field = (name: string, options: FieldOptions) => ({
+export const field = <T>(name: string, options: FieldOptions) => ({
     name,
     options,
 })
