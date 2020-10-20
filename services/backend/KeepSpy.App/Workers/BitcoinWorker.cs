@@ -67,16 +67,21 @@ namespace KeepSpy.App.Workers
                 db.SaveChanges();
             }
 
-            foreach (var deposit in db.Set<Deposit>().Where(o => o.Status >= DepositStatus.WaitingForBtc && o.BtcFunded == null && o.Contract.Network.IsTestnet == _options.IsTestnet))
+            foreach (var deposit in db.Set<Deposit>().Where(o => o.Status >= DepositStatus.WaitingForBtc && o.BtcFunded == null && o.Contract.Network.IsTestnet == _options.IsTestnet).Select(d => new { d.BitcoinAddress, d.Id, d.LotSize}))
 			{
                 var utxo = _apiClient.GetUtxo(deposit.BitcoinAddress);
                 var amount = utxo.Where(o => o.status.confirmed).Sum(o => o.value) / 100000000M;
                 if (amount >= deposit.LotSize)
 				{
-                    deposit.BtcFunded = amount;
-                    if (deposit.Status == DepositStatus.WaitingForBtc)
-                        deposit.Status = DepositStatus.BtcReceived;
-                    deposit.BitcoinFundedBlock = utxo.Where(o => o.status.confirmed).Max(o => o.status.block_height);
+                    var dep = db.Find<Deposit>(deposit.Id);
+                    dep.BtcFunded = amount;
+                    if (dep.Status == DepositStatus.WaitingForBtc)
+                    {
+                        dep.Status = DepositStatus.BtcReceived;
+                        dep.UpdatedAt = DateTime.Now;
+                    }
+                    dep.BitcoinFundedBlock = utxo.Where(o => o.status.confirmed).Max(o => o.status.block_height);
+                    db.SaveChanges();
                     _logger.LogInformation("TDT {0} funded with {1} BTC", deposit.Id, utxo.Where(o => o.status.confirmed).Sum(o => o.value) / 100000000M);                    
                 }
             }
