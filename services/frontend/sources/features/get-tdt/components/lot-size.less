@@ -1,3 +1,5 @@
+@import "../../../theme";
+
 .lot_size_list {
     display: flex;
     flex-wrap: wrap;
@@ -16,7 +18,13 @@
     align-items: flex-end;
     place-content: flex-end;
     cursor: pointer;
-    transition: box-shadow .25s ease-in;
+    transition: box-shadow 0.25s ease-in;
+
+    @media (max-width: @tablet) {
+        width: 80px;
+        height: 50px;
+        font-size: 1em;
+    }
 }
 .lot_size.selected {
     background-color: var(--castle-black);

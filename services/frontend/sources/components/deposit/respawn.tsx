@@ -3,6 +3,7 @@ import styles from './respawn.css'
 import { DAPP } from '~/application/env'
 import { DepositStatus } from 'entities/Deposit/constants'
 import { Tooltip } from 'uikit/overlay/tooltip'
+import { useMedia } from 'shared/hooks/adaptive'
 
 const RedeemActionConfig = {
     [DepositStatus.InitiatingDeposit]: '/deposit/{0}/get-address',
@@ -19,7 +20,9 @@ export const Respawn = ({ deposit }) => {
         window.open(`${DAPP}${action.replace('{0}', deposit.id)}`)
     }, [action])
 
-    if (null == action) {
+    const isMobile = useMedia('mobile', 'tablet')
+
+    if (null == action || isMobile) {
         return null
     }
 

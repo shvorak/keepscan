@@ -1,5 +1,5 @@
 import React, { ComponentProps, FC } from 'react'
-import styles from './timeline.css'
+import styles from './timeline.less'
 import { useClasses } from 'shared/hooks/styles'
 
 type TimelineEventProps = ComponentProps<'div'> & {

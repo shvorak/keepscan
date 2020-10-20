@@ -17,12 +17,14 @@ type AddressProps = ComponentProps<'a'> & {
     params?: Record<string, any>
 }
 
+export const useAddress = (address: string, short: boolean = false) => {
+    return address && (short ? ellipsis(6, 4, address) : address)
+}
+
 export const Address: FC<AddressProps> = ({ value, useCopy, useLink, kind, full, params, ...props }) => {
     const minimalWide = useMedia('(min-width: 1280px)')
 
-    const address = useMemo(() => {
-        return value && (full && minimalWide ? value : ellipsis(6, 4, value))
-    }, [value, minimalWide])
+    const address = useAddress(value, !(full && minimalWide))
 
     const clipboard = useClipboard({
         copiedTimeout: 800
