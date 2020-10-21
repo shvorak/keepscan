@@ -1,0 +1,30 @@
+@import "../../../theme";
+
+.area {
+    display:inline-flex;
+    min-width: 471px;
+    border-radius: 4px;
+    border: 2px solid var(--castle-black);
+    font-size: 1.2em;
+
+    @media (max-width: @tablet) {
+        min-width: 0;
+    }
+}
+
+.body {
+    padding: 0.421em 0.526em;
+    text-align: center;
+    display:inline-flex;
+}
+
+.copy {
+    flex-shrink: 0;
+    width: 2.105em;
+    cursor: pointer;
+    padding: 0.474em 0.526em 0.263em;
+}
+.dapp {
+    cursor: pointer;
+    padding: 0.474em 0.526em 0.263em 0;
+}

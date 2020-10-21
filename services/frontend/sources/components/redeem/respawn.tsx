@@ -4,6 +4,7 @@ import { RedeemStatus } from 'entities/Redeem/constants'
 import { DisplayLink } from 'uikit/typography/display'
 import { DAPP } from '~/application/env'
 import { Tooltip } from 'uikit/overlay/tooltip'
+import { useMedia } from 'shared/hooks/adaptive'
 
 const RespawnActions = {
     [RedeemStatus.Requested]: 'deposit/{0}/redemption',
@@ -13,8 +14,9 @@ const RespawnActions = {
 
 export const RedeemRespawn = ({ status, redeem }) => {
     const action = RespawnActions[status]
+    const isMobile = useMedia('mobile', 'tablet')
 
-    if (null == action || status !== redeem.status) {
+    if (null == action || status !== redeem.status || isMobile) {
         return null
     }
 

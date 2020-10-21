@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
-import styles from './lot-size.css'
+import styles from './lot-size.less'
 import { useClasses } from 'shared/hooks/styles'
 import { Amount } from 'uikit/crypto/amount'
 

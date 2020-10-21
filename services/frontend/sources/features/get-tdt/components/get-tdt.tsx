@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import styles from './get-tdt.css'
+import styles from './get-tdt.less'
 import { Heading } from 'uikit/typography'
 import { LotSizeList } from 'features/get-tdt/components/lot-size'
 import { TdtAddress } from 'features/get-tdt/components/tdt-address'
