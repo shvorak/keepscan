@@ -18,7 +18,7 @@ export const Input: FC<InputProps> = ({ value, label, action, onAction, ...props
 
     return (
         <div className={className}>
-            <input width={300} value={value == null ? '' : value} {...props} />
+            <input width={300} value={value == null ? '' : value} {...props} className={null} />
             <label>{label}</label>
             {actionNode}
         </div>
