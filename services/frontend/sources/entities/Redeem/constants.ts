@@ -4,7 +4,8 @@ export const RedeemStatus = {
     BtcTransferred: 5,
     Redeemed: 2,
     Liquidation: 3,
-    Liquidated: 4
+    Liquidated: 4,
+    OperationFailed: 6
 }
 
 
@@ -15,6 +16,7 @@ export const RedeemStatusNames = {
     [RedeemStatus.Liquidation]: 'Liquidation',
     [RedeemStatus.Liquidated]: 'Liquidated',
     [RedeemStatus.BtcTransferred]: 'BTC transferred',
+    [RedeemStatus.OperationFailed]: 'Operation failed',
 }
 
 export const RedeemFailureStatuses = [

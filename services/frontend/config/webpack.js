@@ -1,8 +1,14 @@
-const {merge} = require('webpack-merge')
+const { merge } = require('webpack-merge')
+
 const environs = {
-    development: require('./webpack.dev')
+    development: require('./webpack.dev'),
 }
 
 module.exports = (config, options) => {
-    return merge(require('./webpack.base')(options), environs[options.mode] || {})
+    let configs = environs[options.mode] || {}
+    try {
+        configs = merge(configs, require('./webpack.local'))
+    } catch (e) {}
+
+    return merge(require('./webpack.base')(options), configs)
 }

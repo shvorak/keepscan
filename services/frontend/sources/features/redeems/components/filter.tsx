@@ -6,12 +6,14 @@ import { Amount } from 'uikit/crypto/amount'
 import { useModel } from 'shared/hooks/controls'
 import { RedeemStatus, RedeemStatusNames } from 'entities/Redeem/constants'
 
-const OPTIONS = Object.values(RedeemStatus).map((status) => {
-    return {
-        value: status,
-        label: RedeemStatusNames[status],
-    }
-})
+const OPTIONS = Object.values(RedeemStatus)
+    .filter((x) => x !== RedeemStatus.OperationFailed)
+    .map((status) => {
+        return {
+            value: status,
+            label: RedeemStatusNames[status],
+        }
+    })
 
 const LOT_SIZES_OPTIONS = LOT_SIZES.map((size) => ({
     value: size,
