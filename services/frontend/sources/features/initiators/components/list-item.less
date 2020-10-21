@@ -1,0 +1,29 @@
+.root {
+    display: flex;
+    align-items: center;
+}
+
+.cell {
+    &__id {
+      flex-grow: 1;
+    }
+
+    &__lastSeen {
+        width: 200px;
+        text-align: center;
+
+        & .date_ago {
+            font-size: 0.9em;
+        }
+    }
+
+    &__deposits {
+        width: 200px;
+        text-align: center;
+    }
+
+    &__redeems {
+        width: 200px;
+        text-align: center;
+    }
+}

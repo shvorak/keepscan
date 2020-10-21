@@ -12,6 +12,7 @@ export default combineReducers({
         get_tdt: require('features/get-tdt/reducer').default,
         redeems: require('features/redeems/reducer').default,
         deposits: require('features/deposits/reducer').default,
-        dashboard: require('features/dashboard/reducer.ts').default
+        dashboard: require('features/dashboard/reducer.ts').default,
+        initiators: require('features/initiators/reducer.ts').default
     })
 })

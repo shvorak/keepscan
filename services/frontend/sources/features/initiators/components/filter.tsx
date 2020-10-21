@@ -14,7 +14,7 @@ export const InitiatorFilter: FC<InitiatorFilterProps> = ({ query, onChange, ...
 
     return (
         <div className={styles.root} {...props}>
-            <Search label="Address" value={values.search} onChange={onChangeField('search')} minLength={4} />
+            <Search label="Search by address" value={values.search} onChange={onChangeField('search')} minLength={4} />
         </div>
     )
 }
