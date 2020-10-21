@@ -11,7 +11,7 @@ namespace KeepSpy.Storage.Migrations
 {
     [DbContext(typeof(KeepSpyContext))]
     [Migration("20201020111123_UpdateDepositStatus")]
-    partial class UpdateDepositStatus
+    partial class UpdateDepositStatus1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
