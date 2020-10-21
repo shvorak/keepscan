@@ -328,10 +328,10 @@ namespace KeepSpy.App.Workers
                         {
                             deposit.Status = DepositStatus.Closed;
                             deposit.UpdatedAt = vmTx.TimeStamp;
-                            _logger.LogInformation("Redeem request failed TDT ID {0}", deposit.Id);
+                            _logger.LogInformation("Redeem requested TDT ID {0}", deposit.Id);
                         }
                         else
-                            _logger.LogInformation("Redeem requested TDT ID {0}", deposit.Id);
+                            _logger.LogInformation("Redeem request failed TDT ID {0}", deposit.Id);
                         AddTx2(vmTx, redeem);
                     }
                 }

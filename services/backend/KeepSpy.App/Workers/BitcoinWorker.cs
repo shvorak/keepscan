@@ -66,29 +66,11 @@ namespace KeepSpy.App.Workers
                 db.Add(network);
                 db.SaveChanges();
             }
-
-            foreach (var deposit in db.Set<Deposit>().Where(o => o.Status >= DepositStatus.WaitingForBtc && o.BtcFunded == null && o.Contract.Network.IsTestnet == _options.IsTestnet).Select(d => new { d.BitcoinAddress, d.Id, d.LotSize}).ToList())
-			{
-                var utxo = _apiClient.GetUtxo(deposit.BitcoinAddress);
-                var amount = utxo.Where(o => o.status.confirmed).Sum(o => o.value) / 100000000M;
-                if (amount >= deposit.LotSize)
-				{
-                    var dep = db.Find<Deposit>(deposit.Id);
-                    dep.BtcFunded = amount;
-                    if (dep.Status == DepositStatus.WaitingForBtc)
-                    {
-                        dep.Status = DepositStatus.BtcReceived;
-                        dep.UpdatedAt = DateTime.Now;
-                    }
-                    dep.BitcoinFundedBlock = utxo.Where(o => o.status.confirmed).Max(o => o.status.block_height);
-                    db.SaveChanges();
-                    _logger.LogInformation("TDT {0} funded with {1} BTC", deposit.Id, utxo.Where(o => o.status.confirmed).Sum(o => o.value) / 100000000M);                    
-                }
-            }
-            foreach (var deposit in db.Set<Deposit>().Where(o => o.BitcoinAddress != null && o.Contract.Network.IsTestnet == _options.IsTestnet).ToList())
+            foreach (var deposit in db.Set<Deposit>().Where(o => o.BitcoinAddress != null && o.Status >= DepositStatus.WaitingForBtc && o.Contract.Network.IsTestnet == _options.IsTestnet).ToList())
             {
                 ProcessDeposit(db, deposit);
             }
+            
             var currentBlock = _apiClient.GetBlocks()[0];
             network.LastBlock = currentBlock.height;
             network.LastBlockAt = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(currentBlock.timestamp);
@@ -100,7 +82,22 @@ namespace KeepSpy.App.Workers
 		{
             if (db.Set<Transaction>().Any(t => t.RedeemStatus == RedeemStatus.BtcTransferred && t.RedeemId == deposit.Id))
                 return;
-            foreach (var tx in _apiClient.GetTxs(deposit.BitcoinAddress).Where(x => x.status.confirmed))
+            var txs = _apiClient.GetTxs(deposit.BitcoinAddress).Where(x => x.status.confirmed);
+            var inSum = txs.Where(o => !o.vin.Any(o1 => o1.prevout.scriptpubkey_address == deposit.BitcoinAddress)).Sum(o => o.vout.Where(o => o.scriptpubkey_address == deposit.BitcoinAddress).Sum(o => o.value / 100000000M));
+            if (deposit.BtcFunded == null && inSum >= deposit.LotSize)
+			{
+                var dep = db.Find<Deposit>(deposit.Id);
+                dep.BtcFunded = inSum;
+                if (dep.Status == DepositStatus.WaitingForBtc)
+                {
+                    dep.Status = DepositStatus.BtcReceived;
+                    dep.UpdatedAt = DateTime.Now;
+                }
+                dep.BitcoinFundedBlock = txs.Where(o => !o.vin.Any(o1 => o1.prevout.scriptpubkey_address == deposit.BitcoinAddress)).Max(o => o.status.block_height);
+                db.SaveChanges();
+                _logger.LogInformation("TDT {0} funded with {1} BTC", deposit.Id, inSum);
+            }
+            foreach (var tx in txs)
                 ProcessTx(db, deposit, tx);
         }
 
@@ -111,8 +108,8 @@ namespace KeepSpy.App.Workers
                 var sender = tx.vin.Count == 1 ? tx.vin[0].prevout.scriptpubkey_address : null;
                 var recipient = tx.vout.Count == 1 ? tx.vout[0].scriptpubkey_address : null;
                 var redeem = db.Find<Redeem>(deposit.Id);
-                //if (sender == deposit.BitcoinAddress && redeem == null)
-                //    return;
+                if (sender == deposit.BitcoinAddress && redeem == null)
+                    return;
                 var t = new Transaction
                 {
                     Id = tx.txid,
