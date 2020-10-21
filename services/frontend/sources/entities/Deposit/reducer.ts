@@ -1,7 +1,6 @@
 import { createReducer, withProducer } from 'shared/reducers'
-import { depositCreated, depositFetched, fetchDeposit, fetchDepositSuccess } from 'entities/Deposit/actions'
+import { depositCreated, depositFetched, fetchDepositSuccess } from 'entities/Deposit/actions'
 import { Deposit } from 'entities/Deposit/types'
-
 
 type State = typeof initialState
 

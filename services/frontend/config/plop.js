@@ -71,6 +71,12 @@ module.exports = function (plop) {
         message: 'Component name'
       },
       {
+        type: 'input',
+        name: 'file',
+        default: ({name}) => name,
+        message: 'Component file name'
+      },
+      {
         type: 'path',
         name: 'path',
         message: 'Where need to place',
@@ -91,13 +97,13 @@ module.exports = function (plop) {
       return [
         {
           type: 'add',
-          path: path.join(paths.root, '{{path}}/{{dashCase name}}.tsx'),
+          path: path.join(paths.root, '{{path}}/{{dashCase file}}.tsx'),
           skipIfExists: true,
           templateFile: paths.template('component.hbs')
         },
         data.includeStyle && {
           type: 'add',
-          path: path.join(paths.root, '{{path}}/{{dashCase name}}.less'),
+          path: path.join(paths.root, '{{path}}/{{dashCase file}}.less'),
         }
       ].filter(Boolean)
     }

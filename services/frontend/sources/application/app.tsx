@@ -11,6 +11,7 @@ import { DepositDetailsPage, DepositListPage } from './routes/deposits'
 import { GithubLink } from 'components/github'
 import { Header } from 'components/layout/header'
 import { ScrollArea } from 'uikit/scroll'
+import { InitiatorInfoPage, InitiatorListPage } from '~/application/routes/initiators'
 
 export const App = () => {
     return (
@@ -28,6 +29,8 @@ export const App = () => {
                         <Route path="/redeems/:id" exact component={RedeemDetailsPage} />
                         <Route path="/deposits" exact component={DepositListPage} />
                         <Route path="/deposits/:id" exact component={DepositDetailsPage} />
+                        <Route path="/initiators" exact component={InitiatorListPage} />
+                        <Route path="/initiators/:id" exact component={InitiatorInfoPage} />
                     </Switch>
                 </Section>
             </div>
