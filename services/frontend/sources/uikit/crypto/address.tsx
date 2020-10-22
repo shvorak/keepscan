@@ -15,26 +15,33 @@ type AddressProps = ComponentProps<'a'> & {
     useCopy?: boolean
     useLink?: boolean
     params?: Record<string, any>
+    /**
+     * Minimal screen wide for full address rendering
+     */
+    minimalWide?: number
 }
 
 export const useAddress = (address: string, short: boolean = false) => {
     return address && (short ? ellipsis(6, 4, address) : address)
 }
 
-export const Address: FC<AddressProps> = ({ value, useCopy, useLink, kind, full, params, ...props }) => {
-    const minimalWide = useMedia('(min-width: 1280px)')
+export const Address: FC<AddressProps> = ({ value, useCopy, useLink, kind, full, params, minimalWide, ...props }) => {
+    const enabledFull = useMedia(`(min-width: ${minimalWide}px)`)
 
-    const address = useAddress(value, !(full && minimalWide))
+    const address = useAddress(value, !(full && enabledFull))
 
     const clipboard = useClipboard({
-        copiedTimeout: 800
+        copiedTimeout: 800,
     })
 
-    const onCopy = useCallback(event => {
-        event.preventDefault()
-        event.stopPropagation()
-        clipboard.copy(value)
-    }, [value])
+    const onCopy = useCallback(
+        (event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            clipboard.copy(value)
+        },
+        [value]
+    )
 
     const className = useClasses(styles, 'address', { ...props, copied: clipboard.copied })
 
@@ -66,4 +73,5 @@ Address.defaultProps = {
     useCopy: true,
     kind: 'address',
     color: 'violet',
+    minimalWide: 1280,
 }

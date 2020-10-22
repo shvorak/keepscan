@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import styles from './filter.less'
 import { Query } from 'shared/types'
 import { Search } from 'uikit/control'
@@ -11,6 +11,10 @@ type InitiatorFilterProps = {
 
 export const InitiatorFilter: FC<InitiatorFilterProps> = ({ query, onChange, ...props }) => {
     const [values, { onChangeField }] = useModel(query || {})
+
+    useEffect(() => {
+        onChange(values)
+    }, [values, onChange])
 
     return (
         <div className={styles.root} {...props}>

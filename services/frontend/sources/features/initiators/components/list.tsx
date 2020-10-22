@@ -8,9 +8,10 @@ import { InitiatorListItem } from 'features/initiators/components/list-item'
 import { useAction } from 'shared/hooks/redux'
 import { initiatorNextPage, initiatorQueryChanged } from 'features/initiators/actions'
 import { isEmpty } from 'ramda'
-import { Placeholder } from 'uikit/display/placeholder'
 import { Empty } from 'uikit/display/empty'
 import { Scroller } from 'components/scroller'
+import { Loading } from 'uikit/display/loading'
+import { Pagination } from 'components/pagination'
 
 type InitiatorListProps = {}
 
@@ -36,27 +37,19 @@ export const InitiatorList: FC<InitiatorListProps> = ({ children, ...props }) =>
 
     const filtered = false === isEmpty(query)
 
-    const loading = (
-        <Placeholder wide className={styles.loader}>
-            loading
-        </Placeholder>
-    )
-
-    const loadable = items.length > 0 && pager && pager.pages > pager.current
-
     const content = !pager.loading && filtered && pager.total === 0 ? (
         <Empty />
     ) : (
-        <Scroller visible={loadable} loader={loading} onLoading={onNextPage}>
+        <Pagination pager={pager} loading={onNextPage}>
             {list}
-        </Scroller>
+        </Pagination>
     )
 
     return (
         <Card>
             <CardHead size={2}>
                 Initiators
-                <CardHeadSuffix>{234}</CardHeadSuffix>
+                <CardHeadSuffix>{pager.total}</CardHeadSuffix>
             </CardHead>
             <CardFilter>
                 <InitiatorFilter query={query} onChange={onQueryChange} />

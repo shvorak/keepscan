@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using KeepSpy.App.Abstraction;
@@ -16,7 +17,6 @@ namespace KeepSpy.App.Controllers
         public InitiatorController(KeepSpyContext db, IMapper mapper) : base(db, mapper)
         {
         }
-
 
         public Task<Paged<Initiator>> Get([FromQuery] InitiatorFilterDto filter, [FromQuery] PagerQuery pager) 
             => Db.Set<Initiator>()

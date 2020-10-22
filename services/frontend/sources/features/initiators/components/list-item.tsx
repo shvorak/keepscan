@@ -2,10 +2,10 @@ import React, { FC } from 'react'
 import styles from './list-item.less'
 import { Initiator } from 'entities/Initiator/types'
 import { ListItem } from 'uikit/data/list'
-import { Display, DisplayLink } from 'uikit/typography/display'
+import { DisplayLink } from 'uikit/typography/display'
 import { Address } from 'uikit/crypto/address'
 import { DateTime, DateTimeDistance } from 'uikit/display/datetime'
-import { Amount } from 'uikit/crypto/amount'
+import { InitiatorStat } from 'features/initiators/components/stat'
 
 type InitiatorListItemProps = {
     data: Initiator
@@ -16,19 +16,14 @@ export const InitiatorListItem: FC<InitiatorListItemProps> = ({data, ...props}) 
         <ListItem interactive {...props}>
             <DisplayLink to={`/initiators/${data.id}`} className={styles.root}>
                 <div className={styles.cell__id}>
-                    <Address value={data.id} full useLink={false} useCopy={false} />
+                    <Address value={data.id} full useLink={false} useCopy={false} minimalWide={1024} />
                 </div>
                 <div className={styles.cell__lastSeen}>
-                    <DateTime value={data.lastSeenAt} className={styles.date} />
+                    <DateTime value={data.lastSeenAt} format="do MMM yy 'at' HH:mm" className={styles.date} />
                     <DateTimeDistance secondary className={styles.date_ago} value={data.lastSeenAt} />
                 </div>
-                <div className={styles.cell__deposits}>
-                    <Display>{data.depositCount}</Display>
-                    <Amount value={data.depositAmount || 0} />
-                </div>
-                <div className={styles.cell__redeems}>
-                    <Display>{data.redeemCount}</Display>
-                    <Amount value={data.redeemAmount || 0} />
+                <div className={styles.cell__stats}>
+                    <InitiatorStat data={data} />
                 </div>
             </DisplayLink>
         </ListItem>

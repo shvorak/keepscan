@@ -1,7 +1,18 @@
-import React, { useEffect, useRef } from 'react'
+import React, { FC, useEffect, useRef } from 'react'
 import { useIntersection } from 'shared/hooks/observer'
+import { Loading } from 'uikit/display/loading'
 
-export const Scroller = ({ loader, visible, children, onLoading }) => {
+type ScrollerProps = {
+    loader?: React.ReactElement
+    loading: boolean
+    children: any
+    onLoading: () => any
+}
+
+/**
+ * @deprecated use `Pagination` instead
+ */
+export const Scroller: FC<ScrollerProps> = ({ loader, loading, children, onLoading }) => {
     const ref = useRef()
 
     const intersect = useIntersection(ref)
@@ -13,7 +24,11 @@ export const Scroller = ({ loader, visible, children, onLoading }) => {
     return (
         <div>
             {children}
-            <div ref={ref}>{visible && loader}</div>
+            <div ref={ref}>{loading && loader}</div>
         </div>
     )
+}
+
+Scroller.defaultProps = {
+    loader: <Loading />
 }

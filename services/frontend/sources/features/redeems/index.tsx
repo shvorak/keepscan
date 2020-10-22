@@ -47,7 +47,7 @@ export const RedeemList = () => {
     const content = !pager.loading && filtered && pager.total === 0 ? (
         <Empty />
     ) : (
-        <Scroller visible={loadable} loader={loading} onLoading={onNextPage}>
+        <Scroller loading={loadable} loader={loading} onLoading={onNextPage}>
             {list}
         </Scroller>
     )

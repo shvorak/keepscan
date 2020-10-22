@@ -1,0 +1,49 @@
+.stack {
+  &__deposit {
+    background: var(--electric-green);
+  }
+  &__redeem {
+    background: var(--signal-violet);
+  }
+}
+
+.values {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 4px;
+
+  &_item {
+    color: var(--simply-grey);
+    text-align: left;
+
+
+    &:last-child {
+      text-align: right;
+    }
+  }
+}
+
+.progress {
+  width: 100%;
+  height: 14px;
+  display: flex;
+  border-radius: 6px;
+  overflow: hidden;
+  background: white;
+  border: 3px solid white;
+
+  &_item {
+    height: 100%;
+    margin-right: 3px;
+    min-width: 28px;
+
+    &.muted {
+      opacity: .5;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+

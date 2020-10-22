@@ -3,15 +3,17 @@
 .root {
     display: flex;
     align-items: center;
+
+    @media (max-width: @tablet) {
+        align-items: start;
+        flex-wrap: wrap;
+    }
 }
 
 .cell {
-    &__id {
-      flex-grow: 1;
-    }
 
     &__lastSeen {
-        width: 200px;
+        width: 300px;
         text-align: center;
 
         & .date_ago {
@@ -19,22 +21,23 @@
         }
     }
 
-    &__deposits {
-        width: 200px;
+    &__stats {
+        width: 300px;
         text-align: center;
+        margin-left: auto;
     }
 
-    &__redeems {
-        width: 200px;
-        text-align: center;
-    }
-
-    @media (max-width: @tabletXL) {
-        .root {
-            flex-wrap: wrap;
+    @media (max-width: @tablet) {
+        &__id {
+            flex-grow: 1;
         }
         &__lastSeen {
             width: 150px;
+        }
+        &__stats {
+            width: 100%;
+            text-align: center;
+            margin-top: 10px;
         }
     }
 }
