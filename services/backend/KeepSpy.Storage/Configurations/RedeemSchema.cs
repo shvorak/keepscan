@@ -8,7 +8,7 @@ namespace KeepSpy.Storage.Configurations
     {
         public void Configure(EntityTypeBuilder<Redeem> builder)
         {
-
+            builder.HasIndex(x => x.SenderAddress);
         }
     }
 }

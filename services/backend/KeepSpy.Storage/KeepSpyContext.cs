@@ -41,7 +41,7 @@ namespace KeepSpy.Storage
                 .HasForeignKey(pt => pt.SignerId);
 
             modelBuilder.Entity<CurrencyRate>()
-             .HasKey(t => new { t.Timestamp, t.TradePair, t.Source });
+                .HasKey(t => new { t.Timestamp, t.TradePair, t.Source });
             
             // This line must be below of any other code
             modelBuilder.ApplyPostgresConventions();

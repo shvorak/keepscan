@@ -24,11 +24,11 @@ export const InitiatorListItem: FC<InitiatorListItemProps> = ({data, ...props}) 
                 </div>
                 <div className={styles.cell__deposits}>
                     <Display>{data.depositCount}</Display>
-                    <Amount value={data.depositAmount} />
+                    <Amount value={data.depositAmount || 0} />
                 </div>
                 <div className={styles.cell__redeems}>
                     <Display>{data.redeemCount}</Display>
-                    <Amount value={data.redeemAmount} />
+                    <Amount value={data.redeemAmount || 0} />
                 </div>
             </DisplayLink>
         </ListItem>

@@ -54,6 +54,7 @@ namespace KeepSpy.App
 
             services.AddHostedService<BitcoinWorker>();
             services.AddHostedService<EthereumWorker>();
+            services.AddHostedService<RefreshViewWorker>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

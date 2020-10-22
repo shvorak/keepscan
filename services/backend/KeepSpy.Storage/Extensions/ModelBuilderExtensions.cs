@@ -19,8 +19,12 @@ namespace KeepSpy.Storage.Extensions
                 if (entity.IsOwned())
                     continue;
 
-                // Replace table names
-                entity.SetTableName(entity.ClrType.Name.ToSnakeCase());
+                var tableName = entity.GetTableName();
+                if (tableName == entity.ClrType.Name)
+                {
+                    // Replace table names
+                    entity.SetTableName(tableName.ToSnakeCase());
+                }
 
                 foreach (var key in entity.GetKeys())
                 {
