@@ -4,12 +4,17 @@ import { Heading } from 'uikit/typography'
 import { Display } from 'uikit/typography/display'
 import { Card, CardBody, CardFilter, CardHead } from 'uikit/layout/card'
 import { OperationFilter } from 'features/initiators/components/operations/filter'
+import { InitiatorInfo } from 'features/initiators/components/info'
+import { useSelector } from 'react-redux'
+import { getInitiator } from 'entities/Initiator/queries'
 
 type InitiatorInfoProps = {
     id: string
 }
 
 export const InitiatorDetails: FC<InitiatorInfoProps> = ({id, ...props}) => {
+
+    const model = useSelector(getInitiator(id))
 
     const query = {}
 
@@ -28,7 +33,7 @@ export const InitiatorDetails: FC<InitiatorInfoProps> = ({id, ...props}) => {
                 <Card>
                     <CardHead>Initiator info</CardHead>
                     <CardBody>
-                        Some info
+                        <InitiatorInfo data={model} />
                     </CardBody>
                 </Card>
             </div>

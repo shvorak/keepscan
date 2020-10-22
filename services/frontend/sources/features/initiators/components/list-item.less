@@ -1,3 +1,5 @@
+@import "../../../theme";
+
 .root {
     display: flex;
     align-items: center;
@@ -25,5 +27,14 @@
     &__redeems {
         width: 200px;
         text-align: center;
+    }
+
+    @media (max-width: @tabletXL) {
+        .root {
+            flex-wrap: wrap;
+        }
+        &__lastSeen {
+            width: 150px;
+        }
     }
 }
