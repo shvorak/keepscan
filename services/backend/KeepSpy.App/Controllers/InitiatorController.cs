@@ -53,14 +53,15 @@ namespace KeepSpy.App.Controllers
                     .Where(x => x.Status == (int) DepositStatus.SetupFailed)
                 ),
                 DepositsProcessing = await CreateStat(deposits
-                    .Where(x => x.Status != (int) DepositStatus.Closed && x.Status != (int) DepositStatus.SetupFailed &&
+                    .Where(x => x.Status != (int) DepositStatus.Closed && 
+                                x.Status != (int) DepositStatus.SetupFailed &&
                                 x.Status != (int) DepositStatus.Minted)
                 ),
                 RedeemsProcessing = await CreateStat(redeems
                     .Where(x => x.Status != (int) RedeemStatus.Liquidated &&
                                 x.Status != (int) RedeemStatus.Liquidation &&
-                                x.Status != (int) RedeemStatus.Redeemed &&
-                                x.Status != (int) RedeemStatus.OperationFailed)
+                                x.Status != (int) RedeemStatus.Redeemed
+                                )
                 ),
                 RedeemsLiquidation = await CreateStat(redeems
                     .Where(x => x.Status == (int) RedeemStatus.Liquidation)
@@ -117,8 +118,8 @@ namespace KeepSpy.App.Controllers
             foreach (var operation in paged.Items)
             {
                 operation.Transactions = transactions
-                        .Where(x => operation.Type == "deposit" && x.DepositId == id ||
-                                    operation.Type == "redeem" && x.RedeemId == id)
+                        .Where(x => operation.Type == "deposit" && x.DepositId == operation.Tdt ||
+                                    operation.Type == "redeem" && x.RedeemId == operation.Tdt)
                         .Select(x => new OperationTxDto
                         {
                             Status = (int?) x.RedeemStatus ?? (int) x.Status,
