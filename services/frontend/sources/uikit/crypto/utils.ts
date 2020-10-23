@@ -5,7 +5,7 @@ const getNetworkName = (address: string) => (address && address.match(/^0x/) ? '
 export const getNetworkLink = (
     address: string,
     kind: 'address' | 'token' | 'tx' = 'address',
-    params: Record<string, any>
+    params?: Record<string, any>
 ) => {
     const network = getNetworkName(address)
     const baseUrl = INDEXERS[network]
