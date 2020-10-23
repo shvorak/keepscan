@@ -7,3 +7,8 @@ export const fetchInitiatorPage = (page: number, take: number, query: Query) =>
     rest.get('/initiator', {
         params: { page, take, ...query },
     })
+
+export const fetchOperationPage = (id: string, page: number, take: number, query: Query) =>
+    rest.get(`/initiator/${id}/operation`, {
+        params: { page, take, ...query },
+    })

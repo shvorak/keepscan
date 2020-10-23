@@ -27,9 +27,16 @@ namespace KeepSpy.App.Workers
                 var db = scope.ServiceProvider.GetRequiredService<KeepSpyContext>();
                 var log = scope.ServiceProvider.GetRequiredService<ILogger<RefreshViewWorker>>();
 
-                await Update(db, log);
+                try
+                {
+                    await Update(db, log);
+                }
+                catch (Exception e)
+                {
+                    log.LogError(e, "Failed views updating");
+                }
                 
-                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
             }
         }
 
@@ -38,6 +45,7 @@ namespace KeepSpy.App.Workers
             logger.LogInformation("Running view's updating");
             
             await db.Database.ExecuteSqlRawAsync("REFRESH MATERIALIZED VIEW initiator_view");
+            await db.Database.ExecuteSqlRawAsync("REFRESH MATERIALIZED VIEW operation_view");
         }
     }
 }

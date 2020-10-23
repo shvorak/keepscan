@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useReducer, useRef } from 'react'
 import { pagerReducer, PagerStateDefault } from 'shared/pager/reducer'
+import { PagedState } from 'shared/types'
 
 type PagerProps = {
     defaultTake?: number
@@ -26,4 +27,17 @@ export const usePager = () => {
 
         }
     }, [state])
+}
+
+
+export const DefaultPager: PagedState = {
+    items: [],
+    pager: {
+        take: 20,
+        total: 0,
+        pages: 1,
+        current: 1,
+        loading: false,
+    },
+    query: {},
 }

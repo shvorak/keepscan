@@ -7,24 +7,12 @@ import { Address } from 'uikit/crypto/address'
 import { DateTimeDistance } from 'uikit/display/datetime'
 import { Display, DisplayLink } from 'uikit/typography/display'
 import { formatStatus } from 'entities/Deposit/format'
-import { Workflow, WorkflowStep } from 'uikit/display/workflow'
 import { Amount } from 'uikit/crypto/amount'
-import { buildStatuses } from 'entities/Deposit/helpers'
-import { DepositStatus } from 'entities/Deposit/constants'
-import { isErrorStatus } from 'entities/Deposit/specs'
+import { DepositFlow } from 'components/deposit/flow'
 
 type DepositRowProps = {
     deposit: Deposit
 }
-
-const DepositSuccessStatuses = [
-    DepositStatus.InitiatingDeposit,
-    DepositStatus.WaitingForBtc,
-    DepositStatus.BtcReceived,
-    DepositStatus.SubmittingProof,
-    DepositStatus.ApprovingTdtSpendLimit,
-    DepositStatus.Minted
-]
 
 export const DepositItem: FC<DepositRowProps> = ({ deposit }) => {
     return (
@@ -57,14 +45,3 @@ export const DepositItem: FC<DepositRowProps> = ({ deposit }) => {
     )
 }
 
-const DepositFlow = ({deposit}) => {
-    const statuses = buildStatuses(DepositSuccessStatuses, deposit.transactions || [])
-        .map(status => <WorkflowStep key={status} completed={deposit.status >= status} />)
-
-    const state = isErrorStatus(deposit.status) ? 'warning' : 'success'
-    return (
-        <Workflow state={state}>
-            {statuses}
-        </Workflow>
-    )
-}

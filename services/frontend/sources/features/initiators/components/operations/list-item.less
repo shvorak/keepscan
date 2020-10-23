@@ -1,0 +1,90 @@
+@import "../../../../theme";
+
+.root {
+  display: flex;
+  place-items: center;
+
+  @media (max-width: @tablet) {
+    flex-wrap: wrap;
+  }
+}
+
+.icon {
+    display: flex;
+    height: 60px;
+    width: 60px;
+    place-items: center;
+    place-content: center;
+    border-radius: 4px;
+    color: white;
+
+    &.type__deposit {
+        background: var(--electric-green);
+        &:before {
+            content: 'D';
+        }
+    }
+    &.type__redeem {
+        background: var(--signal-violet);
+        &:before {
+            content: 'R';
+        }
+    }
+}
+
+.key {
+  margin-left: 15px;
+  font-size: 15px;
+  order: 1;
+
+  .createdAt {
+    padding-top: 6px;
+    font-size: 14px;
+    color: var(--simply-grey);
+  }
+}
+
+.status {
+  order: 2;
+  margin-left: 20px;
+  color: var(--simply-grey);
+
+  @media (max-width: @tablet) {
+    margin-top: 10px;
+    margin-left: auto;
+    text-align: right;
+  }
+
+  @media (min-width: @tabletXL) {
+    margin-left: 40px;
+  }
+}
+
+
+.amount {
+  order: 3;
+  margin-left: auto;
+
+  @media (max-width: @tablet) {
+    order: 1;
+  }
+
+  @media (min-width: @tabletXL) {
+    margin-right: 50px;
+  }
+}
+
+.address {
+  order: 4;
+  padding-left: 15px;
+
+  & > * {
+    display: block;
+  }
+
+  @media (max-width: @tablet) {
+    order: 1;
+    margin-top: 10px;
+    padding-left: 0;
+  }
+}

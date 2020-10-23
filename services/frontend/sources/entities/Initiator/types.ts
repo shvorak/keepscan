@@ -9,11 +9,12 @@ export type Initiator = {
 }
 
 export type InitiatorOperation = {
-    id: string
+    tdt: string
     type: 'deposit' | 'redeem'
+    lotSize: number
     senderAddress: string
     bitcoinAddress: string
-    
+
     createdAt: string
     updatedAt: string
 }

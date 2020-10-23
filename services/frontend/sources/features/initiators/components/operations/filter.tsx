@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import styles from './filter.less'
 import { Query } from 'shared/types'
 import { useModel } from 'shared/hooks/controls'
@@ -23,6 +23,11 @@ const SelectSizeOptions = LOT_SIZES.map((size) => ({
 
 export const OperationFilter: FC<OperationFilterProps> = ({ query, onChange, ...props }) => {
     const [values, { onChangeField }] = useModel(query || {})
+
+    useEffect(() => {
+        onChange(values)
+    }, [values])
+
     return (
         <div className={styles.root} {...props}>
             <Search

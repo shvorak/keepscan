@@ -2,7 +2,7 @@ using System;
 
 namespace KeepSpy.Domain
 {
-    public class Initiator
+    public class InitiatorView
     {
         public string Id { get; set; }
 

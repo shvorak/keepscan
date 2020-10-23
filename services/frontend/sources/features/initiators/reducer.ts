@@ -36,7 +36,6 @@ const list = createReducer(listInitialState, withProducer)
         if (Object.keys(state.query).length === 0 && Object.keys(payload).length === 0) {
             return
         }
-        console.log('Query changed')
         state.query = reject(isNil, payload)
         state.pager.current = 0
         state.items = []

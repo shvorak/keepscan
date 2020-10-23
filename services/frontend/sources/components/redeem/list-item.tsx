@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react'
+import React, { FC } from 'react'
 import styles from './list-item.css'
 import { Redeem } from 'entities/Redeem/types'
 import { ListItem } from 'uikit/data/list'
@@ -7,10 +7,8 @@ import { View } from 'uikit/layout'
 import { DateTimeDistance } from 'uikit/display/datetime'
 import { Display, DisplayLink } from 'uikit/typography/display'
 import { formatStatus } from 'entities/Redeem/format'
-import { Workflow, WorkflowStep } from 'uikit/display/workflow'
 import { Amount } from 'uikit/crypto/amount'
-import { isErrorStatus } from 'entities/Redeem/specs'
-import { workflowFactory } from 'entities/Redeem/helpers'
+import { RedeemFlow } from 'components/redeem/flow'
 
 type RedeemRowProps = {
     redeem: Redeem
@@ -30,7 +28,7 @@ export const RedeemItem: FC<RedeemRowProps> = ({ redeem }) => {
                     <Display size={15} secondary>
                         {formatStatus(redeem.status)}
                     </Display>
-                    <RedeemWorkflow redeem={redeem} />
+                    <RedeemFlow redeem={redeem} />
                 </View>
                 <View className={styles.cell__value}>
                     <Amount value={redeem.lotSize} />
@@ -48,25 +46,3 @@ export const RedeemItem: FC<RedeemRowProps> = ({ redeem }) => {
 }
 
 
-const RedeemWorkflow = ({redeem}) => {
-
-    const states = useMemo(() => {
-        return workflowFactory(redeem)
-    }, [redeem])
-
-    const stages = useMemo(() => {
-        return states.map(status => (
-            <WorkflowStep key={status} completed={states.indexOf(redeem.status) >= states.indexOf(status)} />
-        ))
-    }, [redeem, states])
-
-    const state = isErrorStatus(redeem.status)
-        ? 'warning'
-        : 'success'
-
-    return (
-        <Workflow state={state} variant="redeem">
-            {stages}
-        </Workflow>
-    )
-}
