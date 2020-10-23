@@ -41,9 +41,9 @@ namespace KeepSpy.App.Controllers
                 .Where(x => x.SenderAddress == id);
 
             var commission = Db.Set<Transaction>()
-                .Where(x => x.Deposit.SenderAddress == id || x.Redeem.SenderAddress == id)
+                    .Where(x => x.Deposit.SenderAddress == id || x.Redeem.SenderAddress == id)
                 ;
-            
+
             var projection = new InitiatorDetailedDto
             {
                 Id = entity.Id,
@@ -106,27 +106,28 @@ namespace KeepSpy.App.Controllers
                 .ProjectTo<OperationDto>(Mapper.ConfigurationProvider)
                 .ToPagedAsync(pager);
 
-            
+
             // TODO: This is a terrible solution. Will be refactored later
             var keys = paged.Items.Select(x => x.Tdt).ToArray();
-            
+
             var transactions = await Db.Set<Transaction>()
                 .Where(x => keys.Contains(x.DepositId) || keys.Contains(x.RedeemId))
                 .ToArrayAsync();
-            
+
             foreach (var operation in paged.Items)
             {
                 operation.Transactions = transactions
-                    .Where(x => x.DepositId == operation.Tdt || x.RedeemId == operation.Tdt)
-                    .Select(x => new OperationTxDto
-                    {
-                        Status = (int?) x.RedeemStatus ?? (int) x.Status,
-                        Timestamp = x.Timestamp
-                    })
-                    .ToArray()
+                        .Where(x => operation.Type == "deposit" && x.DepositId == id ||
+                                    operation.Type == "redeem" && x.RedeemId == id)
+                        .Select(x => new OperationTxDto
+                        {
+                            Status = (int?) x.RedeemStatus ?? (int) x.Status,
+                            Timestamp = x.Timestamp
+                        })
+                        .ToArray()
                     ;
             }
-            
+
             return paged;
         }
     }
