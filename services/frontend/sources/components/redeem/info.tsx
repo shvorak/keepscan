@@ -4,11 +4,12 @@ import { address, amount, datetime, number } from 'components/deposit/info.field
 import { Info } from 'uikit/display/info'
 import { Token } from 'uikit/crypto/token'
 import { RedeemStatus } from 'entities/Redeem/constants'
+import { Address } from 'uikit/crypto/address'
 
 const Schema = [
     field('senderAddress', {
         label: 'Initiator',
-        render: address,
+        render: ({ value, object }) => <Address value={value} full useLink={`/initiators/${object.senderAddress}`} />,
     }),
     field('id', {
         label: 'Deposit contract',

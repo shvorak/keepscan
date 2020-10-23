@@ -11,7 +11,7 @@ import { DepositStatus } from 'entities/Deposit/constants'
 const Schema = [
     field('senderAddress', {
         label: 'Initiator',
-        render: address,
+        render: ({ value, object }) => <Address value={value} full useLink={`/initiators/${object.senderAddress}`} />,
     }),
     field('id', {
         label: 'Deposit contract',

@@ -6,6 +6,7 @@ import { Display, DisplayLink } from 'uikit/typography/display'
 import { useClipboard } from 'use-clipboard-copy'
 import { getNetworkLink } from 'uikit/crypto/utils'
 import { useMedia } from 'react-use'
+import { is } from 'ramda'
 
 type AddressProps = ComponentProps<'a'> & {
     full?: boolean
@@ -13,7 +14,10 @@ type AddressProps = ComponentProps<'a'> & {
     value: string
     color?: 'green' | 'brass' | 'violet'
     useCopy?: boolean
-    useLink?: boolean
+    /**
+     * Should address generate link to indexers or use passed url
+     */
+    useLink?: boolean | string
     params?: Record<string, any>
     /**
      * Minimal screen wide for full address rendering
@@ -50,7 +54,7 @@ export const Address: FC<AddressProps> = ({ value, useCopy, useLink, kind, full,
     }
 
     if (useLink) {
-        const to = getNetworkLink(value, kind, params || {})
+        const to = is(String, useLink) ? (useLink as string) : getNetworkLink(value, kind, params || {})
         return (
             <DisplayLink to={to} className={className}>
                 {address}

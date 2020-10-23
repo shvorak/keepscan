@@ -2,7 +2,6 @@ import React, { ComponentProps, FC, useMemo } from 'react'
 import styles from './stat.less'
 import { Initiator } from 'entities/Initiator/types'
 import { useClasses } from 'shared/hooks/styles'
-import { max } from 'ramda'
 import { Number } from 'uikit/display/number'
 import { Amount } from 'uikit/crypto/amount'
 
@@ -13,7 +12,6 @@ type InitiatorStatProps = {
 export const InitiatorStat: FC<InitiatorStatProps> = ({ data, ...props }) => {
     const redeem = data.redeemAmount || 0
     const deposit = data.depositAmount || 0
-    const percent = useMemo(() => deposit + redeem / 100, [data])
 
     const depositWidth = deposit * 1000 + 1
     const redeemWidth = redeem * 1000 + 1
