@@ -11,6 +11,7 @@ import { DefaultPager } from 'shared/pager'
 import { fetchOperationPage } from 'features/initiators/requests'
 import { OperationItem } from 'features/initiators/components/operations/list-item'
 import { Pagination } from 'components/pagination'
+import { Empty } from 'uikit/display/empty'
 
 type OperationListProps = {
     initiatorId: string
@@ -31,16 +32,19 @@ export const OperationList: FC<OperationListProps> = ({ initiatorId, ...props })
 
     const list = useMemo(() => items.map(data => <OperationItem key={data.tdt} data={data} />), [items])
 
+    const empty = pager.loading === false && items.length === 0 && <Empty />
+
     return (
         <Card>
             <CardHead>
-                Initiator operations
+                Initiator Operations
                 <CardHeadSuffix>{pager.total}</CardHeadSuffix>
             </CardHead>
             <CardFilter>
                 <OperationFilter query={query} onChange={onQueryChange} />
             </CardFilter>
             <CardList className={styles.operations}>
+                {empty}
                 <Pagination loading={onNextPage} pager={pager}>
                     {list}
                 </Pagination>

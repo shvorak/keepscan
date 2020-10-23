@@ -1,8 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using KeepSpy.App.Abstraction;
 using KeepSpy.Domain;
+using KeepSpy.Models;
 using KeepSpy.Models.Requests;
 using KeepSpy.Shared.Extensions;
 using KeepSpy.Shared.Models;
@@ -30,11 +32,12 @@ namespace KeepSpy.App.Controllers
             .SingleOrDefaultAsync(x => x.Id == id);
 
         [HttpGet("{id}/operation")]
-        public Task<Paged<InitiatorOperationView>> Operations([FromRoute] string id,
-            [FromQuery] InitiatorOperationFilterDto filter, [FromQuery] PagerQuery pager)
-            => Db.Set<InitiatorOperationView>()
+        public Task<Paged<OperationView>> Operations([FromRoute] string id,
+            [FromQuery] InitiatorOperationFilterDto filter, [FromQuery] PagerQuery pager) 
+            => Db.Set<OperationView>()
                 .Where(x => x.SenderAddress == id)
-                .WhereIf(filter.Search != null, x => x.BitcoinAddress.Contains(filter.Search!) || x.Tdt.Contains(filter.Search!))
+                .WhereIf(filter.Search != null,
+                    x => x.BitcoinAddress.Contains(filter.Search!) || x.Tdt.Contains(filter.Search!))
                 .WhereIf(filter.Type != null, x => x.Type == filter.Type)
                 .WhereIf(filter.Size != null, x => x.LotSize == filter.Size)
                 .OrderByDescending(x => x.CreatedAt)

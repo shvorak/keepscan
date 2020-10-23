@@ -27,10 +27,12 @@ export const Pagination: FC<PaginationProps> = ({pager, loader, children, loadin
         loading()
     }, [visible, pager.loading])
 
+    const progress = pager.loading && pager.current < pager.pages
+
     return (
         <div className={styles.root}>
             {children}
-            {pager.loading && loader}
+            {progress && loader}
             <div ref={trigger} className={styles.trigger} />
         </div>
     )

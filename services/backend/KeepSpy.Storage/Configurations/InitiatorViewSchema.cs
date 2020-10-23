@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace KeepSpy.Storage.Configurations
 {
-    public class InitiatorSchema: IEntityTypeConfiguration<InitiatorView>
+    public class InitiatorViewSchema: IEntityTypeConfiguration<InitiatorView>
     {
         public void Configure(EntityTypeBuilder<InitiatorView> builder)
         {

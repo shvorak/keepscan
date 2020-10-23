@@ -1,6 +1,7 @@
 stages:
   - build
   - deploy
+  - release
 
 include:
   - services/backend/.gitlab-ci.yml
@@ -19,6 +20,15 @@ deploy testnet staging:
     name: testnet staging
     url: https://testnet.staging.keepscan.com
 
+clean testnet staging:
+  stage: deploy
+  script:
+    - docker-compose -f deploy/compose.testnet-staging.yml -p keepscan-staging-testnet down --rm
+  when: manual
+  only:
+    refs:
+      - master
+
 deploy mainnet staging:
   stage: deploy
   script:
@@ -32,10 +42,17 @@ deploy mainnet staging:
     name: mainnet staging
     url: https://mainnet.staging.keepscan.com
 
-
-
-deploy testnet:
+clean mainnet staging:
   stage: deploy
+  script:
+    - docker-compose -f deploy/compose.mainnet-staging.yml -p keepscan-staging-mainnet down --rm
+  when: manual
+  only:
+    refs:
+      - master
+
+release testnet:
+  stage: release
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker-compose -f deploy/compose.testnet.yml pull
@@ -48,8 +65,8 @@ deploy testnet:
     name: testnet
     url: https://testnet.keepscan.com
 
-deploy mainnet:
-  stage: deploy
+release mainnet:
+  stage: release
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker-compose -f deploy/compose.mainnet.yml pull

@@ -5,7 +5,7 @@ import { ListItem } from 'uikit/data/list'
 import styled from 'uikit/styled'
 import { Address } from 'uikit/crypto/address'
 import { DateTimeDistance } from 'uikit/display/datetime'
-import { Display } from 'uikit/typography/display'
+import { Display, DisplayLink } from 'uikit/typography/display'
 import { formatStatus as depositStatus } from 'entities/Deposit/format'
 import { formatStatus as redeemStatus } from 'entities/Redeem/format'
 import { DepositFlow } from 'components/deposit/flow'
@@ -28,34 +28,36 @@ const Status = ({ data }) => {
     return null
 }
 
-export const OperationItem: FC<OperationItemProps> = ({data}) => {
-
+export const OperationItem: FC<OperationItemProps> = ({ data }) => {
+    const link = data.type === 'deposit' ? `/deposits/${data.tdt}` : `/redeems/${data.tdt}`
     return (
-        <ListItem className={styles.root}>
-            <Icon type={data.type} />
+        <ListItem interactive>
+            <DisplayLink to={link} className={styles.root}>
+                <Icon type={data.type} />
 
-            <div className={styles.key}>
-                <Address full value={data.tdt} minimalWide={1024} useCopy={false} />
-                <DateTimeDistance value={data.createdAt} className={styles.createdAt} />
-            </div>
+                <div className={styles.key}>
+                    <Address full value={data.tdt} minimalWide={1024} useCopy={false} useLink={false} />
+                    <DateTimeDistance value={data.createdAt} className={styles.createdAt} />
+                </div>
 
-            <div className={styles.status}>
-                <Status data={data} />
-            </div>
+                <div className={styles.status}>
+                    <Status data={data} />
+                </div>
 
-            <div className={styles.amount}>
-                <Amount value={data.lotSize} />
-            </div>
+                <div className={styles.amount}>
+                    <Amount value={data.lotSize} />
+                </div>
 
-            <div className={styles.address}>
-                <Address value={data.senderAddress} color="green" useCopy={false} />
-                <Address value={data.bitcoinAddress} color="brass" useCopy={false} />
-            </div>
+                <div className={styles.address}>
+                    <Address value={data.senderAddress} color="green" useCopy={false} useLink={false} />
+                    <Address value={data.bitcoinAddress} color="brass" useCopy={false} useLink={false} />
+                </div>
+            </DisplayLink>
         </ListItem>
     )
 }
 
-const DepositStatus = ({data}) => {
+const DepositStatus = ({ data }) => {
     return (
         <>
             <Display>{depositStatus(data.status)}</Display>
@@ -64,7 +66,7 @@ const DepositStatus = ({data}) => {
     )
 }
 
-const RedeemStatus = ({data}) => {
+const RedeemStatus = ({ data }) => {
     return (
         <>
             <Display>{redeemStatus(data.status)}</Display>

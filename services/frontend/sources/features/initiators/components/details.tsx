@@ -38,7 +38,7 @@ export const InitiatorDetails: FC<InitiatorInfoProps> = ({id, ...props}) => {
 
             <div className={styles.row}>
                 <Card>
-                    <CardHead>Initiator info</CardHead>
+                    <CardHead>Initiator Info</CardHead>
                     <CardBody>
                         <InitiatorInfo data={model} />
                     </CardBody>

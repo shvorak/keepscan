@@ -2,7 +2,7 @@ using System;
 
 namespace KeepSpy.Domain
 {
-    public class InitiatorOperationView
+    public class OperationView
     {
         public string Tdt { get; set; }
         

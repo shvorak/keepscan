@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace KeepSpy.Storage.Configurations
 {
-    public class InitiatorOperationSchema: IEntityTypeConfiguration<InitiatorOperationView>
+    public class OperationViewSchema: IEntityTypeConfiguration<OperationView>
     {
-        public void Configure(EntityTypeBuilder<InitiatorOperationView> builder)
+        public void Configure(EntityTypeBuilder<OperationView> builder)
         {
-            builder.HasNoKey();
+            builder.HasKey(x => x.Tdt);
             builder.ToView("operation_view");
         }
     }

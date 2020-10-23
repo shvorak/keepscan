@@ -19,7 +19,7 @@ const CURRENCY = {
 export const Amount: FC<AmountProps> = ({value, currency, precision, ...props}) => {
     const className = useClasses(styles, 'amount', props)
     const suffix = ` ${CURRENCY[currency]}`
-    return <Number value={value} precision={precision} suffix={suffix} className={className} />
+    return <Number value={value} precision={precision} suffix={suffix} className={className} {...props} />
 }
 
 Amount.defaultProps = {

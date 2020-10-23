@@ -3,6 +3,10 @@ import { Info } from 'uikit/display/info'
 import { Initiator } from 'entities/Initiator/types'
 import { field } from 'shared/schema'
 import { amount, datetime, number } from 'components/deposit/info.fields'
+import { Number } from 'uikit/display/number'
+import { Display } from 'uikit/typography/display'
+import { Amount } from 'uikit/crypto/amount'
+import { DateTime, DateTimeDistance } from 'uikit/display/datetime'
 
 type InitiatorInfoProps = {
     data: Initiator
@@ -11,23 +15,32 @@ type InitiatorInfoProps = {
 const InitiatorSchema = [
     field('lastSeenAt', {
         label: 'Last seen',
-        render: datetime
+        render: ({value}) => (
+            <>
+                <DateTime value={value} />
+                <DateTimeDistance secondary value={value} />
+            </>
+        )
     }),
     field('depositCount', {
-        label: 'Deposit count',
-        render: number
-    }),
-    field('depositAmount', {
-        label: 'Deposit amount',
-        render: amount
+        label: 'Minted',
+        render: ({value, object}) => (
+            <>
+                <Number value={value} inline />
+                <Display secondary inline>&nbsp;Σ&nbsp;</Display>
+                <Amount value={object.depositAmount} inline />
+            </>
+        )
     }),
     field('redeemCount', {
-        label: 'Redeem count',
-        render: number
-    }),
-    field('redeemAmount', {
-        label: 'Redeem amount',
-        render: amount
+        label: 'Redeemed',
+        render: ({value, object}) => (
+            <>
+                <Number value={value} inline />
+                <Display secondary inline>&nbsp;Σ&nbsp;</Display>
+                <Amount value={object.redeemAmount} inline />
+            </>
+        )
     })
 ]
 
