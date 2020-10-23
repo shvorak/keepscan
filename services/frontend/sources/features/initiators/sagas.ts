@@ -1,6 +1,9 @@
 import { call, cancelled, put, select, takeLatest } from 'redux-saga/effects'
-import { fetchInitiatorPage } from 'features/initiators/requests'
+import { fetchInitiator, fetchInitiatorPage } from 'features/initiators/requests'
 import {
+    initiatorFailed,
+    initiatorLoad,
+    initiatorLoaded,
     initiatorNextPage,
     initiatorPageFailed,
     initiatorPageLoaded,
@@ -8,8 +11,19 @@ import {
 } from 'features/initiators/actions'
 
 export function* startupInitiatorSaga() {
+    yield takeLatest(initiatorLoad, loadSaga)
     yield takeLatest(initiatorNextPage, loadPagesSaga)
     yield takeLatest(initiatorQueryChanged, handleFilterSaga)
+}
+
+function* loadSaga({payload: id}) {
+    try {
+        const result = yield call(fetchInitiator, id)
+        yield put(initiatorLoaded(result.data))
+    } catch (e) {
+        yield put(initiatorFailed(e.message))
+    }
+
 }
 
 function* loadPagesSaga() {

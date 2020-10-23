@@ -8,6 +8,7 @@ using KeepSpy.Shared.Extensions;
 using KeepSpy.Shared.Models;
 using KeepSpy.Storage;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KeepSpy.App.Controllers
 {
@@ -18,9 +19,14 @@ namespace KeepSpy.App.Controllers
         {
         }
 
+        [HttpGet]
         public Task<Paged<Initiator>> Get([FromQuery] InitiatorFilterDto filter, [FromQuery] PagerQuery pager) 
             => Db.Set<Initiator>()
                 .WhereIf(filter.Search != null, x => x.Id.Contains(filter.Search!))
                 .ToPagedAsync(pager);
+
+        [HttpGet("{id}")]
+        public Task<Initiator> Get([FromRoute] string id) => Db.Set<Initiator>()
+            .SingleOrDefaultAsync(x => x.Id == id);
     }
 }

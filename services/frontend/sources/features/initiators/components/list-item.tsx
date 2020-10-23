@@ -19,7 +19,7 @@ export const InitiatorListItem: FC<InitiatorListItemProps> = ({data, ...props}) 
                     <Address value={data.id} full useLink={false} useCopy={false} minimalWide={1024} />
                 </div>
                 <div className={styles.cell__lastSeen}>
-                    <DateTime value={data.lastSeenAt} format="do MMM yy 'at' HH:mm" className={styles.date} />
+                    <DateTime value={data.lastSeenAt} className={styles.date} />
                     <DateTimeDistance secondary className={styles.date_ago} value={data.lastSeenAt} />
                 </div>
                 <div className={styles.cell__stats}>

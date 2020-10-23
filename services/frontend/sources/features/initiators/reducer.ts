@@ -2,7 +2,12 @@ import { createReducer, withProducer } from 'shared/reducers'
 import { PagedState } from 'shared/types'
 import { Initiator } from 'entities/Initiator/types'
 import { combineReducers } from 'redux'
-import { initiatorNextPage, initiatorPageLoaded, initiatorQueryChanged } from 'features/initiators/actions'
+import {
+    initiatorLoaded,
+    initiatorNextPage,
+    initiatorPageLoaded,
+    initiatorQueryChanged
+} from 'features/initiators/actions'
 import { clamp, isNil, max, prop, reject, uniqBy } from 'ramda'
 
 const listInitialState: PagedState = {
@@ -37,7 +42,13 @@ const list = createReducer(listInitialState, withProducer)
         state.items = []
     })
 
+const data = createReducer<Record<string, Initiator>>({}, withProducer)
+    .on(initiatorLoaded, (state, { payload: data }) => {
+        state[data.id] = data
+    })
+
 export default combineReducers({
     list,
+    data
 })
 
