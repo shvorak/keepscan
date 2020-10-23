@@ -29,6 +29,15 @@ services:
       - POSTGRES_DB=keepscan-bi
       - POSTGRES_USER=keepscan-bi
       - POSTGRES_PASSWORD=L9cZA9npgWEr94QpqgwyaQ73
+  db-admin:
+    image: dpage/pgadmin4
+    ports:
+      - 50029:80
+    depends_on:
+      - db
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@keepscan.com
+      - PGADMIN_DEFAULT_PASSWORD=$ADMIN_PASSWORD
   api:
     image: registry.gitlab.com/emerido/keepscan/backend:latest
     ports:
