@@ -31,6 +31,8 @@ namespace KeepSpy.Models.Mapping
             CreateMap<Transaction, DepositTxDto>();
             CreateMap<Transaction, RedeemTxDto>()
                 .ForMember(x => x.Status, opt => opt.MapFrom(x => x.RedeemStatus));
+
+            CreateMap<OperationView, OperationDto>();
         }
     }
 }

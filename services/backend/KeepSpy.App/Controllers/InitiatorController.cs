@@ -93,15 +93,41 @@ namespace KeepSpy.App.Controllers
         }
 
         [HttpGet("{id}/operation")]
-        public Task<Paged<OperationView>> Operations([FromRoute] string id,
+        public async Task<Paged<OperationDto>> Operations([FromRoute] string id,
             [FromQuery] InitiatorOperationFilterDto filter, [FromQuery] PagerQuery pager)
-            => Db.Set<OperationView>()
+        {
+            var paged = await Db.Set<OperationView>()
                 .Where(x => x.SenderAddress == id)
                 .WhereIf(filter.Search != null,
                     x => x.BitcoinAddress.Contains(filter.Search!) || x.Tdt.Contains(filter.Search!))
                 .WhereIf(filter.Type != null, x => x.Type == filter.Type)
                 .WhereIf(filter.Size != null, x => x.LotSize == filter.Size)
                 .OrderByDescending(x => x.CreatedAt)
+                .ProjectTo<OperationDto>(Mapper.ConfigurationProvider)
                 .ToPagedAsync(pager);
+
+            
+            // TODO: This is a terrible solution. Will be refactored later
+            var keys = paged.Items.Select(x => x.Tdt).ToArray();
+            
+            var transactions = await Db.Set<Transaction>()
+                .Where(x => keys.Contains(x.DepositId) || keys.Contains(x.RedeemId))
+                .ToArrayAsync();
+            
+            foreach (var operation in paged.Items)
+            {
+                operation.Transactions = transactions
+                    .Where(x => x.DepositId == operation.Tdt || x.RedeemId == operation.Tdt)
+                    .Select(x => new OperationTxDto
+                    {
+                        Status = (int?) x.RedeemStatus ?? (int) x.Status,
+                        Timestamp = x.Timestamp
+                    })
+                    .ToArray()
+                    ;
+            }
+            
+            return paged;
+        }
     }
 }
