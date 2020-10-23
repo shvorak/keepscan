@@ -6,11 +6,11 @@ namespace KeepSpy.Domain
     {
         public string Id { get; set; }
 
-        public uint DepositCount { get; set; }
+        public int DepositCount { get; set; }
 
         public decimal? DepositAmount { get; set; }
 
-        public uint RedeemCount { get; set; }
+        public int RedeemCount { get; set; }
 
         public decimal? RedeemAmount { get; set; }
 

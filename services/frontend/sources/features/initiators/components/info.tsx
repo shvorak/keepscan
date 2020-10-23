@@ -12,6 +12,14 @@ type InitiatorInfoProps = {
     data: Initiator
 }
 
+const stat = ({value}) => (
+    <>
+        <Number value={value.count} inline />
+        <Display secondary inline>&nbsp;Σ&nbsp;</Display>
+        <Amount value={value.amount} inline />
+    </>
+)
+
 const InitiatorSchema = [
     field('lastSeenAt', {
         label: 'Last seen',
@@ -22,25 +30,41 @@ const InitiatorSchema = [
             </>
         )
     }),
-    field('depositCount', {
+    field('minted', {
         label: 'Minted',
-        render: ({value, object}) => (
-            <>
-                <Number value={value} inline />
-                <Display secondary inline>&nbsp;Σ&nbsp;</Display>
-                <Amount value={object.depositAmount} inline />
-            </>
-        )
+        render: stat
     }),
-    field('redeemCount', {
+    field('redeemed', {
         label: 'Redeemed',
-        render: ({value, object}) => (
-            <>
-                <Number value={value} inline />
-                <Display secondary inline>&nbsp;Σ&nbsp;</Display>
-                <Amount value={object.redeemAmount} inline />
-            </>
-        )
+        render: stat
+    }),
+    field('depositsProcessing', {
+        label: 'Deposits in progress',
+        render: stat
+    }),
+    field('depositsFailed', {
+        label: 'Deposits failed',
+        render: stat
+    }),
+    field('redeemsProcessing', {
+        label: 'Redeems in progress',
+        render: stat
+    }),
+    field('redeemsLiquidation', {
+        label: 'Liquidation',
+        render: stat
+    }),
+    field('redeemsLiquidated', {
+        label: 'Liquidated',
+        render: stat
+    }),
+    field('totalEthSpent', {
+        label: 'Total ETH fees',
+        render: number,
+    }),
+    field('totalBtcSpent', {
+        label: 'Total BTC fees',
+        render: number,
     })
 ]
 

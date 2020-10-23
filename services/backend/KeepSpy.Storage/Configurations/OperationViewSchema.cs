@@ -9,6 +9,10 @@ namespace KeepSpy.Storage.Configurations
         public void Configure(EntityTypeBuilder<OperationView> builder)
         {
             builder.HasKey(x => x.Tdt);
+            builder.HasDiscriminator(x => x.Type)
+                .HasValue<OperationRedeemView>("redeem")
+                .HasValue<OperationDepositView>("deposit")
+                ;
             builder.ToView("operation_view");
         }
     }

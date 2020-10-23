@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -28,12 +29,72 @@ namespace KeepSpy.App.Controllers
                 .ToPagedAsync(pager);
 
         [HttpGet("{id}")]
-        public Task<InitiatorView> Get([FromRoute] string id) => Db.Set<InitiatorView>()
-            .SingleOrDefaultAsync(x => x.Id == id);
+        public async Task<InitiatorDetailedDto> Get([FromRoute] string id)
+        {
+            var entity = await Db.Set<InitiatorView>()
+                .SingleOrDefaultAsync(x => x.Id == id);
+
+            var redeems = Db.Set<OperationDepositView>()
+                .Where(x => x.SenderAddress == id);
+
+            var deposits = Db.Set<OperationDepositView>()
+                .Where(x => x.SenderAddress == id);
+
+            var commission = Db.Set<Transaction>()
+                .Where(x => x.Deposit.SenderAddress == id || x.Redeem.SenderAddress == id)
+                ;
+            
+            var projection = new InitiatorDetailedDto
+            {
+                Id = entity.Id,
+                Minted = new InitiatorDetailedDto.Stat(entity.DepositCount, entity.DepositAmount),
+                Redeemed = new InitiatorDetailedDto.Stat(entity.RedeemCount, entity.RedeemAmount),
+                DepositsFailed = await CreateStat(deposits
+                    .Where(x => x.Status == (int) DepositStatus.SetupFailed)
+                ),
+                DepositsProcessing = await CreateStat(deposits
+                    .Where(x => x.Status != (int) DepositStatus.Closed && x.Status != (int) DepositStatus.SetupFailed &&
+                                x.Status != (int) DepositStatus.Minted)
+                ),
+                RedeemsProcessing = await CreateStat(redeems
+                    .Where(x => x.Status != (int) RedeemStatus.Liquidated &&
+                                x.Status != (int) RedeemStatus.Liquidation &&
+                                x.Status != (int) RedeemStatus.Redeemed &&
+                                x.Status != (int) RedeemStatus.OperationFailed)
+                ),
+                RedeemsLiquidation = await CreateStat(redeems
+                    .Where(x => x.Status == (int) RedeemStatus.Liquidation)
+                ),
+                RedeemsLiquidated = await CreateStat(redeems
+                    .Where(x => x.Status == (int) RedeemStatus.Liquidated)
+                ),
+                TotalEthSpent = await commission.Where(x => x.Kind == NetworkKind.Ethereum)
+                    .SumAsync(x => x.Fee),
+                TotalBtcSpent = await commission.Where(x => x.Kind == NetworkKind.Bitcoin)
+                    .SumAsync(x => x.Fee),
+                LastSeenAt = entity.LastSeenAt
+            };
+
+            return projection;
+        }
+
+        private async Task<InitiatorDetailedDto.Stat?> CreateStat(IQueryable<OperationView> query)
+        {
+            var count = await query.CountAsync();
+            if (count == 0)
+            {
+                return null;
+            }
+
+            return new InitiatorDetailedDto.Stat(
+                count,
+                await query.SumAsync(x => x.LotSize)
+            );
+        }
 
         [HttpGet("{id}/operation")]
         public Task<Paged<OperationView>> Operations([FromRoute] string id,
-            [FromQuery] InitiatorOperationFilterDto filter, [FromQuery] PagerQuery pager) 
+            [FromQuery] InitiatorOperationFilterDto filter, [FromQuery] PagerQuery pager)
             => Db.Set<OperationView>()
                 .Where(x => x.SenderAddress == id)
                 .WhereIf(filter.Search != null,

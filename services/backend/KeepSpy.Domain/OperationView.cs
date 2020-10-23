@@ -2,7 +2,7 @@ using System;
 
 namespace KeepSpy.Domain
 {
-    public class OperationView
+    public abstract class OperationView
     {
         public string Tdt { get; set; }
         
@@ -17,5 +17,13 @@ namespace KeepSpy.Domain
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+    }
+
+    public class OperationRedeemView : OperationView
+    {
+    }
+    
+    public class OperationDepositView : OperationView
+    {
     }
 }
