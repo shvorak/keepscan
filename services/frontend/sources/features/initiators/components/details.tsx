@@ -10,7 +10,6 @@ import { initiatorLoad } from 'features/initiators/actions'
 import { getInitiator } from 'features/initiators/queries'
 import { Loading } from 'uikit/display/loading'
 import { OperationList } from 'features/initiators/components/operations/list'
-import { Address } from 'uikit/crypto/address'
 import { getNetworkLink } from 'uikit/crypto/utils'
 
 type InitiatorInfoProps = {
@@ -28,7 +27,7 @@ export const InitiatorDetails: FC<InitiatorInfoProps> = ({id, ...props}) => {
 
 
     if (model == null) {
-        return <Loading />
+        return <Loading className={styles.loading} />
     }
 
     return (

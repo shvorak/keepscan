@@ -25,7 +25,7 @@ namespace KeepSpy.Shared.Extensions
                 {
                     Take = take,
                     Total = count,
-                    Pages = count / take,
+                    Pages = (int) Math.Ceiling((decimal) (count / take)),
                     Current = page
                 }
             };

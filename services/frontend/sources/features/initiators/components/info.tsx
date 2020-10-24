@@ -23,40 +23,42 @@ const stat = ({value}) => (
 const InitiatorSchema = [
     field('lastSeenAt', {
         label: 'Last seen',
-        render: ({value}) => (
+        render: ({ value }) => (
             <>
                 <DateTime value={value} />
                 <DateTimeDistance secondary value={value} />
             </>
-        )
+        ),
     }),
     field('minted', {
         label: 'Minted',
-        render: stat
+        render: stat,
+        hidden: (subject) => subject.minted.count === 0,
     }),
     field('redeemed', {
         label: 'Redeemed',
-        render: stat
+        render: stat,
+        hidden: (subject) => subject.redeemed.count === 0,
     }),
     field('depositsProcessing', {
         label: 'Deposits in progress',
-        render: stat
+        render: stat,
     }),
     field('depositsFailed', {
         label: 'Deposits failed',
-        render: stat
+        render: stat,
     }),
     field('redeemsProcessing', {
         label: 'Redeems in progress',
-        render: stat
+        render: stat,
     }),
     field('redeemsLiquidation', {
         label: 'Liquidation',
-        render: stat
+        render: stat,
     }),
     field('redeemsLiquidated', {
         label: 'Liquidated',
-        render: stat
+        render: stat,
     }),
     field('totalEthSpent', {
         label: 'Total ETH fees',
@@ -65,7 +67,7 @@ const InitiatorSchema = [
     field('totalBtcSpent', {
         label: 'Total BTC fees',
         render: number,
-    })
+    }),
 ]
 
 

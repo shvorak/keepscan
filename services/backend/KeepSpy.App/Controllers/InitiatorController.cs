@@ -60,8 +60,7 @@ namespace KeepSpy.App.Controllers
                 RedeemsProcessing = await CreateStat(redeems
                     .Where(x => x.Status != (int) RedeemStatus.Liquidated &&
                                 x.Status != (int) RedeemStatus.Liquidation &&
-                                x.Status != (int) RedeemStatus.Redeemed
-                                )
+                                x.Status != (int) RedeemStatus.Redeemed)
                 ),
                 RedeemsLiquidation = await CreateStat(redeems
                     .Where(x => x.Status == (int) RedeemStatus.Liquidation)
@@ -70,7 +69,7 @@ namespace KeepSpy.App.Controllers
                     .Where(x => x.Status == (int) RedeemStatus.Liquidated)
                 ),
                 TotalEthSpent = await commission.Where(x => x.Kind == NetworkKind.Ethereum)
-                    .SumAsync(x => x.Fee),
+                    .SumAsync(x => x.Fee + x.Amount),
                 TotalBtcSpent = await commission.Where(x => x.Kind == NetworkKind.Bitcoin)
                     .SumAsync(x => x.Fee),
                 LastSeenAt = entity.LastSeenAt
