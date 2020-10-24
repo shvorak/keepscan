@@ -34,7 +34,7 @@ namespace KeepSpy.App.Controllers
             var entity = await Db.Set<InitiatorView>()
                 .SingleOrDefaultAsync(x => x.Id == id);
 
-            var redeems = Db.Set<OperationDepositView>()
+            var redeems = Db.Set<OperationRedeemView>()
                 .Where(x => x.SenderAddress == id);
 
             var deposits = Db.Set<OperationDepositView>()
