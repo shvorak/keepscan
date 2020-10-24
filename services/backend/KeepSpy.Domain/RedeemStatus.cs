@@ -2,12 +2,12 @@
 {
 	public enum RedeemStatus
 	{
-		Requested,
-		Signed,
-		Redeemed,
-		Liquidation,
-		Liquidated,
-		BtcTransferred,
-		OperationFailed
+		Requested = 0,
+		Signed = 1,
+		Redeemed = 2,
+		Liquidation = 3,
+		Liquidated = 4,
+		BtcTransferred = 5,
+		OperationFailed = 6
 	}
 }

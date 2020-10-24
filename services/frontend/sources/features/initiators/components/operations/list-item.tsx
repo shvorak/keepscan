@@ -36,7 +36,7 @@ export const OperationItem: FC<OperationItemProps> = ({ data }) => {
                 <Icon type={data.type} />
 
                 <div className={styles.key}>
-                    <Address full value={data.tdt} minimalWide={1024} useCopy={false} useLink={false} />
+                    <Address full value={data.tdt} minimalWide={1025} useCopy={false} useLink={false} />
                     <DateTimeDistance value={data.createdAt} className={styles.createdAt} />
                 </div>
 

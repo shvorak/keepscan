@@ -5,21 +5,26 @@ import { Loading } from 'uikit/display/loading'
 import { useIntersection } from 'shared/hooks/observer'
 
 type PaginationProps = {
-    pager: Pager,
+    pager: Pager
     loader?: React.ReactElement
     loading: () => any
 }
 
-export const Pagination: FC<PaginationProps> = ({pager, loader, children, loading}) => {
+export const Pagination: FC<PaginationProps> = ({ pager, loader, children, loading }) => {
     const latest = useRef<number>()
     const trigger = useRef()
 
     const visible = useIntersection(trigger, {
-        threshold: [0, 1]
+        threshold: [0, 1],
     })
 
     useEffect(() => {
-        if (pager.loading || pager.current === pager.pages || latest.current === pager.current || !visible) {
+        if (
+            pager.loading ||
+            pager.current === pager.pages ||
+            (latest.current === pager.current && pager.current != 1) ||
+            !visible
+        ) {
             return
         }
 
@@ -39,5 +44,5 @@ export const Pagination: FC<PaginationProps> = ({pager, loader, children, loadin
 }
 
 Pagination.defaultProps = {
-    loader: <Loading />
+    loader: <Loading />,
 }
