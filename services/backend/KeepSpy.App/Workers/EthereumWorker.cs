@@ -96,10 +96,10 @@ namespace KeepSpy.App.Workers
 			{
 				t.Error = _apiClient.GetTxStatus(t.Id).result.errDescription;
 				_logger.LogInformation($"Tx {t.Id} error description: {t.Error}");
-			}
-			foreach (var d in db.Set<Deposit>().Where(o => o.TokenID.StartsWith("0x")))
-				d.TokenID = System.Numerics.BigInteger.Parse(d.TokenID.Substring(2), System.Globalization.NumberStyles.HexNumber).ToString();
-			db.SaveChanges();*/
+			}*/
+			foreach (var d in db.Set<Deposit>().Where(o => o.TokenID.StartsWith("-")))
+				d.TokenID = System.Numerics.BigInteger.Parse("0" + d.Id.Substring(2), System.Globalization.NumberStyles.HexNumber).ToString();
+			db.SaveChanges();
 			var network = db.Set<Network>()
                 .SingleOrDefault(n => n.Kind == NetworkKind.Ethereum && n.IsTestnet == _options.IsTestnet);
             if (network == null)
@@ -184,7 +184,7 @@ namespace KeepSpy.App.Workers
                                 SenderAddress = item.from,
                                 Contract = contract,
                                 Status = DepositStatus.InitiatingDeposit,
-                                TokenID = System.Numerics.BigInteger.Parse(tdt_id.Substring(2), System.Globalization.NumberStyles.HexNumber).ToString()
+                                TokenID = System.Numerics.BigInteger.Parse("0" + tdt_id.Substring(2), System.Globalization.NumberStyles.HexNumber).ToString()
                             };
                             db.Add(deposit);
                             AddTx(item, deposit);
