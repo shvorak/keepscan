@@ -1,10 +1,14 @@
 
 export type Initiator = {
     id: string
-    redeemCount: number
-    redeemAmount: number
-    depositCount: number
-    depositAmount: number
+    redeemedCount: number
+    redeemedAmount: number
+    mintedCount: number
+    mintedAmount: number
+    redeemsCount: number
+    redeemsAmount: number
+    depositsCount: number
+    depositsAmount: number
     lastSeenAt: string
 }
 

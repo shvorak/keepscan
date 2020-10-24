@@ -10,27 +10,27 @@ type InitiatorStatProps = {
 }
 
 export const InitiatorStat: FC<InitiatorStatProps> = ({ data, ...props }) => {
-    const redeem = data.redeemAmount || 0
-    const deposit = data.depositAmount || 0
+    const redeems = data.redeemsAmount || 0
+    const deposits = data.depositsAmount || 0
 
-    const depositWidth = deposit * 1000 + 1
-    const redeemWidth = redeem * 1000 + 1
+    const depositWidth = deposits * 1000 + 1
+    const redeemWidth = redeems * 1000 + 1
 
     return (
         <div className={styles.root} {...props}>
             <div className={styles.values}>
                 <div className={styles.values_item}>
-                    <Number value={data.depositCount} />
-                    <Amount value={deposit} />
+                    <Number value={data.depositsCount} />
+                    <Amount value={deposits} />
                 </div>
                 <div className={styles.values_item}>
-                    <Number value={data.redeemCount} />
-                    <Amount value={redeem} />
+                    <Number value={data.redeemsCount} />
+                    <Amount value={redeems} />
                 </div>
             </div>
             <div className={styles.progress}>
-                <ProgressItem width={depositWidth} className={styles.stack__deposit} muted={deposit === 0} />
-                <ProgressItem width={redeemWidth} className={styles.stack__redeem} muted={redeem === 0} />
+                <ProgressItem width={depositWidth} className={styles.stack__deposit} muted={deposits === 0} />
+                <ProgressItem width={redeemWidth} className={styles.stack__redeem} muted={redeems === 0} />
             </div>
         </div>
     )

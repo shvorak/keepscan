@@ -47,8 +47,10 @@ namespace KeepSpy.App.Controllers
             var projection = new InitiatorDetailedDto
             {
                 Id = entity.Id,
-                Minted = new InitiatorDetailedDto.Stat(entity.DepositCount, entity.DepositAmount),
-                Redeemed = new InitiatorDetailedDto.Stat(entity.RedeemCount, entity.RedeemAmount),
+                Minted = new InitiatorDetailedDto.Stat(entity.MintedCount, entity.MintedAmount),
+                Redeemed = new InitiatorDetailedDto.Stat(entity.RedeemedCount, entity.RedeemedAmount),
+                Deposits = new InitiatorDetailedDto.Stat(entity.DepositsCount, entity.DepositsAmount),
+                Redeems = new InitiatorDetailedDto.Stat(entity.RedeemsCount, entity.RedeemsCount),
                 DepositsFailed = await CreateStat(deposits
                     .Where(x => x.Status == (int) DepositStatus.SetupFailed)
                 ),

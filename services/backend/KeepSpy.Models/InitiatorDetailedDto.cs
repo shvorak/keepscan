@@ -22,7 +22,12 @@ namespace KeepSpy.Models
         public Stat Minted { get; set; }
         public Stat Redeemed { get; set; }
 
+        public Stat Redeems { get; set; }
+        
+        public Stat Deposits { get; set; }
+        
         public Stat? DepositsFailed { get; set; }
+        
         public Stat? DepositsProcessing { get; set; }
 
         public Stat? RedeemsProcessing { get; set; }
