@@ -26,6 +26,7 @@ namespace KeepSpy.App.Controllers
         public Task<Paged<InitiatorView>> Get([FromQuery] InitiatorFilterDto filter, [FromQuery] PagerQuery pager)
             => Db.Set<InitiatorView>()
                 .WhereIf(filter.Search != null, x => x.Id.Contains(filter.Search!))
+                .OrderByDescending(x => x.LastSeenAt)
                 .ToPagedAsync(pager);
 
         [HttpGet("{id}")]
