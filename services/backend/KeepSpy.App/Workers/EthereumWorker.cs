@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using KeepSpy.App.Ethereum;
 using KeepSpy.App.Services;
 using KeepSpy.Domain;
 using KeepSpy.Storage;
@@ -138,15 +139,17 @@ namespace KeepSpy.App.Workers
                 return;
             }
 
-            uint delta = 24 * 60 * 4;
-            var resultTx = _apiClient.GetAccountTxList(contract.Id, lastBlock + 1, lastBlock + delta);
-            var resultLogs = _apiClient.GetLogs(contract.Id, lastBlock + 1, lastBlock + delta);
+            var getBlockNumberResult = uint.Parse(_apiClient.GetBlockNumber().result.Substring(2),
+                System.Globalization.NumberStyles.HexNumber);
+            uint toBlock = getBlockNumberResult - lastBlock > 200 ? lastBlock + 200 : getBlockNumberResult;
+            var resultTx = _apiClient.GetAccountTxList(contract.Id, lastBlock + 1, toBlock);
+            var resultLogs = _apiClient.GetLogs(contract.Id, lastBlock + 1, toBlock);
             //var tdtTransferLogs = _apiClient.GetLogs(tdtcontract, lastBlock, lastBlock + delta, topic0: TransferEvent);
-            var regpubKeyLogs = _apiClient.GetLogs(null, lastBlock, lastBlock + delta, topic0: RegisteredPubKeyEvent);
-            var setupFailLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: SetupFailedEvent);
-            var fundedLogs = _apiClient.GetLogs(null, lastBlock, lastBlock + delta, topic0: FundedEvent);
-            var approvalLogs = _apiClient.GetLogs(tdtcontract, lastBlock, lastBlock + delta, topic0: ApprovalEvent);
-            var tdt2btcTx = _apiClient.GetAccountTxList(vmcontract, lastBlock + 1, lastBlock + delta);
+            var regpubKeyLogs = _apiClient.GetLogs(null, lastBlock + 1, toBlock, topic0: RegisteredPubKeyEvent);
+            var setupFailLogs = _apiClient.GetLogs(tbtcsystem, lastBlock + 1, toBlock, topic0: SetupFailedEvent);
+            var fundedLogs = _apiClient.GetLogs(null, lastBlock + 1, toBlock, topic0: FundedEvent);
+            var approvalLogs = _apiClient.GetLogs(tdtcontract, lastBlock + 1, toBlock, topic0: ApprovalEvent);
+            var tdt2btcTx = _apiClient.GetAccountTxList(vmcontract, lastBlock + 1, toBlock);
 
             var contracts = new Ethereum.EthContracts(_apiClient, network.IsTestnet, lastBlock);
 
@@ -338,7 +341,7 @@ namespace KeepSpy.App.Workers
             }
 
             db.SaveChanges();
-            var gotRedemtionSignatureLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta,
+            var gotRedemtionSignatureLogs = _apiClient.GetLogs(tbtcsystem, lastBlock + 1, toBlock,
                 topic0: GotRedemptionSignatureEvent);
             foreach (var gotRedemtion in gotRedemtionSignatureLogs.result)
             {
@@ -358,7 +361,7 @@ namespace KeepSpy.App.Workers
             }
 
             db.SaveChanges();
-            var redeemedLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: RedeemedEvent);
+            var redeemedLogs = _apiClient.GetLogs(tbtcsystem, lastBlock + 1, toBlock, topic0: RedeemedEvent);
             foreach (var redeemed in redeemedLogs.result)
             {
                 if (redeemed.topics.Count != 3)
@@ -376,7 +379,7 @@ namespace KeepSpy.App.Workers
                 if (redeem != null)
                     AddLog2(redeemed, redeem, RedeemStatus.Redeemed);
             }
-            var keepCreatedLogs = _apiClient.GetLogs(bondedECDSAKeepFactory, lastBlock, lastBlock + delta, topic0: BondedECDSAKeepCreatedEvent);
+            var keepCreatedLogs = _apiClient.GetLogs(bondedECDSAKeepFactory, lastBlock + 1, toBlock, topic0: BondedECDSAKeepCreatedEvent);
             foreach(var keep in keepCreatedLogs.result)
 			{
                 if (keep.topics.Count != 4)
@@ -404,7 +407,7 @@ namespace KeepSpy.App.Workers
                 }
             }
             db.SaveChanges();
-            foreach (var item in _apiClient.GetLogs(keepBondingContract, lastBlock, lastBlock + delta, topic0: BondCreatedEvent).result)
+            foreach (var item in _apiClient.GetLogs(keepBondingContract, lastBlock + 1, toBlock, topic0: BondCreatedEvent).result)
 			{
                 var signer = "0x" + item.topics[1].Substring(26);
                 var keepAddress = "0x" + item.topics[2].Substring(26);
@@ -419,7 +422,7 @@ namespace KeepSpy.App.Workers
 
             db.SaveChanges();
             var startedLiquidaionLogs =
-                _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: StartedLiquidationEvent);
+                _apiClient.GetLogs(tbtcsystem, lastBlock + 1, toBlock, topic0: StartedLiquidationEvent);
             foreach (var startedLiquidaion in startedLiquidaionLogs.result)
             {
                 if (startedLiquidaion.topics.Count != 2)
@@ -438,7 +441,7 @@ namespace KeepSpy.App.Workers
             }
 
             db.SaveChanges();
-            var liquidatedLogs = _apiClient.GetLogs(tbtcsystem, lastBlock, lastBlock + delta, topic0: LiquidatedEvent);
+            var liquidatedLogs = _apiClient.GetLogs(tbtcsystem, lastBlock + 1, toBlock, topic0: LiquidatedEvent);
             foreach (var liquidated in liquidatedLogs.result)
             {
                 if (liquidated.topics.Count != 2)
@@ -457,17 +460,134 @@ namespace KeepSpy.App.Workers
                     AddLog2(liquidated, redeem, RedeemStatus.Liquidated);
             }
 
+            var keepBonding = new KeepBonding(_apiClient, network.IsTestnet, lastBlock + 1, toBlock);
+            foreach(var deposited in keepBonding.GetUnbondedValueDeposited())
+            {
+                AddLog(deposited.log);
+
+                var signer = db.Find<Signer>(deposited.@operator);
+                if (signer == null)
+				    db.Add(new Signer { Id = deposited.@operator });
+
+                var be = db.Find<BondEvent>(deposited.log.logIndex, deposited.log.transactionHash);
+                if (be == null)
+                    db.Add(new BondEvent
+                    {
+                        Amount = deposited.amount,
+                        Beneficiary = deposited.beneficiary,
+                        TransactionId = deposited.log.transactionHash,
+                        LogIndex = deposited.log.logIndex,
+                        SignerId = deposited.@operator,
+                        Type = BondEventType.UnbondedValueDeposited
+                    });
+
+                db.SaveChanges();
+			}
+            foreach (var withdrawn in keepBonding.GetUnbondedValueWithdrawn())
+            {
+                AddLog(withdrawn.log);
+
+                var signer = db.Find<Signer>(withdrawn.@operator);
+                if (signer == null)
+                    db.Add(new Signer { Id = withdrawn.@operator });
+
+                var be = db.Find<BondEvent>(withdrawn.log.logIndex, withdrawn.log.transactionHash);
+                if (be == null)
+                    db.Add(new BondEvent
+                    {
+                        Amount = -withdrawn.amount,
+                        Beneficiary = withdrawn.beneficiary,
+                        TransactionId = withdrawn.log.transactionHash,
+                        LogIndex = withdrawn.log.logIndex,
+                        SignerId = withdrawn.@operator,
+                        Type = BondEventType.UnbondedValueWithdrawn
+                    });
+
+                db.SaveChanges();
+            }
+            foreach (var bondCreated in keepBonding.GetBondCreated())
+            {
+                var deposit = db.Set<Deposit>().SingleOrDefault(d => d.KeepAddress == bondCreated.holder);
+                if (deposit == null)
+                    continue;
+                AddLog(bondCreated.log);
+
+                var signer = db.Find<Signer>(bondCreated.@operator);
+                if (signer == null)
+                    db.Add(new Signer { Id = bondCreated.@operator });
+
+                var be = db.Find<BondEvent>(bondCreated.log.logIndex, bondCreated.log.transactionHash);
+                if (be == null)
+                    db.Add(new BondEvent
+                    {
+                        Amount = bondCreated.amount,
+                        ReferenceID = bondCreated.referenceID,
+                        DepositId = deposit.Id,
+                        TransactionId = bondCreated.log.transactionHash,
+                        LogIndex = bondCreated.log.logIndex,
+                        SignerId = bondCreated.@operator,
+                        Type = BondEventType.BondCreated
+                    });
+
+                db.SaveChanges();
+            }
+            foreach (var bondReleased in keepBonding.GetBondReleased())
+            {
+                var bondCreated = db.Set<BondEvent>().SingleOrDefault(b => b.ReferenceID == bondReleased.referenceID && b.Type == BondEventType.BondCreated && b.SignerId == bondReleased.@operator);
+                if (bondCreated == null)
+                    continue;
+                AddLog(bondReleased.log);
+                bondCreated.Released = true;
+
+                var be = db.Find<BondEvent>(bondReleased.log.logIndex, bondReleased.log.transactionHash);
+                if (be == null)
+                    db.Add(new BondEvent
+                    {
+                        Amount = -bondCreated.Amount,
+                        ReferenceID = bondReleased.referenceID,
+                        DepositId = bondCreated.DepositId,
+                        TransactionId = bondReleased.log.transactionHash,
+                        LogIndex = bondReleased.log.logIndex,
+                        SignerId = bondReleased.@operator,
+                        Type = BondEventType.BondReleased
+                    });
+
+                db.SaveChanges();
+            }
+            foreach (var bondSeized in keepBonding.GetBondSeized())
+            {
+                var bondCreated = db.Set<BondEvent>().SingleOrDefault(b => b.ReferenceID == bondSeized.referenceID && b.Type == BondEventType.BondCreated && b.SignerId == bondSeized.@operator);
+                if (bondCreated == null)
+                    continue;
+                AddLog(bondSeized.log);
+                bondCreated.Released = true;
+
+                var be = db.Find<BondEvent>(bondSeized.log.logIndex, bondSeized.log.transactionHash);
+                if (be == null)
+                    db.Add(new BondEvent
+                    {
+                        Amount = -bondCreated.Amount,
+                        ReferenceID = bondSeized.referenceID,
+                        DepositId = bondCreated.DepositId,
+                        TransactionId = bondSeized.log.transactionHash,
+                        LogIndex = bondSeized.log.logIndex,
+                        SignerId = bondSeized.@operator,
+                        Type = BondEventType.BondSeized
+                    });
+
+                db.SaveChanges();
+            }
+
             var bn = uint.MaxValue;
             if (resultTx.result.Count > 0)
                 bn = Math.Min(bn, resultTx.result.Max(o => uint.Parse(o.blockNumber)));
             if (tdt2btcTx.result.Count > 0)
                 bn = Math.Min(bn, tdt2btcTx.result.Max(o => uint.Parse(o.blockNumber)));
-            var getBlockNumberResult = uint.Parse(_apiClient.GetBlockNumber().result.Substring(2),
-                System.Globalization.NumberStyles.HexNumber);
+            
             if (bn < uint.MaxValue)
                 lastBlock = bn;
-            else if (lastBlock + delta < getBlockNumberResult)
-                lastBlock += delta;
+            else
+                lastBlock = toBlock;
 
             if (network.LastBlock != getBlockNumberResult)
             {
@@ -478,7 +598,7 @@ namespace KeepSpy.App.Workers
             db.SaveChanges();
             _logger.LogInformation($"Last block processed: {lastBlock}/{getBlockNumberResult}");
 
-            if (getBlockNumberResult - delta < lastBlock)
+            if (getBlockNumberResult == lastBlock)
                 Thread.Sleep(_options.Interval * 1000);
 
             void AddTx(Etherscan.Tx tx, Deposit d)
@@ -534,7 +654,7 @@ namespace KeepSpy.App.Workers
                 }
             }
 
-            void AddLog(Etherscan.Log log, Deposit d, DepositStatus s)
+            void AddLog(Etherscan.Log log, Deposit? d = null, DepositStatus? s = null)
             {
                 if (db.Find<Transaction>(log.transactionHash) == null)
                 {

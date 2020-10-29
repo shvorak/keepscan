@@ -10,7 +10,7 @@ namespace KeepSpy.Domain
         public Redeem Redeem { get; set; }
         public string? RedeemId { get; set; }
         public DateTime Timestamp { get; set; }
-        public DepositStatus Status { get; set; }
+        public DepositStatus? Status { get; set; }
         public RedeemStatus? RedeemStatus { get; set; }
         public uint Block { get; set; }
         public decimal Amount { get; set; }
