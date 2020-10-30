@@ -66,15 +66,13 @@ namespace KeepSpy.App
             }
             
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
 
-                app.UseCors(builder => builder
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowAnyOrigin()
-                );
-            }
+            app.UseCors(builder => builder
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin()
+            );
 
             app.UseRouting();
 
