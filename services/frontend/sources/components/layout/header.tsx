@@ -24,7 +24,9 @@ export const Header: FC<HeaderProps> = ({ children, ...props }) => {
                 <MenuItem to="/redeems">Redeems</MenuItem>
                 <MenuItem to="/initiators">Initiators</MenuItem>
                 <MenuItem to="/tdt">Get TDT</MenuItem>
-                {/*<MenuItem to="/api">API</MenuItem>*/}
+                <MenuItem to="/swagger" external>
+                    API
+                </MenuItem>
             </Menu>
         </div>
     )
@@ -67,11 +69,14 @@ const Menu = ({ children }) => {
     )
 }
 
-const MenuItem = ({ to, exact = false, children }) => (
-    <NavLink to={to} exact={exact}>
-        {children}
-    </NavLink>
-)
+const MenuItem = ({ to, exact = false, external = false, children }) =>
+    external ? (
+        <DisplayLink to={to} external={external}>{children}</DisplayLink>
+    ) : (
+        <NavLink to={to} exact={exact}>
+            {children}
+        </NavLink>
+    )
 
 export const MenuBurger = ({ ...props }) => {
     return (

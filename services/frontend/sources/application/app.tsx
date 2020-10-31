@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './app.css'
+import styles from './app.less'
 import { Route, Switch } from 'react-router-dom'
 import { useClasses } from 'shared/hooks/styles'
 
@@ -8,7 +8,7 @@ import { TdtPage } from './routes/tdt'
 import { DashboardPage } from './routes/dashboard'
 import { RedeemDetailsPage, RedeemListPage } from './routes/redeems'
 import { DepositDetailsPage, DepositListPage } from './routes/deposits'
-import { GithubLink } from 'components/github'
+import { GithubLink, MediumLink } from 'components/social'
 import { Header } from 'components/layout/header'
 import { ScrollArea } from 'uikit/scroll'
 import { InitiatorInfoPage, InitiatorListPage } from '~/application/routes/initiators'
@@ -23,7 +23,6 @@ export const App = () => {
                 <Section className={styles.content}>
                     <Switch>
                         <Route path="/" exact component={DashboardPage} />
-                        <Route path="/api" exact component={ApiPage} />
                         <Route path="/tdt" exact component={TdtPage} />
                         <Route path="/redeems" exact component={RedeemListPage} />
                         <Route path="/redeems/:id" exact component={RedeemDetailsPage} />
@@ -35,8 +34,9 @@ export const App = () => {
                 </Section>
             </div>
             <Footer>
-                <Section>
+                <Section className={styles.socials}>
                     <GithubLink to="https://github.com/emerido/keepscan" />
+                    <MediumLink to="https://keepscan.medium.com/" />
                 </Section>
             </Footer>
         </ScrollArea>

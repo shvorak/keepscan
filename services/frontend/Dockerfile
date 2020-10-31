@@ -1,7 +1,7 @@
 # Build
 FROM node:10-alpine as builder
 
-# Git needed for github packages
+# Git needed for social packages
 RUN apk update && \
 	apk add --no-cache git
 

@@ -8,7 +8,7 @@
 }
 .layout:before {
     position: absolute;
-    content: "";
+    content: '';
     background-color: var(--castle-black);
     height: 380px;
     width: 100%;
@@ -38,6 +38,16 @@
     background-color: var(--castle-black);
     padding: 10px 0;
     color: white;
+}
+
+.socials {
+    > * {
+        margin-right: 20px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
 }
 
 @media screen and (max-width: 1280px) {

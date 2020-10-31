@@ -1,0 +1,19 @@
+.github {
+    background: url("static/github-light.png");
+    display: inline-block;
+    background-size: 100%;
+    vertical-align: middle;
+    content: "";
+    height: 24px;
+    width: 24px;
+}
+
+.medium {
+    background: url("static/medium-logo.png");
+    display: inline-block;
+    background-size: 100%;
+    vertical-align: middle;
+    content: "";
+    height: 24px;
+    width: 24px;
+}

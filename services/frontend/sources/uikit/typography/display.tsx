@@ -15,6 +15,7 @@ type DisplayProps = ComponentProps<'div'> & {
 type DisplayLinkProps = ComponentProps<'a'> & {
     to: string
     size?: string | number
+    external?: boolean
     secondary?: boolean
 }
 
@@ -28,11 +29,11 @@ export const Display: FC<DisplayProps> = ({ as = 'div', children, ...props }) =>
     return createElement(as, { className, style: styleMap, ...props }, children)
 }
 
-export const DisplayLink: FC<DisplayLinkProps> = ({ children, to, ...props }) => {
+export const DisplayLink: FC<DisplayLinkProps> = ({ children, external, to, ...props }) => {
     const className = useClasses(styles, 'display-link', props)
     const styleMap = useStyles(props, DisplayPropsStyles)
 
-    const isExternal = to && to.match('https://')
+    const isExternal = to && (to.match('https://') || external)
 
     const rules = useMemo(() => {
         return {
@@ -54,4 +55,7 @@ export const DisplayLink: FC<DisplayLinkProps> = ({ children, to, ...props }) =>
             {children}
         </Link>
     )
+}
+DisplayLink.defaultProps = {
+    external: false,
 }
