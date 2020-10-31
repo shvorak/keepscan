@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using KeepSpy.App.Abstraction;
@@ -17,9 +18,10 @@ namespace KeepSpy.App.Controllers
         }
 
         /// <summary>
-        /// Transaction information by ID
+        /// Transaction information by Deposit ID
         /// </summary>
         [HttpGet]
+        [Obsolete]
         public Task<Transaction[]> Get(string id) => Db.Set<Transaction>()
             .Where(t => t.DepositId == id)
             .OrderByDescending(t => t.Timestamp)

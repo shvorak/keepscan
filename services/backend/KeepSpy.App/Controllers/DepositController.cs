@@ -70,6 +70,15 @@ namespace KeepSpy.App.Controllers
         }
 
         /// <summary>
+        /// Transaction information by DepositID
+        /// </summary>
+        [HttpGet("{id}/transactions")]
+        public Task<Transaction[]> Transactions([FromRoute] string id) => Db.Set<Transaction>()
+            .Where(t => t.DepositId == id)
+            .OrderByDescending(t => t.Timestamp)
+            .ToArrayAsync();
+        
+        /// <summary>
         /// Information about the last 10 deposits
         /// </summary>
         [HttpGet("latest")]

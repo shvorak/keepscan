@@ -50,7 +50,7 @@ namespace KeepSpy.App
                     Contact = new OpenApiContact
                     {
                         Name = "Github",
-                        Url = new Uri("https://github.com/emerido"),
+                        Url = new Uri("https://github.com/emerido/keepscan"),
                     },
                 });
                 
