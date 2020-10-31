@@ -90,7 +90,11 @@ namespace KeepSpy.App
             );
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "KeepScan v1"); });
+            app.UseSwaggerUI(c =>
+            {
+                c.DocumentTitle = "KeepScan API";
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "KeepScan v1");
+            });
 
             app.UseRouting();
 

@@ -99,15 +99,5 @@ namespace KeepSpy.App.Controllers
                 .Skip(rand.Next(count))
                 .FirstAsync();
         }
-
-        [HttpGet("reset")]
-        public string Reset()
-        {
-            Db.Set<Transaction>().RemoveRange(Db.Set<Transaction>());
-            Db.Set<Redeem>().RemoveRange(Db.Set<Redeem>());
-            Db.Set<Deposit>().RemoveRange(Db.Set<Deposit>());
-            Db.SaveChanges();
-            return "OK";
-        }
     }
 }
