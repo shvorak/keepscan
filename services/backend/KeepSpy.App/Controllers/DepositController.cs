@@ -15,13 +15,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KeepSpy.App.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/deposit")]
     public class DepositController : BaseController
     {
         public DepositController(KeepSpyContext db, IMapper mapper) : base(db, mapper)
         {
         }
 
+        /// <summary>
+        /// All deposits with filter and pagination 
+        /// </summary>
         [HttpGet]
         public Task<Paged<DepositDto>> Get([FromQuery] PagerQuery query, [FromQuery] DepositFilterDto filter)
             => Db.Set<Deposit>()

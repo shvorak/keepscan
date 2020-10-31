@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 using AutoMapper;
 using KeepSpy.App.Converters.Json;
 using KeepSpy.App.Services;
@@ -12,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace KeepSpy.App
 {
@@ -24,31 +27,44 @@ namespace KeepSpy.App
             Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<KeepSpyContext>(builder => builder
                 .UseNpgsql(Configuration.GetConnectionString("Default"))
             );
-            
+
             services.AddMvcCore()
                 .AddCors()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
-                });
+                .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new DateTimeConverter()); })
+                .AddApiExplorer();
 
-            services.AddAutoMapper(config =>
+            services.AddAutoMapper(config => { config.AddProfile<MappingProfile>(); });
+
+            services.AddSwaggerGen(c =>
             {
-                config.AddProfile<MappingProfile>();
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "KeepScan API",
+                    Description = "Simple API for reading TBTC status",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Shvorak Alexey",
+                        Email = "alex@shvorak.com",
+                        Url = new Uri("https://github.com/emerido"),
+                    },
+                });
+                
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
 
             services.AddHttpClient<KeychainService>(client =>
             {
                 client.BaseAddress = new Uri("http://keepscan.com:50030");
             });
-            
+
             services.AddSingleton(Configuration.GetSection("Workers:Bitcoin").Get<BitcoinWorkerOptions>());
             services.AddSingleton(Configuration.GetSection("Workers:Ethereum").Get<EthereumWorkerOptions>());
 
@@ -57,14 +73,13 @@ namespace KeepSpy.App
             services.AddHostedService<RefreshViewWorker>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             using (var context = serviceProvider.GetService<KeepSpyContext>())
             {
                 context.Database.Migrate();
             }
-            
+
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
@@ -74,12 +89,12 @@ namespace KeepSpy.App
                 .AllowAnyOrigin()
             );
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "KeepScan v1"); });
+
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }
