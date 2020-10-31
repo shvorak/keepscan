@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -15,13 +14,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KeepSpy.App.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/initiator")]
     public class InitiatorController : BaseController
     {
         public InitiatorController(KeepSpyContext db, IMapper mapper) : base(db, mapper)
         {
         }
 
+        /// <summary>
+        /// List of initiators of operations with pagination
+        /// </summary>
         [HttpGet]
         public Task<Paged<InitiatorView>> Get([FromQuery] InitiatorFilterDto filter, [FromQuery] PagerQuery pager)
             => Db.Set<InitiatorView>()
@@ -29,6 +31,9 @@ namespace KeepSpy.App.Controllers
                 .OrderByDescending(x => x.LastSeenAt)
                 .ToPagedAsync(pager);
 
+        /// <summary>
+        /// Details of the initiator by ID
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<InitiatorDetailedDto> Get([FromRoute] string id)
         {
@@ -95,6 +100,9 @@ namespace KeepSpy.App.Controllers
             );
         }
 
+        /// <summary>
+        /// Information about the initiator's operations by its ID
+        /// </summary>
         [HttpGet("{id}/operation")]
         public async Task<Paged<OperationDto>> Operations([FromRoute] string id,
             [FromQuery] InitiatorOperationFilterDto filter, [FromQuery] PagerQuery pager)

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KeepSpy.App.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/network")]
     public class NetworkController : BaseController
     {
         private readonly BitcoinWorkerOptions _bitcoinWorkerOptions;
@@ -23,6 +23,9 @@ namespace KeepSpy.App.Controllers
             _ethereumWorkerOptions = ethereumWorkerOptions;
         }
 
+        /// <summary>
+        /// Detailed network status information
+        /// </summary>
         [HttpGet]
         public Task<Network[]> Get() => Db.Set<Network>()
             // TODO: Remove this condition after removing test networks in production environment 

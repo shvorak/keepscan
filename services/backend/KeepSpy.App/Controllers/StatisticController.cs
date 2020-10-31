@@ -12,13 +12,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KeepSpy.App.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/statistic")]
     public class StatisticController : BaseController
     {
         public StatisticController(KeepSpyContext db, IMapper mapper) : base(db, mapper)
         {
         }
 
+        /// <summary>
+        /// Summary of Keep Network statistics
+        /// </summary>
         [HttpGet]
         public async Task<StatisticsDto> Get()
         {
@@ -42,6 +45,9 @@ namespace KeepSpy.App.Controllers
             };
         }
 
+        /// <summary>
+        /// Number of operations of different types
+        /// </summary>
         [HttpGet("operations")]
         public async Task<OperationStat[]> Operations()
         {
@@ -72,6 +78,9 @@ namespace KeepSpy.App.Controllers
             return items.ToArray();
         }
 
+        /// <summary>
+        /// Supply information
+        /// </summary>
         [HttpGet("supply")]
         public async Task<SupplyStat[]> Supply()
         {

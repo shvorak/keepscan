@@ -46,11 +46,10 @@ namespace KeepSpy.App
                 {
                     Version = "v1",
                     Title = "KeepScan API",
-                    Description = "Simple API for reading TBTC status",
+                    Description = "A quick and clear API for getting information about the Keep Network.",
                     Contact = new OpenApiContact
                     {
-                        Name = "Shvorak Alexey",
-                        Email = "alex@shvorak.com",
+                        Name = "Github",
                         Url = new Uri("https://github.com/emerido"),
                     },
                 });

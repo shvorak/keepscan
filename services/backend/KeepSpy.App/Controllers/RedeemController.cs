@@ -14,13 +14,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KeepSpy.App.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/redeem")]
     public class RedeemController : BaseController
     {
         public RedeemController(KeepSpyContext db, IMapper mapper) : base(db, mapper)
         {
         }
 
+        /// <summary>
+        /// Detailed information about the redeem by its ID
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<RedeemDetailsDto> Get(string id)
         {
@@ -36,6 +39,9 @@ namespace KeepSpy.App.Controllers
             return result;
         }
 
+        /// <summary>
+        /// List of all redeem operations with pagination
+        /// </summary>
         [HttpGet]
         public Task<Paged<RedeemDto>> Get([FromQuery] PagerQuery query, [FromQuery] RedeemFilterDto filter) => Db
             .Set<Redeem>()
@@ -48,6 +54,9 @@ namespace KeepSpy.App.Controllers
             .ProjectTo<RedeemDto>(Mapper.ConfigurationProvider)
             .ToPagedAsync(query);
 
+        /// <summary>
+        /// Information about the last 10 redeems
+        /// </summary>
         [HttpGet("latest")]
         public Task<RedeemDto[]> Latest() => Db.Set<Redeem>()
             .OrderByDescending(x => x.CreatedAt)

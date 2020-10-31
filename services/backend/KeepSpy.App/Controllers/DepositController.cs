@@ -37,6 +37,9 @@ namespace KeepSpy.App.Controllers
                 .ProjectTo<DepositDto>(Mapper.ConfigurationProvider)
                 .ToPagedAsync(query);
 
+        /// <summary>
+        /// Detailed information about the deposit by its ID
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<DepositDetailsDto> Get([FromRoute] string id)
         {
@@ -66,6 +69,9 @@ namespace KeepSpy.App.Controllers
             return result;
         }
 
+        /// <summary>
+        /// Information about the last 10 deposits
+        /// </summary>
         [HttpGet("latest")]
         public Task<DepositDto[]> Latest()
             => Db.Set<Deposit>()
@@ -75,6 +81,9 @@ namespace KeepSpy.App.Controllers
                 .ToArrayAsync();
 
 
+        /// <summary>
+        /// Get a random TDT by lot size
+        /// </summary>
         [HttpGet("random")]
         public async Task<RandomTdtId?> Random([FromQuery] decimal lotSize)
         {
