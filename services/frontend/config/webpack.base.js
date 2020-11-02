@@ -10,13 +10,15 @@ const plugins = {
     Html: require('html-webpack-plugin'),
     Copy: require('copy-webpack-plugin'),
     Define: require('webpack').DefinePlugin,
-    Terser: require('terser-webpack-plugin')
+    Terser: require('terser-webpack-plugin'),
+    ExtractCss: require('mini-css-extract-plugin'),
 }
 
 module.exports = (options) => {
     const isDevelopment = options.mode === 'development'
     const isProduction = options.mode === 'production'
     return {
+        mode: options.mode,
         entry: {
             index: './sources/index.tsx',
         },
@@ -35,7 +37,7 @@ module.exports = (options) => {
                 {
                     test: /\.(css|less)$/,
                     use: [
-                        'style-loader',
+                        isDevelopment ? 'style-loader' : plugins.ExtractCss.loader,
                         {
                             loader: 'css-loader',
                             options: {
@@ -83,18 +85,12 @@ module.exports = (options) => {
             new plugins.Copy({
                 patterns: [{ from: 'sources/static/favicons/', to: paths.bundle }],
             }),
+            new plugins.ExtractCss()
         ],
         optimization: {
-            minimizer: [
-                isProduction && new plugins.Terser({
-                    cache: true,
-                    parallel: true,
-                    sourceMap: true, // Must be set to true if using source-maps in production
-                    terserOptions: {
-                        // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
-                    }
-                }),
-            ].filter(Boolean),
+            splitChunks: {
+                chunks: 'initial'
+            }
         },
     }
 }

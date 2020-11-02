@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './index.css'
 import { useSelector } from 'react-redux'
 import { Card, CardBody, CardHead } from 'uikit/layout/card'
-import { Area, AreaChart, Bar, BarChart, Line, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { Area, AreaChart, Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import { getOperationsStat, getSupplyStat } from 'features/dashboard/queries'
 import DefaultTooltipContent from 'recharts/lib/component/DefaultTooltipContent'
 

@@ -6,7 +6,8 @@
   "scripts": {
     "gen": "plop --plopfile=./config/plop.js",
     "bundle": "webpack-cli --config config/webpack.js --mode production",
-    "develop": "webpack-dev-server --config config/webpack.js --mode development"
+    "develop": "webpack-dev-server --config config/webpack.js --mode development",
+    "profile": "webpack --config config/webpack.js --profile --mode production --json > bundle/stats.json"
   },
   "author": "Alexey Shvorak",
   "license": "ISC",
@@ -49,6 +50,7 @@
     "inquirer-fuzzy-path": "^2.3.0",
     "less": "^3.12.2",
     "less-loader": "^7.0.1",
+    "mini-css-extract-plugin": "^1.2.1",
     "style-loader": "^1.2.1",
     "terser-webpack-plugin": "^4.2.2",
     "ts-loader": "^8.0.3",
