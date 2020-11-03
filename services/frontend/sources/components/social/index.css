@@ -17,3 +17,13 @@
     height: 24px;
     width: 24px;
 }
+
+.twitter {
+    background: url("static/twitter-logo.svg");
+    display: inline-block;
+    background-size: 100%;
+    vertical-align: middle;
+    content: "";
+    height: 24px;
+    width: 24px;
+}

@@ -8,7 +8,7 @@ import { TdtPage } from './routes/tdt'
 import { DashboardPage } from './routes/dashboard'
 import { RedeemDetailsPage, RedeemListPage } from './routes/redeems'
 import { DepositDetailsPage, DepositListPage } from './routes/deposits'
-import { GithubLink, MediumLink } from 'components/social'
+import { GithubLink, MediumLink, TwitterLink } from 'components/social'
 import { Header } from 'components/layout/header'
 import { ScrollArea } from 'uikit/scroll'
 import { InitiatorInfoPage, InitiatorListPage } from '~/application/routes/initiators'
@@ -35,6 +35,7 @@ export const App = () => {
             </div>
             <Footer>
                 <Section className={styles.socials}>
+                    <TwitterLink to="https://twitter.com/KeepScan" />
                     <GithubLink to="https://github.com/emerido/keepscan" />
                     <MediumLink to="https://keepscan.medium.com/" />
                 </Section>

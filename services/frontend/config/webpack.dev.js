@@ -3,7 +3,7 @@ module.exports = {
     devServer: {
         hot: true,
         proxy: {
-            '/api': { target: 'https://localhost:5001', secure: false },
+            '/api': { target: 'https://mainnet.staging.keepscan.com', secure: false },
         },
         overlay: true,
         historyApiFallback: true
