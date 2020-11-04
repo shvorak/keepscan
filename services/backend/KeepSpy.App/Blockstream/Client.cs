@@ -47,17 +47,17 @@ namespace KeepSpy.App.Blockstream
 
         public Block[] GetBlocks()
         {
-            return GetResult<Block[]>("/blocks/tip");
+            return GetResult<Block[]>("blocks/tip");
         }
 
         public Address GetAddress(string addr)
         {
-            return GetResult<Address>($"/address/{addr}");
+            return GetResult<Address>($"address/{addr}");
         }
 
         public Tx[] GetTxs(string addr)
         {
-            return GetResult<Tx[]>($"/address/{addr}/txs");
+            return GetResult<Tx[]>($"address/{addr}/txs");
         }
     }
 }
