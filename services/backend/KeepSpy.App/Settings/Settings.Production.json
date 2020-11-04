@@ -8,7 +8,7 @@
   },
   "Workers": {
     "Bitcoin": {
-      "ApiUrl": "https://blockstream.info/api",
+      "ApiUrl": "https://blockstream.info/api/",
       "Interval": 60,
       "IsTestnet": false
     },
