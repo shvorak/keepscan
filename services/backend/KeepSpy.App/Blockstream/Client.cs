@@ -38,7 +38,7 @@ namespace KeepSpy.App.Blockstream
                 throw new HttpRequestException(
                     $"Request to {path} failed with code {response.StatusCode} and response:\n\n{content}");
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
                 _logger.LogError(e.Message, e);
                 throw e;
