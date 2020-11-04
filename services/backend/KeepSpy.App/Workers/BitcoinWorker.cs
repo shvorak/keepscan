@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using KeepSpy.App.Blockstream;
 using KeepSpy.Domain;
 using KeepSpy.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,19 +11,20 @@ using Microsoft.Extensions.Logging;
 
 namespace KeepSpy.App.Workers
 {
-    public class BitcoinWorker: BackgroundService
+    public class BitcoinWorker : BackgroundService
     {
         private readonly BitcoinWorkerOptions _options;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<BitcoinWorker> _logger;
-        private readonly Blockstream.Client _apiClient;
+        private readonly Client _apiClient;
 
-        public BitcoinWorker(BitcoinWorkerOptions options, IServiceScopeFactory scopeFactory, ILogger<BitcoinWorker> logger)
+        public BitcoinWorker(BitcoinWorkerOptions options, IServiceScopeFactory scopeFactory,
+            ILogger<BitcoinWorker> logger, Client apiClient)
         {
             _options = options;
             _scopeFactory = scopeFactory;
             _logger = logger;
-            _apiClient = new Blockstream.Client(_options.ApiUrl);
+            _apiClient = apiClient;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -50,8 +52,9 @@ namespace KeepSpy.App.Workers
         }
 
         void Run(KeepSpyContext db)
-		{
-            var network = db.Set<Network>().SingleOrDefault(n => n.Kind == NetworkKind.Bitcoin && n.IsTestnet == _options.IsTestnet);
+        {
+            var network = db.Set<Network>()
+                .SingleOrDefault(n => n.Kind == NetworkKind.Bitcoin && n.IsTestnet == _options.IsTestnet);
             if (network == null)
             {
                 network = new Network
@@ -66,26 +69,34 @@ namespace KeepSpy.App.Workers
                 db.Add(network);
                 db.SaveChanges();
             }
-            foreach (var deposit in db.Set<Deposit>().Where(o => o.BitcoinAddress != null && o.Status >= DepositStatus.WaitingForBtc && o.Contract.Network.IsTestnet == _options.IsTestnet).ToList())
+
+            foreach (var deposit in db.Set<Deposit>().Where(o =>
+                o.BitcoinAddress != null && o.Status >= DepositStatus.WaitingForBtc &&
+                o.Contract.Network.IsTestnet == _options.IsTestnet).ToList())
             {
                 ProcessDeposit(db, deposit);
             }
-            
+
             var currentBlock = _apiClient.GetBlocks()[0];
             network.LastBlock = currentBlock.height;
-            network.LastBlockAt = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(currentBlock.timestamp);
+            network.LastBlockAt =
+                new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(currentBlock.timestamp);
             _logger.LogInformation($"Last block processed: {network.LastBlock} ({network.LastBlockAt})");
             db.SaveChanges();
         }
 
         void ProcessDeposit(KeepSpyContext db, Deposit deposit)
-		{
-            if (db.Set<Transaction>().Any(t => t.RedeemStatus == RedeemStatus.BtcTransferred && t.RedeemId == deposit.Id))
+        {
+            if (db.Set<Transaction>()
+                .Any(t => t.RedeemStatus == RedeemStatus.BtcTransferred && t.RedeemId == deposit.Id))
                 return;
+
             var txs = _apiClient.GetTxs(deposit.BitcoinAddress).Where(x => x.status.confirmed);
-            var inSum = txs.Where(o => !o.vin.Any(o1 => o1.prevout.scriptpubkey_address == deposit.BitcoinAddress)).Sum(o => o.vout.Where(o => o.scriptpubkey_address == deposit.BitcoinAddress).Sum(o => o.value / 100000000M));
+            var inSum = txs.Where(o => !o.vin.Any(o1 => o1.prevout.scriptpubkey_address == deposit.BitcoinAddress))
+                .Sum(o => o.vout.Where(o => o.scriptpubkey_address == deposit.BitcoinAddress)
+                    .Sum(o => o.value / 100000000M));
             if (deposit.BtcFunded == null && inSum >= deposit.LotSize)
-			{
+            {
                 var dep = db.Find<Deposit>(deposit.Id);
                 dep.BtcFunded = inSum;
                 if (dep.Status == DepositStatus.WaitingForBtc)
@@ -93,16 +104,20 @@ namespace KeepSpy.App.Workers
                     dep.Status = DepositStatus.BtcReceived;
                     dep.UpdatedAt = DateTime.Now;
                 }
-                dep.BitcoinFundedBlock = txs.Where(o => !o.vin.Any(o1 => o1.prevout.scriptpubkey_address == deposit.BitcoinAddress)).Max(o => o.status.block_height);
+
+                dep.BitcoinFundedBlock =
+                    txs.Where(o => !o.vin.Any(o1 => o1.prevout.scriptpubkey_address == deposit.BitcoinAddress))
+                        .Max(o => o.status.block_height);
                 db.SaveChanges();
                 _logger.LogInformation("TDT {0} funded with {1} BTC", deposit.Id, inSum);
             }
+
             foreach (var tx in txs)
                 ProcessTx(db, deposit, tx);
         }
 
-        void ProcessTx(KeepSpyContext db, Deposit deposit, Blockstream.Tx tx)
-		{
+        void ProcessTx(KeepSpyContext db, Deposit deposit, Tx tx)
+        {
             if (db.Find<Transaction>(tx.txid) == null)
             {
                 var sender = tx.vin.Count == 1 ? tx.vin[0].prevout.scriptpubkey_address : null;
@@ -117,11 +132,15 @@ namespace KeepSpy.App.Workers
                     Deposit = sender == deposit.BitcoinAddress ? null : deposit,
                     Block = tx.status.block_height,
                     Status = sender == deposit.BitcoinAddress ? DepositStatus.Closed : DepositStatus.BtcReceived,
-                    RedeemStatus = sender == deposit.BitcoinAddress ? RedeemStatus.BtcTransferred : (RedeemStatus?)null,
+                    RedeemStatus =
+                        sender == deposit.BitcoinAddress ? RedeemStatus.BtcTransferred : (RedeemStatus?) null,
                     IsError = false,
                     Error = "",
                     Timestamp = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(tx.status.block_time),
-                    Amount = (sender == deposit.BitcoinAddress ? tx.vout[0].value / 100000000M : tx.vout.Where(o => o.scriptpubkey_address == deposit.BitcoinAddress).Sum(v => v.value / 100000000M)),
+                    Amount = (sender == deposit.BitcoinAddress
+                        ? tx.vout[0].value / 100000000M
+                        : tx.vout.Where(o => o.scriptpubkey_address == deposit.BitcoinAddress)
+                            .Sum(v => v.value / 100000000M)),
                     Fee = tx.fee / 100000000M,
                     Kind = NetworkKind.Bitcoin,
                     Sender = sender,
@@ -141,6 +160,7 @@ namespace KeepSpy.App.Workers
                         redeem.UpdatedAt = t.Timestamp;
                     }
                 }
+
                 db.SaveChanges();
             }
         }

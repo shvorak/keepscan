@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using AutoMapper;
+using KeepSpy.App.Blockstream;
 using KeepSpy.App.Converters.Json;
 using KeepSpy.App.Services;
 using KeepSpy.App.Workers;
@@ -14,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace KeepSpy.App
@@ -29,6 +31,9 @@ namespace KeepSpy.App
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var bitcoinOptions = Configuration.GetSection("Workers:Bitcoin").Get<BitcoinWorkerOptions>();
+            var ethereumOptions = Configuration.GetSection("Workers:Ethereum").Get<EthereumWorkerOptions>();
+            
             services.AddDbContext<KeepSpyContext>(builder => builder
                 .UseNpgsql(Configuration.GetConnectionString("Default"))
             );
@@ -54,9 +59,8 @@ namespace KeepSpy.App
                     },
                 });
                 
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
+                c.DescribeAllParametersInCamelCase();
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "KeepSpy.App.xml"));
             });
 
             services.AddHttpClient<KeychainService>(client =>
@@ -64,9 +68,15 @@ namespace KeepSpy.App
                 client.BaseAddress = new Uri("http://keepscan.com:50030");
             });
 
-            services.AddSingleton(Configuration.GetSection("Workers:Bitcoin").Get<BitcoinWorkerOptions>());
-            services.AddSingleton(Configuration.GetSection("Workers:Ethereum").Get<EthereumWorkerOptions>());
+            // TODO: Rename Client ti BlockstreamClient
+            services.AddHttpClient<Client>(client =>
+            {
+                client.BaseAddress = new Uri(bitcoinOptions.ApiUrl);
+            });
 
+            services.AddSingleton(bitcoinOptions);
+            services.AddSingleton(ethereumOptions);
+           
             services.AddHostedService<BitcoinWorker>();
             services.AddHostedService<EthereumWorker>();
             services.AddHostedService<RefreshViewWorker>();
