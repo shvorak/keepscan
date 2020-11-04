@@ -44,7 +44,6 @@ namespace KeepSpy.App.Workers
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             await Task.Delay(5000, stoppingToken);
-            lastBlock = _options.IsTestnet ? 8594983u : 10867766;
             tdtcontract = _options.IsTestnet
                 ? "0x7cAad48DF199Cd661762485fc44126F4Fe8A58C9"
                 : "0x10B66Bd1e3b5a936B7f8Dbc5976004311037Cdf0";
@@ -72,6 +71,12 @@ namespace KeepSpy.App.Workers
                     _logger.LogInformation("EthereumWorker loop");
                     try
                     {
+                        if (lastBlock == 0)
+                        {
+                            lastBlock = (db.Set<Transaction>().Where(t => t.Kind == NetworkKind.Ethereum).Max(t => (uint?)t.Block) - 2000) ?? 0;
+                            if (lastBlock < 0)
+                                lastBlock = _options.IsTestnet ? 8594983u : 10867766;
+                        }
                         Run(db, keychain);
                     }
                     catch (Exception e)
