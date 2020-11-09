@@ -74,7 +74,18 @@ namespace KeepSpy.App.Workers
                 o.BitcoinAddress != null && o.Status >= DepositStatus.WaitingForBtc &&
                 o.Contract.Network.IsTestnet == _options.IsTestnet).ToList())
             {
-                ProcessDeposit(db, deposit);
+                while (true)
+                {
+                    try
+                    {
+                        ProcessDeposit(db, deposit);
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogError(e, "Failed for deposit " + deposit.Id);
+                    }
+                }
             }
 
             var currentBlock = _apiClient.GetBlocks()[0];
