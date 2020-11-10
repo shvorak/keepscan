@@ -18,6 +18,7 @@ namespace KeepSpy.Domain
         public bool IsTestnet { get; set; }
         
         public uint LastBlock { get; set; }
+        public uint? LastBlockProcessed { get; set; }
 
         public DateTime LastBlockAt { get; set; }
 

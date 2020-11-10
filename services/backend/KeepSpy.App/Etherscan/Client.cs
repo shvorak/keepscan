@@ -39,7 +39,7 @@ namespace KeepSpy.App.Etherscan
 			};
 			return GetResult<IList<Tx>>(parameters);
 		}
-		public Response<IList<Log>> GetLogs(string address, ulong fromBlock, ulong? toBlock = null, int? page = 1, int? limit = 5000, string topic0 = null)
+		public Response<IList<Log>> GetLogs(string address, ulong fromBlock, ulong? toBlock = null, string topic0 = null)
 		{
 			var parameters = new Dictionary<string, object>()
 			{
@@ -48,8 +48,6 @@ namespace KeepSpy.App.Etherscan
 				{"address", address },
 				{"fromBlock", fromBlock },
 				{"toBlock", toBlock ?? 99999999 },
-				{"page", page },
-				{"offset", limit },
 				{"topic0", topic0 }
 			};
 			return GetResult<IList<Log>>(parameters);

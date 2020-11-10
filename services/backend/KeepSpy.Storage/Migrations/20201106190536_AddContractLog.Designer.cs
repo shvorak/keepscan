@@ -3,15 +3,17 @@ using System;
 using KeepSpy.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace KeepSpy.Storage.Migrations
 {
     [DbContext(typeof(KeepSpyContext))]
-    partial class KeepSpyContextModelSnapshot : ModelSnapshot
+    [Migration("20201106190536_AddContractLog")]
+    partial class AddContractLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -353,10 +355,6 @@ namespace KeepSpy.Storage.Migrations
                     b.Property<DateTime>("LastBlockAt")
                         .HasColumnName("last_block_at")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("LastBlockProcessed")
-                        .HasColumnName("last_block_processed")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()

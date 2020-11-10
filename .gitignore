@@ -3,3 +3,4 @@
 /.vs
 /services/backend/.vs/KeepSpy
 /services/frontend/.vs
+/services/backend/KeepSpy.App/KeepSpy.App.csproj.user

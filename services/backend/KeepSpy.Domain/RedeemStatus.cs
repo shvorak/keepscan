@@ -8,6 +8,7 @@
 		Liquidation,
 		Liquidated,
 		BtcTransferred,
-		OperationFailed
+		OperationFailed,
+		CourtesyCalled
 	}
 }
