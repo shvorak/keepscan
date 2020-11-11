@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KeepSpy.Storage.Migrations
 {
     [DbContext(typeof(KeepSpyContext))]
-    [Migration("20201111132706_AlterInitiatorView")]
+    [Migration("20201111132706_AlterInitiatorView2")]
     partial class AlterInitiatorView
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
