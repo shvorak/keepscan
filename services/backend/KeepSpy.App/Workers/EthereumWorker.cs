@@ -104,13 +104,13 @@ namespace KeepSpy.App.Workers
 
         void Run(KeepSpyContext db, KeychainService keychainService)
         {
-            foreach(var cl in db.Set<ContractLog>().Where(o => o.Amount == null && o.Topic0 == TransferEvent && o.Data != ""))
+            /*
+			foreach(var cl in db.Set<ContractLog>().Where(o => o.Amount == null && o.Topic0 == TransferEvent && o.Data != ""))
             {
                 cl.Amount = (decimal)BigInteger.Parse(cl.Data, NumberStyles.HexNumber) / 1e18M;
             }
             db.SaveChanges();
-            /*
-			foreach (var t in db.Set<Transaction>().Where(o => o.IsError && o.Error.Length <= 1))
+            foreach (var t in db.Set<Transaction>().Where(o => o.IsError && o.Error.Length <= 1))
 			{
 				t.Error = _apiClient.GetTxStatus(t.Id).result.errDescription;
 				_logger.LogInformation($"Tx {t.Id} error description: {t.Error}");

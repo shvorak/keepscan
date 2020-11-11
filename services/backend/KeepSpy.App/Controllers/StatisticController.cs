@@ -92,21 +92,28 @@ namespace KeepSpy.App.Controllers
             foreach (var day in range)
             {
                 var date = DateTime.Today.AddDays(day);
-                
+
+                var minted = await Db.Set<ContractLog>()
+                .Where(x => x.Address == "0x8daebade922df735c38c80c7ebd708af50815faa" &&
+                x.Topic0 == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" &&
+                x.Topic1 == "0x0000000000000000000000000000000000000000000000000000000000000000" &&
+                x.TimeStamp.Date <= date)
+                .Select(x => x.Amount)
+                .SumAsync();
+
+                var burned = await Db.Set<ContractLog>()
+                    .Where(x => x.Address == "0x8daebade922df735c38c80c7ebd708af50815faa" &&
+                    x.Topic0 == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" &&
+                    x.Topic2 == "0x0000000000000000000000000000000000000000000000000000000000000000" &&
+                    x.TimeStamp.Date <= date)
+                    .Select(x => x.Amount)
+                    .SumAsync();
+
                 var stat = new SupplyStat
                 {
                     Date = date,
-                    Supply = await Db.Set<Deposit>()
-                        .Where(x => x.Status == DepositStatus.Minted && x.LotSize != null)
-                        .Where(x => x.CreatedAt.Date <= date)
-                        .SumAsync(x => x.LotSize!.Value),
-                    Minted = await Db.Set<Deposit>()
-                        // TODO: Add status redeemed
-                        .Where(x => (x.Status == DepositStatus.Minted || x.Status == DepositStatus.Closed) &&
-                                    x.LotSize != null)
-                        .Where(x => x.CreatedAt.Date <= date)
-                        .Select(x => x.LotSize!.Value)
-                        .SumAsync()
+                    Supply = minted.Value - burned.Value,
+                    Minted = minted.Value
                 };
                 
                 items.Add(stat);
