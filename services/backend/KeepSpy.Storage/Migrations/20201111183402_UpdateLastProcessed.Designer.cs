@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KeepSpy.Storage.Migrations
 {
     [DbContext(typeof(KeepSpyContext))]
-    [Migration("20201111183402_UpdateLastProcessed")]
+    [Migration("20201111183402_UpdateLastProcessed1")]
     partial class UpdateLastProcessed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

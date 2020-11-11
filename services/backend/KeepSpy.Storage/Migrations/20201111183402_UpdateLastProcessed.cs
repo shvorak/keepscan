@@ -6,6 +6,7 @@ namespace KeepSpy.Storage.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("delete from transaction where redeem_id is null and deposit_id is null");
             migrationBuilder.Sql("update network set last_block_processed = 11187370 where Kind = 1 and Is_testnet = false");
         }
 
