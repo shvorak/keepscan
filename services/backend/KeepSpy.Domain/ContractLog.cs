@@ -18,5 +18,6 @@ namespace KeepSpy.Domain
 		public string Topic2 { get; set; } = "";
 		public string Topic3 { get; set; } = "";
 		public DateTime CreatedAt { get; set; }
+		public decimal? Amount { get; set; }
 	}
 }

@@ -25,22 +25,25 @@ namespace KeepSpy.App.Controllers
         [HttpGet]
         public async Task<StatisticsDto> Get()
         {
-            var totalMinted = await Db.Set<Deposit>()
+            var totalMinted = await Db.Set<ContractLog>()
                 // TODO: Add status redeemed
-                .Where(x => (x.Status == DepositStatus.Minted || x.Status == DepositStatus.Closed) &&
-                            x.LotSize != null)
-                .Select(x => x.LotSize!.Value)
+                .Where(x => x.Address == "0x8daebade922df735c38c80c7ebd708af50815faa" &&
+                x.Topic0 == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" &&
+                x.Topic1 == "0x0000000000000000000000000000000000000000000000000000000000000000")
+                .Select(x => x.Amount)
                 .SumAsync();
 
-            var totalSupply = await Db.Set<Deposit>()
-                .Where(x => x.Status == DepositStatus.Minted && x.LotSize != null)
-                .Select(x => x.LotSize!.Value)
+            var totalBurned = await Db.Set<ContractLog>()
+                .Where(x => x.Address == "0x8daebade922df735c38c80c7ebd708af50815faa" &&
+                x.Topic0 == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" &&
+                x.Topic2 == "0x0000000000000000000000000000000000000000000000000000000000000000")
+                .Select(x => x.Amount)
                 .SumAsync();
 
             return new StatisticsDto
             {
-                TotalMinted = totalMinted,
-                TotalSupply = totalSupply,
+                TotalMinted = totalMinted.Value,
+                TotalSupply = totalMinted.Value - totalBurned.Value,
                 SupplyCap = 2500m
             };
         }
