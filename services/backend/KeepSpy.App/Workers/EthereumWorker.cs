@@ -326,6 +326,7 @@ namespace KeepSpy.App.Workers
                 }
                 deposit.Status = DepositStatus.Closed;
                 deposit.UpdatedAt = log.TimeStamp;
+                AddLog2(log, redeem, RedeemStatus.Requested);
                 _logger.LogInformation("Redeem requested TDT ID {0}", deposit.Id);
                 db.SaveChanges();
             }
