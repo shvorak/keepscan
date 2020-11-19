@@ -73,6 +73,9 @@ namespace KeepSpy.App.Workers
             tbtctoken = _options.IsTestnet
                 ? "0x7c07c42973047223f80c4a69bb62d5195460eb5f"
                 : "0x8daebade922df735c38c80c7ebd708af50815faa";
+            keepStakingContract = _options.IsTestnet
+                ? "0x234d2182b29c6a64ce3ab6940037b5c8fdab608e"
+                : "0x1293a54e160d1cd7075487898d65266081a15458";
             while (!stoppingToken.IsCancellationRequested)
             {
                 using (var scope = _scopeFactory.CreateScope())
@@ -101,6 +104,7 @@ namespace KeepSpy.App.Workers
         string bondedECDSAKeepFactory;
         string keepBondingContract;
         string ethBtcContract;
+        string keepStakingContract;
 
         void Run(KeepSpyContext db, KeychainService keychainService)
         {
@@ -177,6 +181,7 @@ namespace KeepSpy.App.Workers
             LoadContractLogs(keepBondingContract, lastBlock, toBlock, db);
             LoadContractLogs(ethBtcContract, lastBlock, toBlock, db);
             LoadContractLogs(tbtctoken, lastBlock, toBlock, db);
+            LoadContractLogs(keepStakingContract, _options.IsTestnet ? 8594983u : 10867766, toBlock, db);
 
             LoadPriceFeed(db, lastBlock);
 
@@ -571,6 +576,221 @@ namespace KeepSpy.App.Workers
                 }
             }
 
+            var tokenStaking = new TokenStaking(db, lastBlock, toBlock);
+            foreach (var item in tokenStaking.GetStakeDelegated())
+            {
+                AddLog(item.log);
+
+                var signer = db.Find<Signer>(item.@operator);
+                if (signer == null)
+                {
+                    db.Add(new Signer { Id = item.@operator });
+                    db.SaveChanges();
+                }
+                var se = db.Find<StakeEvent>(item.log.LogIndex, item.log.TransactionId);
+                if (se == null)
+                {
+                    db.Add(new StakeEvent
+                    {
+                        TransactionId = item.log.TransactionId,
+                        LogIndex = item.log.LogIndex,
+                        SignerId = item.@operator,
+                        Type = StakeEventType.StakeDelegated
+                    });
+                    db.SaveChanges();
+                }
+            }
+            foreach (var item in tokenStaking.GetOperatorStaked())
+            {
+                AddLog(item.log);
+
+                var signer = db.Find<Signer>(item.@operator);
+                if (signer == null)
+                {
+                    db.Add(new Signer { Id = item.@operator });
+                    db.SaveChanges();
+                }
+                var se = db.Find<StakeEvent>(item.log.LogIndex, item.log.TransactionId);
+                if (se == null)
+                {
+                    db.Add(new StakeEvent
+                    {
+                        TransactionId = item.log.TransactionId,
+                        LogIndex = item.log.LogIndex,
+                        SignerId = item.@operator,
+                        Type = StakeEventType.OperatorStaked,
+                        Amount = item.amount
+                    });
+                    db.SaveChanges();
+                }
+            }
+            foreach (var item in tokenStaking.GetTopUpInitiated())
+            {
+                AddLog(item.log);
+
+                var signer = db.Find<Signer>(item.@operator);
+                if (signer == null)
+                {
+                    db.Add(new Signer { Id = item.@operator });
+                    db.SaveChanges();
+                }
+                var se = db.Find<StakeEvent>(item.log.LogIndex, item.log.TransactionId);
+                if (se == null)
+                {
+                    db.Add(new StakeEvent
+                    {
+                        TransactionId = item.log.TransactionId,
+                        LogIndex = item.log.LogIndex,
+                        SignerId = item.@operator,
+                        Type = StakeEventType.TopUpInitiated,
+                        Amount = item.amount
+                    });
+                    db.SaveChanges();
+                }
+            }
+            foreach (var item in tokenStaking.GetTopUpCompleted())
+            {
+                AddLog(item.log);
+
+                var signer = db.Find<Signer>(item.@operator);
+                if (signer == null)
+                {
+                    db.Add(new Signer { Id = item.@operator });
+                    db.SaveChanges();
+                }
+                var se = db.Find<StakeEvent>(item.log.LogIndex, item.log.TransactionId);
+                if (se == null)
+                {
+                    db.Add(new StakeEvent
+                    {
+                        TransactionId = item.log.TransactionId,
+                        LogIndex = item.log.LogIndex,
+                        SignerId = item.@operator,
+                        Type = StakeEventType.TopUpCompleted,
+                        Amount = item.amount
+                    });
+                    db.SaveChanges();
+                }
+            }
+            foreach (var item in tokenStaking.GetUndelegated())
+            {
+                AddLog(item.log);
+
+                var signer = db.Find<Signer>(item.@operator);
+                if (signer == null)
+                {
+                    db.Add(new Signer { Id = item.@operator });
+                    db.SaveChanges();
+                }
+                var se = db.Find<StakeEvent>(item.log.LogIndex, item.log.TransactionId);
+                if (se == null)
+                {
+                    db.Add(new StakeEvent
+                    {
+                        TransactionId = item.log.TransactionId,
+                        LogIndex = item.log.LogIndex,
+                        SignerId = item.@operator,
+                        Type = StakeEventType.Undelegated
+                    });
+                    db.SaveChanges();
+                }
+            }
+            foreach (var item in tokenStaking.GetRecoveredStake())
+            {
+                AddLog(item.log);
+
+                var signer = db.Find<Signer>(item.@operator);
+                if (signer == null)
+                {
+                    db.Add(new Signer { Id = item.@operator });
+                    db.SaveChanges();
+                }
+                var se = db.Find<StakeEvent>(item.log.LogIndex, item.log.TransactionId);
+                if (se == null)
+                {
+                    db.Add(new StakeEvent
+                    {
+                        TransactionId = item.log.TransactionId,
+                        LogIndex = item.log.LogIndex,
+                        SignerId = item.@operator,
+                        Type = StakeEventType.RecoveredStake
+                    });
+                    db.SaveChanges();
+                }
+            }
+            foreach (var item in tokenStaking.GetTokensSeized())
+            {
+                AddLog(item.log);
+
+                var signer = db.Find<Signer>(item.@operator);
+                if (signer == null)
+                {
+                    db.Add(new Signer { Id = item.@operator });
+                    db.SaveChanges();
+                }
+                var se = db.Find<StakeEvent>(item.log.LogIndex, item.log.TransactionId);
+                if (se == null)
+                {
+                    db.Add(new StakeEvent
+                    {
+                        TransactionId = item.log.TransactionId,
+                        LogIndex = item.log.LogIndex,
+                        SignerId = item.@operator,
+                        Type = StakeEventType.TokensSeized,
+                        Amount = -item.amount
+                    });
+                    db.SaveChanges();
+                }
+            }
+            /*foreach (var item in tokenStaking.GetStakeLocked())
+            {
+                AddLog(item.log);
+
+                var signer = db.Find<Signer>(item.@operator);
+                if (signer == null)
+                {
+                    db.Add(new Signer { Id = item.@operator });
+                    db.SaveChanges();
+                }
+                var se = db.Find<StakeEvent>(item.log.LogIndex, item.log.TransactionId);
+                if (se == null)
+                {
+                    db.Add(new StakeEvent
+                    {
+                        TransactionId = item.log.TransactionId,
+                        LogIndex = item.log.LogIndex,
+                        SignerId = item.@operator,
+                        Type = StakeEventType.StakeLocked,
+                        DepositId = db.Set<Deposit>().Where(d => d.KeepAddress == item.lockCreator).FirstOrDefault()?.Id
+                    });
+                    db.SaveChanges();
+                }
+            }
+            foreach (var item in tokenStaking.GetLockReleased())
+            {
+                AddLog(item.log);
+
+                var signer = db.Find<Signer>(item.@operator);
+                if (signer == null)
+                {
+                    db.Add(new Signer { Id = item.@operator });
+                    db.SaveChanges();
+                }
+                var se = db.Find<StakeEvent>(item.log.LogIndex, item.log.TransactionId);
+                if (se == null)
+                {
+                    db.Add(new StakeEvent
+                    {
+                        TransactionId = item.log.TransactionId,
+                        LogIndex = item.log.LogIndex,
+                        SignerId = item.@operator,
+                        Type = StakeEventType.LockReleased,
+                        DepositId = db.Set<Deposit>().Where(d => d.KeepAddress == item.lockCreator).FirstOrDefault()?.Id
+                    });
+                    db.SaveChanges();
+                }
+            }
+            */
             var bn = uint.MaxValue;
             if (resultTx.result.Count > 100)
                 bn = Math.Min(bn, resultTx.result.Max(o => uint.Parse(o.blockNumber)));
