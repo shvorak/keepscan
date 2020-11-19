@@ -24,7 +24,7 @@ export const Dashboard = () => {
             <div className={styles.stats__grid}>
                 <StatCard name={isSmall ? 'Supply' : 'Current Supply'} value={stats.totalSupply} />
                 <StatCard name={isSmall ? 'Minted' : 'Total Minted'} value={stats.totalMinted} />
-                <StatCard name="Supply Cap" value={stats.supplyCap} />
+                <StatCard name="Supply Cap" value="21kk" />
             </div>
 
             <div className={styles.lists_grid}>
