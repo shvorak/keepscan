@@ -17,6 +17,7 @@ namespace KeepSpy.Domain
         TokensSeized,
         StakeLocked,
         LockReleased,
-        ExpiredLockReleased
+        ExpiredLockReleased,
+        TokenGrantStaked
     }
 }

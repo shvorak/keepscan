@@ -80,6 +80,7 @@ namespace KeepSpy.App
             services.AddHostedService<BitcoinWorker>();
             services.AddHostedService<EthereumWorker>();
             services.AddHostedService<RefreshViewWorker>();
+            services.AddHostedService(sp => new MarketDataWorker(sp, Configuration.GetSection("Workers:MarketData").GetValue<string>("ApiUrl")));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)

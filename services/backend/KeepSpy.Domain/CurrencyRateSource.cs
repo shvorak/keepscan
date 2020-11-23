@@ -6,6 +6,7 @@ namespace KeepSpy.Domain
 {
 	public enum CurrencyRateSource
 	{
-		MedianETHBTC
+		MedianETHBTC,
+		CryptoCompare
 	}
 }

@@ -17,6 +17,13 @@ namespace KeepSpy.App.Ethereum
 			logs = db.Set<ContractLog>().Where(o => o.BlockNumber >= fromBlock && o.BlockNumber <= toBlock).AsNoTracking().ToList();
 		}
 
+		public IEnumerable<(string grantId, decimal amount, string @operator, ContractLog log)> GetTokenGrantStaked()
+		{
+			return logs
+				.Where(l => l.Topic0 == "0xf05c07b89b3e4ff57b17aa6883ec35e90d7710c57a038c49c3ec3911a80c2445")
+				.Select(l => (l.Topic1, (decimal)BigInteger.Parse(l.Data.Substring(0,64), NumberStyles.HexNumber) / 1000000000000000000M, "0x" + l.Data.Substring(88), l));
+		}
+
 		public IEnumerable<(string owner, string @operator, ContractLog log)> GetStakeDelegated()
 		{
 			return logs

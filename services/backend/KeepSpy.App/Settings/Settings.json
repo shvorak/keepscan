@@ -17,6 +17,9 @@
       "ApiUrl": "https://api-ropsten.etherscan.io/api?apikey=4JQVAK5HNV1P6Z72E14ARGDPDUVDNJ5R5K",
       "Interval": 10,
       "IsTestnet": true
+    },
+    "MarketData": {
+      "ApiUrl": "https://min-api.cryptocompare.com/data/price?fsym=KEEP&tsyms=BTC,USD,ETH&api_key=378ecd1eb63001a82b202939e2c731e12b65b4854d308b580e9b5c448565a54f"      
     }
   }
 }

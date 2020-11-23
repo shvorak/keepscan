@@ -76,6 +76,9 @@ namespace KeepSpy.App.Workers
             keepStakingContract = _options.IsTestnet
                 ? "0x234d2182b29c6a64ce3ab6940037b5c8fdab608e"
                 : "0x1293a54e160d1cd7075487898d65266081a15458";
+            tokenGrantContract = _options.IsTestnet
+                ? "0xb64649fe00f8ef5187d09d109c6f38f13c7cf857"
+                : "0x175989c71fd023d580c65f5dc214002687ff88b7";
             while (!stoppingToken.IsCancellationRequested)
             {
                 using (var scope = _scopeFactory.CreateScope())
@@ -105,6 +108,7 @@ namespace KeepSpy.App.Workers
         string keepBondingContract;
         string ethBtcContract;
         string keepStakingContract;
+        string tokenGrantContract;
 
         void Run(KeepSpyContext db, KeychainService keychainService)
         {
@@ -182,6 +186,7 @@ namespace KeepSpy.App.Workers
             LoadContractLogs(ethBtcContract, lastBlock, toBlock, db);
             LoadContractLogs(tbtctoken, lastBlock, toBlock, db);
             LoadContractLogs(keepStakingContract, _options.IsTestnet ? 8594983u : 10867766, toBlock, db);
+            LoadContractLogs(tokenGrantContract, _options.IsTestnet ? 8594983u : 10867766, toBlock, db);
 
             LoadPriceFeed(db, lastBlock);
 
@@ -577,6 +582,29 @@ namespace KeepSpy.App.Workers
             }
 
             var tokenStaking = new TokenStaking(db, lastBlock, toBlock);
+            foreach (var item in tokenStaking.GetTokenGrantStaked())
+            {
+                AddLog(item.log);
+
+                var signer = db.Find<Signer>(item.@operator);
+                if (signer == null)
+                {
+                    db.Add(new Signer { Id = item.@operator });
+                    db.SaveChanges();
+                }
+                var se = db.Find<StakeEvent>(item.log.LogIndex, item.log.TransactionId);
+                if (se == null)
+                {
+                    db.Add(new StakeEvent
+                    {
+                        TransactionId = item.log.TransactionId,
+                        LogIndex = item.log.LogIndex,
+                        SignerId = item.@operator,
+                        Type = StakeEventType.TokenGrantStaked
+                    });
+                    db.SaveChanges();
+                }
+            }
             foreach (var item in tokenStaking.GetStakeDelegated())
             {
                 AddLog(item.log);
