@@ -48,7 +48,7 @@ namespace KeepSpy.App.Workers
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await Task.Delay(5000, stoppingToken);
+            await Task.Delay(35000, stoppingToken);
             tdtcontract = _options.IsTestnet
                 ? "0x7cAad48DF199Cd661762485fc44126F4Fe8A58C9"
                 : "0x10b66bd1e3b5a936b7f8dbc5976004311037cdf0";
@@ -172,6 +172,8 @@ namespace KeepSpy.App.Workers
 
             var getBlockNumberResult = uint.Parse(_apiClient.GetBlockNumber().result.Substring(2), NumberStyles.HexNumber) - 20;
             var toBlock = getBlockNumberResult;
+            if (toBlock < lastBlock)
+                lastBlock = toBlock;
             if (toBlock - lastBlock > 1000)
                 toBlock = lastBlock + 1000;
 
