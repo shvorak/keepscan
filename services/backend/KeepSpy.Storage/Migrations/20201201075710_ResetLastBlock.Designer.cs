@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KeepSpy.Storage.Migrations
 {
     [DbContext(typeof(KeepSpyContext))]
-    [Migration("20201201075710_ResetLastBlock")]
+    [Migration("20201201075710_ResetLastBlock2")]
     partial class ResetLastBlock
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

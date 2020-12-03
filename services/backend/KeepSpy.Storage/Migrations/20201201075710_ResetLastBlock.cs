@@ -6,7 +6,7 @@ namespace KeepSpy.Storage.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("update network set last_block_processed = null where Kind = 1");
+            migrationBuilder.Sql("update network set last_block_processed = 11376600 where Kind = 1 and is_testnet = false");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
