@@ -96,6 +96,24 @@ namespace KeepSpy.App.Workers
             db.SaveChanges();
         }
 
+        void UpdateDepositFunded(string deposit_id, decimal fundedSum, uint block)
+		{
+            using (var scope = _scopeFactory.CreateScope())
+            {
+                var db2 = scope.ServiceProvider.GetRequiredService<KeepSpyContext>();
+
+                var dep = db2.Find<Deposit>(deposit_id);
+                dep.BtcFunded = fundedSum;
+                if (dep.Status == DepositStatus.WaitingForBtc)
+                {
+                    dep.Status = DepositStatus.BtcReceived;
+                    dep.UpdatedAt = DateTime.Now;
+                }
+
+                dep.BitcoinFundedBlock = block;
+                db2.SaveChanges();
+            }
+        }
         void ProcessDeposit(KeepSpyContext db, Deposit deposit)
         {
             if (db.Set<Transaction>()
@@ -108,18 +126,10 @@ namespace KeepSpy.App.Workers
                     .Sum(o => o.value / 100000000M));
             if (deposit.BtcFunded == null && inSum >= deposit.LotSize)
             {
-                var dep = db.Find<Deposit>(deposit.Id);
-                dep.BtcFunded = inSum;
-                if (dep.Status == DepositStatus.WaitingForBtc)
-                {
-                    dep.Status = DepositStatus.BtcReceived;
-                    dep.UpdatedAt = DateTime.Now;
-                }
+                var block = txs.Where(o => !o.vin.Any(o1 => o1.prevout.scriptpubkey_address == deposit.BitcoinAddress))
+                           .Max(o => o.status.block_height);
+                UpdateDepositFunded(deposit.Id, inSum, block);
 
-                dep.BitcoinFundedBlock =
-                    txs.Where(o => !o.vin.Any(o1 => o1.prevout.scriptpubkey_address == deposit.BitcoinAddress))
-                        .Max(o => o.status.block_height);
-                db.SaveChanges();
                 _logger.LogInformation("TDT {0} funded with {1} BTC", deposit.Id, inSum);
             }
 
