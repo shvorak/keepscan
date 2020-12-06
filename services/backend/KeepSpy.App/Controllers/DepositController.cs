@@ -102,7 +102,7 @@ namespace KeepSpy.App.Controllers
                         SELECT id, contract_id, (select sum(amount) from bond where deposit_id = id)/lot_size as bond
                         FROM deposit
                         WHERE status = 5 AND lot_size = {lotSize}
-                        ORDER BY 2
+                        ORDER BY bond
                     LIMIT (SELECT count(id) FROM deposit WHERE status = 5 AND lot_size = {lotSize}) * 30 / 100) as list
                     ORDER BY random()
                     LIMIT 1"
