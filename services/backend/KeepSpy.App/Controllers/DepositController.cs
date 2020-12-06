@@ -77,7 +77,7 @@ namespace KeepSpy.App.Controllers
             .Where(t => t.DepositId == id)
             .OrderByDescending(t => t.Timestamp)
             .ToArrayAsync();
-        
+
         /// <summary>
         /// Information about the last 10 deposits
         /// </summary>
@@ -96,26 +96,24 @@ namespace KeepSpy.App.Controllers
         [HttpGet("random")]
         public async Task<RandomTdtId?> Random([FromQuery] decimal lotSize)
         {
-            var rand = new Random();
-            var query = Db.Set<Deposit>()
-                .Where(x => x.Status == DepositStatus.Minted && x.LotSize == lotSize && x.Contract.Active);
-
-            var count = await query.CountAsync();
-
-            if (count == 0)
-            {
-                return null;
-            }
-
-            return await query
+            return await Db.Set<Deposit>()
+                .FromSqlInterpolated($@"
+                    SELECT * from (
+                        SELECT id, contract_id, (select sum(amount) from bond where deposit_id = id)/lot_size as bond
+                        FROM deposit
+                        WHERE status = 5 AND lot_size = {lotSize}
+                        ORDER BY 2
+                    LIMIT (SELECT count(id) FROM deposit WHERE status = 5 AND lot_size = {lotSize}) * 30 / 100) as list
+                    ORDER BY random()
+                    LIMIT 1"
+                )
                 .Select(x => new RandomTdtId
                 {
                     LotSize = lotSize,
                     Address = x.Id,
                     ContractId = x.ContractId
                 })
-                .Skip(rand.Next(count))
-                .FirstAsync();
+                .FirstOrDefaultAsync();
         }
     }
 }
