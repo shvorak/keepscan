@@ -98,12 +98,15 @@ namespace KeepSpy.App.Controllers
         {
             return await Db.Set<Deposit>()
                 .FromSqlInterpolated($@"
-                    SELECT * from (
-                        SELECT id, (select sum(amount) from bond where deposit_id = id)/lot_size as bond, contract_id
+                    SELECT * FROM (
+                        SELECT id, contract_id, (SELECT sum(amount) FROM bond WHERE deposit_id = id)/lot_size as bond
                         FROM deposit
-                        WHERE status = 5 AND lot_size = {lotSize}
-                        ORDER BY 2
-                    LIMIT (SELECT count(id) FROM deposit WHERE status = 5 AND lot_size = {lotSize}) * 50 / 100) as list
+                        WHERE status = 5 and lot_size = {lotSize}
+                        ORDER by bond
+                        LIMIT CASE 
+                            WHEN (SELECT count(id) FROM deposit WHERE status = 5 and lot_size = {lotSize}) < 5 THEN 5 
+                            ELSE (SELECT count(id) FROM deposit WHERE status = 5 AND lot_size = {lotSize}) * 0.3 END
+                    ) as list
                     ORDER BY random()
                     LIMIT 1"
                 )
