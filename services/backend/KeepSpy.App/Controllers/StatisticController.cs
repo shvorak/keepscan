@@ -28,15 +28,15 @@ namespace KeepSpy.App.Controllers
             var totalMinted = await Db.Set<ContractLog>()
                 // TODO: Add status redeemed
                 .Where(x => x.Address == "0x8daebade922df735c38c80c7ebd708af50815faa" &&
-                x.Topic0 == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" &&
-                x.Topic1 == "0x0000000000000000000000000000000000000000000000000000000000000000")
+                            x.Topic0 == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" &&
+                            x.Topic1 == "0x0000000000000000000000000000000000000000000000000000000000000000")
                 .Select(x => x.Amount)
                 .SumAsync();
 
             var totalBurned = await Db.Set<ContractLog>()
                 .Where(x => x.Address == "0x8daebade922df735c38c80c7ebd708af50815faa" &&
-                x.Topic0 == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" &&
-                x.Topic2 == "0x0000000000000000000000000000000000000000000000000000000000000000")
+                            x.Topic0 == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" &&
+                            x.Topic2 == "0x0000000000000000000000000000000000000000000000000000000000000000")
                 .Select(x => x.Amount)
                 .SumAsync();
 
@@ -94,18 +94,18 @@ namespace KeepSpy.App.Controllers
                 var date = DateTime.Today.AddDays(day);
 
                 var minted = await Db.Set<ContractLog>()
-                .Where(x => x.Address == "0x8daebade922df735c38c80c7ebd708af50815faa" &&
-                x.Topic0 == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" &&
-                x.Topic1 == "0x0000000000000000000000000000000000000000000000000000000000000000" &&
-                x.TimeStamp.Date <= date)
-                .Select(x => x.Amount)
-                .SumAsync();
+                    .Where(x => x.Address == "0x8daebade922df735c38c80c7ebd708af50815faa" &&
+                                x.Topic0 == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" &&
+                                x.Topic1 == "0x0000000000000000000000000000000000000000000000000000000000000000" &&
+                                x.TimeStamp.Date <= date)
+                    .Select(x => x.Amount)
+                    .SumAsync();
 
                 var burned = await Db.Set<ContractLog>()
                     .Where(x => x.Address == "0x8daebade922df735c38c80c7ebd708af50815faa" &&
-                    x.Topic0 == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" &&
-                    x.Topic2 == "0x0000000000000000000000000000000000000000000000000000000000000000" &&
-                    x.TimeStamp.Date <= date)
+                                x.Topic0 == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" &&
+                                x.Topic2 == "0x0000000000000000000000000000000000000000000000000000000000000000" &&
+                                x.TimeStamp.Date <= date)
                     .Select(x => x.Amount)
                     .SumAsync();
 
@@ -115,7 +115,7 @@ namespace KeepSpy.App.Controllers
                     Supply = minted.Value - burned.Value,
                     Minted = minted.Value
                 };
-                
+
                 items.Add(stat);
             }
 
@@ -157,5 +157,41 @@ namespace KeepSpy.App.Controllers
                     Volume = query.Sum(o => o.LotSize.Value)
                 };
             }).ToArray();
+
+        [HttpGet("exchange-rate")]
+        public async Task<ActionResult<ExchangeRate>> ExchangeRate()
+        {
+            var rates = await Db.Set<CurrencyRate>()
+                .FromSqlRaw(@"
+                    SELECT DISTINCT ON (trade_pair) value,
+                                timestamp,
+                                trade_pair,
+                                source
+                    FROM currency_rate
+                    WHERE trade_pair > 0
+                    ORDER BY trade_pair, timestamp DESC
+                ")
+                .ToArrayAsync();
+
+            var result = new ExchangeRate();
+
+            foreach (var rate in rates)
+            {
+                switch (rate.TradePair)
+                {
+                    case TradePair.KEEPBTC:
+                        result.PriceInBtc = rate.Value;
+                        break;
+                    case TradePair.KEEPETH:
+                        result.PriceInEth = rate.Value;
+                        break;
+                    case TradePair.KEEPUSD:
+                        result.PriceInUsd = rate.Value;
+                        break;
+                }
+            }
+
+            return result;
+        }
     }
 }

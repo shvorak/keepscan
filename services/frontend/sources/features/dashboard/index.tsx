@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 import { getStatistic } from 'entities/Statistic/queries'
 import { MarketData } from 'features/dashboard/cards/market-data'
 import { useMedia } from 'shared/hooks/adaptive'
+import { ExchangeRateCard } from 'features/dashboard/cards/exchange-rate'
 
 export const Dashboard = () => {
     const stats = useSelector(getStatistic)
@@ -18,13 +19,13 @@ export const Dashboard = () => {
             <div className={styles.graphs_grid}>
                 <OperationsGraph title="Deposits & Redeems" />
                 <SupplyChangeCard title="Minted & Supply" />
-                <MarketData title="Market Data" />
+                <ExchangeRateCard />
             </div>
 
             <div className={styles.stats__grid}>
                 <StatCard name={isSmall ? 'Supply' : 'Current Supply'} value={stats.totalSupply} />
                 <StatCard name={isSmall ? 'Minted' : 'Total Minted'} value={stats.totalMinted} />
-                <StatCard name="Supply Cap" value="21kk" />
+                <StatCard name="Market data" value="1 TBTC = 1 BTC" suffix={null} />
             </div>
 
             <div className={styles.lists_grid}>

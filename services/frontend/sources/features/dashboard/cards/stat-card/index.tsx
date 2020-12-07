@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import styles from './index.css'
+import styles from './index.less'
 import { Card, CardBody } from 'uikit/layout/card'
 import { Display } from 'uikit/typography/display'
 import { Heading } from 'uikit/typography'
@@ -21,7 +21,7 @@ export const StatCard: FC<StatCard> = ({ name, value, suffix = 'TBTC' }) => {
                 <Heading size={5} className={styles.name}>
                     {name}
                 </Heading>
-                <Display size={20}>
+                <Display>
                     {value} {!isSmall && suffix}
                 </Display>
             </CardBody>
