@@ -33,8 +33,16 @@
 @media screen and (max-width: 1024px) {
     .graphs_grid {
         grid-template-columns: 1fr;
+
     }
-    .graphs_grid > *:nth-child(3) {
+    .graphs_grid > *:nth-child(2) {
+        display: none;
+    }
+
+    .stats__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .stats__grid > *:nth-child(3) {
         display: none;
     }
     .lists_grid {
@@ -47,7 +55,7 @@
         gap: 10px;
         margin-bottom: 10px;
     }
-    .graphs_grid > *:nth-child(3) {
+    .graphs_grid > *:nth-child(2) {
         display: none;
     }
 
