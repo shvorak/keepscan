@@ -21,7 +21,7 @@ export const StatCard: FC<StatCard> = ({ name, value, suffix = 'TBTC' }) => {
                 <Heading size={5} className={styles.name}>
                     {name}
                 </Heading>
-                <Display>
+                <Display size={20}>
                     {value} {!isSmall && suffix}
                 </Display>
             </CardBody>
