@@ -266,16 +266,19 @@ namespace KeepSpy.App.Workers
             {
                 string id = "0x" + log.Topic1.Substring(26);
                 var deposit = db.Find<Deposit>(id);
-                deposit.EndOfTerm = log.TimeStamp.AddMonths(6);
-                if (deposit.Status <= DepositStatus.BtcReceived)
+                if (deposit != null)
                 {
-                    deposit.Status = DepositStatus.SubmittingProof;
-                    deposit.UpdatedAt = log.TimeStamp;
-                    _logger.LogInformation("TDT {0} submitted proof", deposit.Id);
-                }
+                    deposit.EndOfTerm = log.TimeStamp.AddMonths(6);
+                    if (deposit.Status <= DepositStatus.BtcReceived)
+                    {
+                        deposit.Status = DepositStatus.SubmittingProof;
+                        deposit.UpdatedAt = log.TimeStamp;
+                        _logger.LogInformation("TDT {0} submitted proof", deposit.Id);
+                    }
 
-                AddLog(log, deposit, DepositStatus.SubmittingProof);
-                db.SaveChanges();
+                    AddLog(log, deposit, DepositStatus.SubmittingProof);
+                    db.SaveChanges();
+                }
             }
 
             foreach (var log in db.Set<ContractLog>().Where(o => o.Address == tdtcontract && o.BlockNumber >= lastBlock && o.Topic0 == ApprovalEvent && o.BlockNumber <= toBlock).ToList())
