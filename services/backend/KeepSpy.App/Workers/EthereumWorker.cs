@@ -232,6 +232,8 @@ namespace KeepSpy.App.Workers
             {
                 string id = "0x" + log.Topic1.Substring(26);
                 var deposit = db.Find<Deposit>(id);
+                if (deposit == null)
+                    continue;
                 if (deposit.BitcoinAddress == null)
                 {
                     var pubkeyX = log.Data.Substring(0, 64);
@@ -252,6 +254,8 @@ namespace KeepSpy.App.Workers
             {
                 string id = "0x" + log.Topic1.Substring(26);
                 var deposit = db.Find<Deposit>(id);
+                if (deposit == null)
+                    continue;
                 if (deposit.Status != DepositStatus.SetupFailed)
                 {
                     deposit.Status = DepositStatus.SetupFailed;
