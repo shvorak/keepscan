@@ -287,6 +287,9 @@ namespace KeepSpy.App.Workers
                 if ("0x" + log.Topic2.Substring(26) != vmcontract)
                     continue;
                 var deposit = db.Find<Deposit>(id);
+                if (deposit == null)
+                    continue;
+                
                 if (deposit.Status == DepositStatus.SubmittingProof)
                 {
                     deposit.Status = DepositStatus.ApprovingSpendLimit;
