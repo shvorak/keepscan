@@ -353,6 +353,10 @@ namespace KeepSpy.App.Workers
             {
                 string id = "0x" + log.Topic1.Substring(26);
                 var redeem = db.Find<Redeem>(id);
+                
+                if (redeem == null)
+                    continue;
+                
                 if (redeem.Status == RedeemStatus.Requested)
                 {
                     redeem.Status = RedeemStatus.Signed;
@@ -368,6 +372,8 @@ namespace KeepSpy.App.Workers
             {
                 string id = "0x" + log.Topic1.Substring(26);
                 var redeem = db.Find<Redeem>(id);
+                if (redeem == null)
+                    continue;
                 if (redeem.Status != RedeemStatus.Redeemed)
                 {
                     redeem.Status = RedeemStatus.Redeemed;
@@ -384,6 +390,8 @@ namespace KeepSpy.App.Workers
             {                
                 string id = "0x" + log.Topic2.Substring(26);
                 var deposit = db.Find<Deposit>(id);
+                if (deposit == null)
+                    continue;
                 if (deposit.KeepAddress == null)
                 {
                     deposit.KeepAddress = "0x" + log.Topic1.Substring(26);
@@ -423,6 +431,8 @@ namespace KeepSpy.App.Workers
             {
                 string id = "0x" + log.Topic1.Substring(26);
                 var redeem = db.Find<Redeem>(id);
+                if (redeem == null)
+                    continue;
                 if (redeem.Status != RedeemStatus.Liquidation)
                 {
                     redeem.Status = RedeemStatus.Liquidation;
@@ -438,6 +448,8 @@ namespace KeepSpy.App.Workers
             {
                 string id = "0x" + log.Topic1.Substring(26);
                 var redeem = db.Find<Redeem>(id);
+                if (redeem == null)
+                    continue;
                 if (redeem.Status != RedeemStatus.Liquidated)
                 {
                     redeem.Status = RedeemStatus.Liquidated;
