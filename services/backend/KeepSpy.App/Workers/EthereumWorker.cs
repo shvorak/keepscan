@@ -424,7 +424,10 @@ namespace KeepSpy.App.Workers
                 var amount = (decimal)System.Numerics.BigInteger.Parse(log.Data.Substring(96, 32), NumberStyles.HexNumber) / 1000000000000000000M;
                 if (!db.Set<Bond>().Any(b => b.Deposit.KeepAddress == keepAddress && b.SignerId == signer))
                 {
-                    var deposit = db.Set<Deposit>().Single(d => d.KeepAddress == keepAddress);
+                    var deposit = db.Set<Deposit>().SingleOrDefault(d => d.KeepAddress == keepAddress);
+                    if (deposit == null)
+                        continue;
+                        
                     db.Add(new Bond { Amount = amount, SignerId = signer, Deposit = deposit });
                     _logger.LogInformation("Deposit {0}, Bond {1} ETH, signer {2}", deposit.Id, amount, signer);
                 }
