@@ -332,6 +332,12 @@ namespace KeepSpy.App.Workers
 			{
                 var tdt_id = "0x" + log.Topic1.Substring(26);
                 var deposit = db.Find<Deposit>(tdt_id);
+                if (deposit is null)
+                {
+                    _logger.LogWarning($"Deposit for tdt id {tdt_id} doesn't exists in db");
+                    continue;
+                }
+                
                 var redeem = db.Find<Redeem>(tdt_id);
                 if (redeem == null)
 				{
