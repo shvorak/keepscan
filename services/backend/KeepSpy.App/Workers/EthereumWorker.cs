@@ -35,14 +35,16 @@ namespace KeepSpy.App.Workers
         private readonly EthereumWorkerOptions _options;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<EthereumWorker> _logger;
+        private readonly ILoggerFactory _loggerFactory;
         private readonly Etherscan.Client _apiClient;
 
         public EthereumWorker(EthereumWorkerOptions options, IServiceScopeFactory scopeFactory,
-            ILogger<EthereumWorker> logger)
+            ILogger<EthereumWorker> logger, ILoggerFactory loggerFactory)
         {
             _options = options;
             _scopeFactory = scopeFactory;
             _logger = logger;
+            _loggerFactory = loggerFactory;
             _apiClient = new Etherscan.Client(_options.ApiUrl);
         }
 
@@ -177,7 +179,6 @@ namespace KeepSpy.App.Workers
             if (toBlock - lastBlock > 1000)
                 toBlock = lastBlock + 1000;
 
-            var repo = new Repository(db);
             LoadContractLogs(contract.Id, lastBlock, toBlock, db);
             LoadContractLogs(tdtcontract, lastBlock, toBlock, db);
             LoadContractLogs(vmcontract, lastBlock, toBlock, db);
@@ -944,7 +945,7 @@ namespace KeepSpy.App.Workers
 
         void LoadContractLogs(string address, uint startBlock, uint toBlock, KeepSpyContext db)
 		{
-            Repository repo = new Repository(db);
+            var repo = MakeRepo(db);
             uint fromBlock = startBlock;
             if (db.Set<ContractLog>().Count(o => o.Address == address) > 0)
                 fromBlock = db.Set<ContractLog>().Where(o => o.Address == address).Max(o => o.BlockNumber);
@@ -978,6 +979,11 @@ namespace KeepSpy.App.Workers
                     db.SaveChanges();
                 }
             }
+        }
+
+        private Repository MakeRepo(KeepSpyContext db)
+        {
+            return new Repository(db, _loggerFactory.CreateLogger<Repository>());
         }
     }
 

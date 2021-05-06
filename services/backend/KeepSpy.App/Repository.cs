@@ -7,21 +7,34 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace KeepSpy.App
 {
 	public class Repository
 	{
-		KeepSpyContext db;
-		public Repository(KeepSpyContext db)
+		private readonly KeepSpyContext _db;
+		private readonly ILogger<Repository> _logger;
+
+		public Repository(KeepSpyContext db, ILogger<Repository> logger)
 		{
-			this.db = db;
+			_db = db;
+			_logger = logger;
 		}
 		public void AddLog(Log log)
 		{
-			if (db.Find<ContractLog>(log.transactionHash, log.logIndex) == null)
+			if (_db.Find<ContractLog>(log.transactionHash, log.logIndex) == null)
 			{
-				db.Add(new ContractLog
+				try
+				{
+					var test = log.Fee;
+				}
+				catch (Exception e)
+				{
+					_logger.LogError($"{log.gasPrice} ${log.gasUsed}");
+					throw;
+				}
+				_db.Add(new ContractLog
 				{
 					Address = log.address,
 					BlockNumber = log.BlockNumber,
@@ -37,7 +50,7 @@ namespace KeepSpy.App
 					TransactionId = log.transactionHash,
 					Amount = log.data.Length > 2 && log.topics[0] == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" ? (decimal?)BigInteger.Parse(log.data.Substring(2), NumberStyles.HexNumber) / 1e18M : null
 				});
-				db.SaveChanges();
+				_db.SaveChanges();
 			}
 		}
 	}
