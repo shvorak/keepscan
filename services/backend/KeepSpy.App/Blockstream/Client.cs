@@ -30,18 +30,25 @@ namespace KeepSpy.App.Blockstream
                 var content = response.Content.ReadAsStringAsync()
                     .ConfigureAwait(false).GetAwaiter().GetResult();
 
-                if (response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpRequestException(
+                        $"Request to {path} failed with code {response.StatusCode} and response:\n\n{content}");
+
+                try
                 {
                     return JsonSerializer.Deserialize<T>(content);
                 }
-
-                throw new HttpRequestException(
-                    $"Request to {path} failed with code {response.StatusCode} and response:\n\n{content}");
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "Failed to deserialize response content into {0}:\\n\\n{1}", nameof(T),
+                        content);
+                    throw;
+                }
             }
-            catch (Exception e)
+            catch (HttpRequestException e)
             {
-                _logger.LogError(e.Message, e);
-                throw e;
+                _logger.LogError(e, "Failed to make request to {0}", path);
+                throw;
             }
         }
 
