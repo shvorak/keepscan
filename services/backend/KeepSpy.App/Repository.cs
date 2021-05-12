@@ -1,12 +1,9 @@
-﻿using KeepSpy.App.Etherscan;
+﻿using System;
+using System.Globalization;
+using System.Numerics;
+using KeepSpy.App.Etherscan;
 using KeepSpy.Domain;
 using KeepSpy.Storage;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Numerics;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace KeepSpy.App
@@ -25,15 +22,6 @@ namespace KeepSpy.App
 		{
 			if (_db.Find<ContractLog>(log.transactionHash, log.logIndex) == null)
 			{
-				try
-				{
-					var test = log.Fee;
-				}
-				catch (Exception e)
-				{
-					_logger.LogError($"{log.gasPrice} ${log.gasUsed}");
-					throw;
-				}
 				_db.Add(new ContractLog
 				{
 					Address = log.address,

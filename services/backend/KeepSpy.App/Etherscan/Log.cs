@@ -17,7 +17,22 @@ namespace KeepSpy.App.Etherscan
         public DateTime TimeStamp => new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(ulong.Parse(timeStamp.Substring(2), NumberStyles.HexNumber));
         public string gasPrice { get; set; }
         public string gasUsed { get; set; }
-        public decimal Fee => ulong.Parse(gasPrice[2..], NumberStyles.HexNumber) / 1000000000000000000M * ulong.Parse(gasUsed[2..], NumberStyles.HexNumber);
+        public decimal Fee
+        {
+            get
+            {
+                var used = gasUsed[2..];
+                if (string.IsNullOrEmpty(used))
+                    used = "0";
+                var price = gasPrice[2..];
+                if (string.IsNullOrEmpty(price))
+                    price = "0";
+                
+                return ulong.Parse(price, NumberStyles.HexNumber) / 1000000000000000000M *
+                       ulong.Parse(used, NumberStyles.HexNumber);
+            }
+        }
+
         public string logIndex { get; set; }
         public string transactionHash { get; set; }
         public string transactionIndex { get; set; }
